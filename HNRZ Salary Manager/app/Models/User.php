@@ -1,27 +1,33 @@
 <?php
-// File: app/Models/User.php
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-<<<<<<< Updated upstream
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles; 
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-=======
-use Spatie\Permission\Traits\HasRoles;  // <-- tambahkan ini
-
->>>>>>> Stashed changes
 class User extends Authenticatable
 {
-	use HasRoles;  // <-- tambahkan trait ini
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
 
-	protected $fillable = [
-    	'name',
-    	'email',
-    	'password',
-	];
-
-	// ... kode lainnya
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }
