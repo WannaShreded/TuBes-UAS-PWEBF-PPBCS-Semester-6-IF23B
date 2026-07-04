@@ -24,8 +24,6 @@
                         </span>
                     </p>
 
-                    {{-- resources/views/dashboard.blade.php --}}
-
                     @canany(['view-users', 'view-roles'])
                         <div class="mt-6 p-4 bg-blue-50 rounded-lg">
                             <h3 class="font-semibold text-blue-800 mb-3">Menu Admin</h3>
