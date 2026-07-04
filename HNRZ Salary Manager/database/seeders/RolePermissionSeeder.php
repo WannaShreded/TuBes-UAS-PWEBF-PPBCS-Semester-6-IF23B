@@ -1,56 +1,69 @@
 <?php
-// File: database/seeders/RolePermissionSeeder.php
-
 
 namespace Database\Seeders;
-
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
 
 class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
         // Reset cache permission
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
+        // Permissions
+        $permissions = [
+            'view-dashboard',
+            'view-users',
+            'edit-users',
+            'delete-users',
+            'view-roles',
+            'create-roles',
+            'edit-roles',
+            'delete-roles',
+        ];
 
-        // Buat permission
-        Permission::create(['name' => 'view-dashboard']);
-        Permission::create(['name' => 'view-users']);
-        Permission::create(['name' => 'edit-users']);
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
+        // Role admin
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $adminRole->syncPermissions($permissions);
 
-        // Buat role Admin dan beri semua permission
-        $admin = Role::create(['name' => 'admin']);
-        $admin->givePermissionTo(['view-dashboard', 'view-users', 'edit-users']);
+        // Role manager
+        $managerRole = Role::firstOrCreate(['name' => 'manager']);
+        $managerRole->syncPermissions(['view-dashboard']);
 
+        // User Admin (AMAN)
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name'     => 'Admin User',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        // Buat role Manager, hanya boleh akses dashboard
-        $manager = Role::create(['name' => 'manager']);
-        $manager->givePermissionTo(['view-dashboard']);
+        if (! $adminUser->hasRole('admin')) {
+            $adminUser->assignRole('admin');
+        }
 
+        // User Manager (AMAN)
+        $managerUser = User::firstOrCreate(
+            ['email' => 'manager@example.com'],
+            [
+                'name'     => 'Manager User',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        // Buat user Admin
-        $adminUser = User::create([
-            'name'     => 'Admin User',
-            'email'    => 'admin@example.com',
-            'password' => Hash::make('password'),
-        ]);
-        $adminUser->assignRole('admin');
-
-
-        // Buat user Manager
-        $managerUser = User::create([
-            'name'     => 'Manager User',
-            'email'    => 'manager@example.com',
-            'password' => Hash::make('password'),
-        ]);
-        $managerUser->assignRole('manager');
+        if (! $managerUser->hasRole('manager')) {
+            $managerUser->assignRole('manager');
+        }
     }
 }

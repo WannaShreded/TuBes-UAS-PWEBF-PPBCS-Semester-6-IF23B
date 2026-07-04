@@ -22,48 +22,53 @@
                         </div>
                     @endif
 
-
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="p-3">Nama</th>
                                 <th class="p-3">Email</th>
                                 <th class="p-3">Role</th>
-                                <th class="p-3">Aksi</th>
+                                @canany(['edit-users', 'delete-users'])
+                                    <th class="p-3">Aksi</th>
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $user)
-                            <tr class="border-b">
-                                <td class="p-3">{{ $user->name }}</td>
-                                <td class="p-3">{{ $user->email }}</td>
-                                <td class="p-3">
-                                    @foreach($user->roles as $role)
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                                            {{ $role->name }}
-                                        </span>
-                                    @endforeach
-                                </td>
-                                <td class="p-3">
-                                    <a href="{{ route('admin.users.edit', $user) }}"
-                                       class="text-blue-600 hover:underline">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                          class="inline-block ml-2"
-                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                                <tr class="border-b">
+                                    <td class="p-3">{{ $user->name }}</td>
+                                    <td class="p-3">{{ $user->email }}</td>
+                                    <td class="p-3">
+                                        @foreach($user->roles as $role)
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                                                {{ $role->name }}
+                                            </span>
+                                        @endforeach
+                                    </td>
+                                    @canany(['edit-users', 'delete-users'])
+                                        <td class="p-3 flex items-center gap-3">
+                                            @can('edit-users')
+                                                <a href="{{ route('admin.users.edit', $user) }}"
+                                                class="text-blue-600 hover:underline">Edit</a>
+                                            @endcan
+
+                                            @can('delete-users')
+                                                <form action="{{ route('admin.users.destroy', $user) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Hapus user ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:underline">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        </td>
+                                    @endcanany
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
-
 
                     <div class="mt-4">
                         {{ $users->links() }}
