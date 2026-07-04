@@ -30,6 +30,10 @@ class RolePermissionSeeder extends Seeder
             'create-payroll-methods',
             'edit-payroll-methods',
             'delete-payroll-methods',
+            'view-employees',
+            'create-employees',
+            'edit-employees',
+            'delete-employees',
         ];
 
         foreach ($permissions as $permission) {
@@ -40,10 +44,9 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->syncPermissions($permissions);
 
-        // Role manager
-        $managerRole = Role::firstOrCreate(['name' => 'manager']);
-        $managerRole->syncPermissions(['view-dashboard']);
-        $managerRole->syncPermissions(['view-dashboard', 'view-payroll-methods']);
+        // Role karyawan
+        $karyawanRole = Role::firstOrCreate(['name' => 'karyawan']);
+        $karyawanRole->syncPermissions(['view-dashboard']);
 
         // User Admin (AMAN)
         $adminUser = User::firstOrCreate(

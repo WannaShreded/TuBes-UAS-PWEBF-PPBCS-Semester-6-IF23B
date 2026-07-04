@@ -3,6 +3,7 @@
 // File: routes/web.php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,7 @@ Route::get('/dashboard', function () {
     ->name('dashboard');
 
 // ── USER MANAGEMENT ──
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])
         ->middleware('permission:view-users')
@@ -110,6 +111,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::delete('/jabatan/{jabatan}', [JabatanController::class, 'destroy'])
         ->name('jabatan.destroy');
+
+    // ── EMPLOYEE MANAGEMENT ──
+    Route::resource('employees', EmployeeController::class);
 });
 
 // =============================================

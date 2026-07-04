@@ -19,6 +19,11 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

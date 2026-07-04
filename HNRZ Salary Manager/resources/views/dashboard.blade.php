@@ -43,6 +43,20 @@
                                     </a>
                                 @endcan
 
+                                @can('view-roles')
+                                    <a href="{{ route('admin.payroll-methods.index') }}"
+                                    class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                                        Kelola Gaji
+                                    </a>
+                                @endcan
+
+                                @can('view-roles')
+                                    <a href="{{ route('admin.jabatan.index') }}"
+                                    class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                                        Kelola Gaji
+                                    </a>
+                                @endcan
+
                             </div>
                         </div>
                     @endcanany
