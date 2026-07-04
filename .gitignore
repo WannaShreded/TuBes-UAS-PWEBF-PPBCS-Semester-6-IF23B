@@ -1,0 +1,33 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment and local files
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+vendor/
+build/
+dist/
+coverage/
+
+# Logs
+*.log
+
+# Flutter / Dart artifacts (if present in nested folders)
+.flutter-plugins
+automated_test_output/
+
+# Temporary files
+.tmp/
+tmp/
