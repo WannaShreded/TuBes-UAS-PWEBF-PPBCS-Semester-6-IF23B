@@ -6,7 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
-
+use App\Http\Controllers\Admin\PayrollMethodController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -66,6 +66,30 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])
         ->middleware('permission:delete-roles')
         ->name('roles.destroy');
+    // ── PAYROLL METHOD MANAGEMENT (Metode Penggajian) ──
+    Route::get('/payroll-methods', [PayrollMethodController::class, 'index'])
+        ->middleware('permission:view-payroll-methods')
+        ->name('payroll-methods.index');
+
+    Route::get('/payroll-methods/create', [PayrollMethodController::class, 'create'])
+        ->middleware('permission:create-payroll-methods')
+        ->name('payroll-methods.create');
+
+    Route::post('/payroll-methods', [PayrollMethodController::class, 'store'])
+        ->middleware('permission:create-payroll-methods')
+        ->name('payroll-methods.store');
+
+    Route::get('/payroll-methods/{payrollMethod}/edit', [PayrollMethodController::class, 'edit'])
+        ->middleware('permission:edit-payroll-methods')
+        ->name('payroll-methods.edit');
+
+    Route::put('/payroll-methods/{payrollMethod}', [PayrollMethodController::class, 'update'])
+        ->middleware('permission:edit-payroll-methods')
+        ->name('payroll-methods.update');
+
+    Route::delete('/payroll-methods/{payrollMethod}', [PayrollMethodController::class, 'destroy'])
+        ->middleware('permission:delete-payroll-methods')
+        ->name('payroll-methods.destroy');
 });
 
 // =============================================
