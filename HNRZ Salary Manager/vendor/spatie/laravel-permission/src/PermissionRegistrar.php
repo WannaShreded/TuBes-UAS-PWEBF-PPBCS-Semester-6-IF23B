@@ -76,6 +76,14 @@ class PermissionRegistrar
         $this->pivotPermission = config('permission.column_names.permission_pivot_key') ?: 'permission_id';
 
         $this->cache = $this->getCacheStoreFromConfig();
+<<<<<<< Updated upstream
+=======
+
+        // Discard any in-memory permissions/roles loaded under the previous cache config,
+        // so a subsequent call rebuilds them from the new cache/tenant.
+        $this->clearPermissionsCollection();
+        $this->cachedRoles = [];
+>>>>>>> Stashed changes
     }
 
     protected function getCacheStoreFromConfig(): Repository
