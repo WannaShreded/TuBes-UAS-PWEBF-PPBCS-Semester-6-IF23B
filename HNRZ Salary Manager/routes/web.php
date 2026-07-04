@@ -3,6 +3,7 @@
 // File: routes/web.php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
@@ -66,6 +67,25 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])
         ->middleware('permission:delete-roles')
         ->name('roles.destroy');
+
+    // ── JABATAN MANAGEMENT ──
+    Route::get('/jabatan', [JabatanController::class, 'index'])
+        ->name('jabatan.index');
+
+    Route::get('/jabatan/create', [JabatanController::class, 'create'])
+        ->name('jabatan.create');
+
+    Route::post('/jabatan', [JabatanController::class, 'store'])
+        ->name('jabatan.store');
+
+    Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])
+        ->name('jabatan.edit');
+
+    Route::put('/jabatan/{jabatan}', [JabatanController::class, 'update'])
+        ->name('jabatan.update');
+
+    Route::delete('/jabatan/{jabatan}', [JabatanController::class, 'destroy'])
+        ->name('jabatan.destroy');
 });
 
 // =============================================
