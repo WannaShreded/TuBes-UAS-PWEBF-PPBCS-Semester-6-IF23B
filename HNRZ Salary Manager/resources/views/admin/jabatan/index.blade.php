@@ -1,0 +1,72 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Data Jabatan
+            </h2>
+            <a href="{{ route('admin.jabatan.create') }}"
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                + Tambah Jabatan
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    @if(session('success'))
+                        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama Jabatan</th>
+                                <th class="p-3">Gaji</th>
+                                <th class="p-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($jabatans as $index => $jabatan)
+                                <tr class="border-b">
+                                    <td class="p-3">{{ $jabatans->firstItem() + $index }}</td>
+                                    <td class="p-3 font-semibold">{{ $jabatan->name }}</td>
+                                    <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-3">
+                                            <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
+                                               class="text-blue-600 hover:underline">Edit</a>
+                                            <form action="{{ route('admin.jabatan.destroy', $jabatan) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:underline">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="p-3 text-center text-gray-400">
+                                        Belum ada data jabatan.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    <div class="mt-4">
+                        {{ $jabatans->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

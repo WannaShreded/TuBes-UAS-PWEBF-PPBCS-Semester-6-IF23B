@@ -1,0 +1,33 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# Logs
+npm-debug.log
+yarn-error.log
+*.log
+
+# Laravel cache and storage
+/storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+/public/build/
+
+# Testing
+.phpunit.result.cache
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
