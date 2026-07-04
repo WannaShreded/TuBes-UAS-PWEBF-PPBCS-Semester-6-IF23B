@@ -1,0 +1,163 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\EmployeeStoreRequest;
+use App\Http\Requests\EmployeeUpdateRequest;
+use App\Models\Employee;
+use App\Models\Jabatan;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
+class EmployeeController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Employee::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id_pekerja', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('jabatan', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%")
+                    ->orWhere('no_telepon', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('admin.employees.index', compact('employees'));
+    }
+
+    public function create()
+    {
+        $jabatans = Jabatan::orderBy('name')->get();
+
+        return view('admin.employees.create', compact('jabatans'));
+    }
+
+    public function store(EmployeeStoreRequest $request)
+    {
+        $validated = $request->validated();
+        $validated['id_pekerja'] = $this->generateEmployeeId();
+
+        return DB::transaction(function () use ($validated) {
+            $user = User::create([
+                'name' => $validated['nama_lengkap'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
+
+            $user->syncRoles([$validated['role']]);
+
+            $employee = Employee::create([
+                'user_id' => $user->id,
+                'id_pekerja' => $validated['id_pekerja'],
+                'nik' => $validated['nik'],
+                'nama_lengkap' => $validated['nama_lengkap'],
+                'no_telepon' => $validated['no_telepon'],
+                'nama_bank' => $validated['nama_bank'],
+                'nomor_rekening' => $validated['nomor_rekening'],
+                'email' => $validated['email'],
+                'alamat' => $validated['alamat'],
+                'jabatan' => $validated['jabatan'],
+                'role' => $validated['role'],
+            ]);
+
+            if (! $employee->exists) {
+                throw new \Exception('Failed to create employee');
+            }
+
+            return redirect()->route('admin.employees.index')
+                ->with('success', 'Data karyawan berhasil ditambahkan.');
+        });
+    }
+
+    public function show(Employee $employee)
+    {
+        return view('admin.employees.show', compact('employee'));
+    }
+
+    public function edit(Employee $employee)
+    {
+        $jabatans = Jabatan::orderBy('name')->get();
+
+        return view('admin.employees.edit', compact('employee', 'jabatans'));
+    }
+
+    public function update(EmployeeUpdateRequest $request, Employee $employee)
+    {
+        $validated = $request->validated();
+
+        return DB::transaction(function () use ($employee, $validated, $request) {
+            $employee->update([
+                'nik' => $validated['nik'],
+                'nama_lengkap' => $validated['nama_lengkap'],
+                'no_telepon' => $validated['no_telepon'],
+                'nama_bank' => $validated['nama_bank'],
+                'nomor_rekening' => $validated['nomor_rekening'],
+                'email' => $validated['email'],
+                'alamat' => $validated['alamat'],
+                'jabatan' => $validated['jabatan'],
+                'role' => $validated['role'],
+            ]);
+
+            $user = $employee->user;
+
+            if ($user) {
+                $userData = [
+                    'name' => $validated['nama_lengkap'],
+                    'email' => $validated['email'],
+                ];
+
+                if (! empty($validated['password'])) {
+                    $userData['password'] = Hash::make($validated['password']);
+                }
+
+                $user->update($userData);
+                $user->syncRoles([$validated['role']]);
+            }
+
+            return redirect()->route('admin.employees.index')
+                ->with('success', 'Data karyawan berhasil diperbarui.');
+        });
+    }
+
+    public function destroy(Employee $employee)
+    {
+        DB::transaction(function () use ($employee) {
+            $user = $employee->user;
+            $employee->delete();
+
+            if ($user) {
+                $user->delete();
+            }
+        });
+
+        return redirect()->route('admin.employees.index')
+            ->with('success', 'Data karyawan berhasil dihapus.');
+    }
+
+    private function generateEmployeeId(): string
+    {
+        do {
+            $lastEmployee = Employee::query()->orderByDesc('id')->first();
+
+            $number = 1;
+            if ($lastEmployee && preg_match('/^PKR(\d+)$/', $lastEmployee->id_pekerja, $matches)) {
+                $number = (int) $matches[1] + 1;
+            }
+
+            $candidate = 'PKR' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        } while (Employee::where('id_pekerja', $candidate)->exists());
+
+        return $candidate;
+    }
+}
