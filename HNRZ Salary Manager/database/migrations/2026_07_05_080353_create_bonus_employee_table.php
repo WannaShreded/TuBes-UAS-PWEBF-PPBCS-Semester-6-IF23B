@@ -8,18 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('payroll_methods', function (Blueprint $table) {
+        Schema::create('bonus_employee', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bonus_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(['employee_id', 'bonus_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('payroll_methods');
+        Schema::dropIfExists('bonus_employee');
     }
 };

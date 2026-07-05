@@ -35,6 +35,7 @@ class EmployeeUpdateRequest extends FormRequest
             'jabatan' => ['required', 'string', 'max:100'],
             'role' => ['required', 'in:admin,karyawan'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'bonus_variabel_id' => ['nullable', 'exists:bonuses,id'],
         ];
     }
 }

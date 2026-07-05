@@ -34,6 +34,10 @@ class RolePermissionSeeder extends Seeder
             'create-employees',
             'edit-employees',
             'delete-employees',
+            'view-bonuses',
+            'create-bonuses',
+            'edit-bonuses',
+            'delete-bonuses',
         ];
 
         foreach ($permissions as $permission) {
@@ -47,6 +51,12 @@ class RolePermissionSeeder extends Seeder
         // Role karyawan
         $karyawanRole = Role::firstOrCreate(['name' => 'karyawan']);
         $karyawanRole->syncPermissions(['view-dashboard']);
+
+        // ✅ Role manager (INI YANG KURANG)
+        $managerRole = Role::firstOrCreate([
+            'name' => 'manager',
+            'guard_name' => 'web',
+        ]);
 
         // User Admin (AMAN)
         $adminUser = User::firstOrCreate(

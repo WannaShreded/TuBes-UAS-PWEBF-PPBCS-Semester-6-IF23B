@@ -14,25 +14,29 @@
                     </x-nav-link>
 
                     @role('admin')
+                        <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
+                            {{ __('Jabatan') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.bonuses.index')" :active="request()->routeIs('admin.bonuses.*')">
+                            {{ __('Bonus') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
-                            {{ __('Metode Penggajian') }}
+                            {{ __('Penggajian') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
                             {{ __('Karyawan') }}
                         </x-nav-link>
-
-                        <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
-                            {{ __('Jabatan') }}
-                        </x-nav-link>
-                    @else
+                    {{-- @else
                         <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
                             {{ __('Jabatan Saya') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
                             {{ __('Metode Penggajian') }}
-                        </x-nav-link>
+                        </x-nav-link> --}}
                     @endrole
                 </div>
             </div>
@@ -87,6 +91,14 @@
             </x-responsive-nav-link>
 
             @role('admin')
+                <x-responsive-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
+                    {{ __('Jabatan') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.bonuses.index')" :active="request()->routeIs('admin.bonuses.*')">
+                    {{ __('Bonus') }}
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
                     {{ __('Metode Penggajian') }}
                 </x-responsive-nav-link>
@@ -94,18 +106,14 @@
                 <x-responsive-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
                     {{ __('Karyawan') }}
                 </x-responsive-nav-link>
-
-                <x-responsive-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
-                    {{ __('Jabatan') }}
-                </x-responsive-nav-link>
-            @else
+            {{-- @else
                 <x-responsive-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
                     {{ __('Jabatan Saya') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
                     {{ __('Metode Penggajian') }}
-                </x-responsive-nav-link>
+                </x-responsive-nav-link> --}}
             @endrole
         </div>
 

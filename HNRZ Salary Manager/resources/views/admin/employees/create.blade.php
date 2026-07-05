@@ -42,18 +42,25 @@
                             <input type="email" name="email" value="{{ old('email') }}" class="block w-full border rounded px-3 py-2">
                             @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
-                            <select name="jabatan" class="block w-full border rounded px-3 py-2">
-                                <option value="">-- Pilih Jabatan --</option>
-                                @foreach($jabatans as $jabatan)
-                                    <option value="{{ $jabatan->name }}" {{ old('jabatan') == $jabatan->name ? 'selected' : '' }}>
-                                        {{ $jabatan->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('jabatan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
+                       <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+    <select name="jabatan" id="jabatan" class="block w-full border rounded px-3 py-2">
+        <option value="">-- Pilih Jabatan --</option>
+        @foreach($jabatans as $jabatan)
+            <option value="{{ $jabatan->name }}" data-salary="{{ $jabatan->salary }}" {{ old('jabatan') == $jabatan->name ? 'selected' : '' }}>
+                {{ $jabatan->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('jabatan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+</div>
+<div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Gaji</label>
+    <input type="text" id="gaji" readonly
+           class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
+           placeholder="Otomatis terisi setelah memilih jabatan">
+    <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data Jabatan.</p>
+</div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
                             <textarea name="alamat" rows="3" class="block w-full border rounded px-3 py-2">{{ old('alamat') }}</textarea>
@@ -85,6 +92,30 @@
                     </div>
                 </form>
             </div>
-        </div>
+</div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const jabatanSelect = document.getElementById('jabatan');
+            const gajiInput = document.getElementById('gaji');
+
+            function formatRupiah(number) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                }).format(number);
+            }
+
+            function updateGaji() {
+                const selectedOption = jabatanSelect.options[jabatanSelect.selectedIndex];
+                const salary = selectedOption ? selectedOption.getAttribute('data-salary') : null;
+                gajiInput.value = salary ? formatRupiah(salary) : '';
+            }
+
+            jabatanSelect.addEventListener('change', updateGaji);
+            updateGaji();
+        });
+    </script>
 </x-app-layout>

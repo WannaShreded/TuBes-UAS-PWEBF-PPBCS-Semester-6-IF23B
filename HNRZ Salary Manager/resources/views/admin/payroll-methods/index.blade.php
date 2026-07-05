@@ -33,7 +33,6 @@
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="p-3">No</th>
-                                <th class="p-3">Kode</th>
                                 <th class="p-3">Nama Metode</th>
                                 <th class="p-3">Tipe</th>
 
@@ -46,10 +45,8 @@
                         <tbody>
                             @forelse($payrollMethods as $index => $method)
                                 <tr class="border-b">
-                                    <td class="p-3">{{ $payrollMethods->firstItem() + $index }}</td>
-                                    <td class="p-3 font-mono text-xs">{{ $method->code }}</td>
-                                    <td class="p-3 font-semibold">{{ $method->name }}</td>
-                                    <td class="p-3">
+                                <td class="p-3">{{ $payrollMethods->firstItem() + $index }}</td>
+                                <td class="p-3 font-semibold">{{ $method->name }}</td>                                    <td class="p-3">
                                         <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
                                         {{ $method->type }}
                                     </span>
@@ -87,7 +84,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="p-3 text-center text-gray-400">
+                                    <td colspan="5" class="p-3 text-center text-gray-400">
                                         Belum ada metode penggajian.
                                     </td>
                                 </tr>

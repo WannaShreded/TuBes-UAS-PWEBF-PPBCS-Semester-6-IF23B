@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
+use App\Models\Bonus;
 use App\Models\Employee;
 use App\Models\Jabatan;
 use App\Models\User;
@@ -32,7 +33,7 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees = $query->orderBy('created_at', 'desc')->paginate(10);
+        $employees = $query->orderBy('created_at', 'desc')->paginate(5);
 
         return view('admin.employees.index', compact('employees'));
     }
@@ -92,8 +93,10 @@ class EmployeeController extends Controller
     public function edit(Employee $employee)
     {
         $jabatans = Jabatan::orderBy('name')->get();
+        $variableBonuses = Bonus::where('jenis_bonus', 'Variabel')->orderBy('nama_bonus')->get();
+        $currentBonusVariabelId = $employee->bonuses()->where('jenis_bonus', 'Variabel')->value('bonuses.id');
 
-        return view('admin.employees.edit', compact('employee', 'jabatans'));
+        return view('admin.employees.edit', compact('employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId'));
     }
 
     public function update(EmployeeUpdateRequest $request, Employee $employee)
@@ -128,9 +131,23 @@ class EmployeeController extends Controller
                     $userData['password'] = Hash::make($validated['password']);
                 }
 
-                $user->update($userData);
+               $user->update($userData);
                 $user->syncRoles([$validated['role']]);
             }
+
+            // Simpan pilihan bonus variabel untuk karyawan ini,
+            // tanpa menghapus bonus tetap yang sudah diberikan lewat "Berikan ke Semua"
+            $tetapBonusIds = $employee->bonuses()
+                ->where('jenis_bonus', 'Tetap')
+                ->pluck('bonuses.id')
+                ->toArray();
+
+            $syncIds = $tetapBonusIds;
+            if (! empty($validated['bonus_variabel_id'])) {
+                $syncIds[] = $validated['bonus_variabel_id'];
+            }
+
+            $employee->bonuses()->sync($syncIds);
 
             return redirect()->route('admin.employees.index')
                 ->with('success', 'Data karyawan berhasil diperbarui.');

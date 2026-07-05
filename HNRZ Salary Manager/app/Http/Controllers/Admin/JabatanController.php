@@ -10,7 +10,7 @@ class JabatanController extends Controller
 {
     public function index()
     {
-        $jabatans = Jabatan::orderBy('id')->paginate(10);
+        $jabatans = Jabatan::orderBy('id')->paginate(5);
         return view('admin.jabatan.index', compact('jabatans'));
     }
 
