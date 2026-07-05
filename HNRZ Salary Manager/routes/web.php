@@ -1,15 +1,14 @@
 <?php
 
-// File: routes/web.php
-
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\EmployeeController as AdminEmployeeController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\UserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PayrollMethodController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\Admin\BonusController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -69,6 +68,51 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])
         ->middleware('permission:delete-roles')
         ->name('roles.destroy');
+
+    // ── JABATAN MANAGEMENT ──
+    Route::get('/jabatan', [JabatanController::class, 'index'])
+        ->name('jabatan.index');
+
+    Route::get('/jabatan/create', [JabatanController::class, 'create'])
+        ->name('jabatan.create');
+
+    Route::post('/jabatan', [JabatanController::class, 'store'])
+        ->name('jabatan.store');
+
+    Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])
+        ->name('jabatan.edit');
+
+    Route::put('/jabatan/{jabatan}', [JabatanController::class, 'update'])
+        ->name('jabatan.update');
+
+    Route::delete('/jabatan/{jabatan}', [JabatanController::class, 'destroy'])
+        ->name('jabatan.destroy');
+
+    // Bonus Management
+    Route::get('/bonuses', [BonusController::class, 'index'])
+        ->middleware('permission:view-bonuses')
+        ->name('bonuses.index');
+
+    Route::get('/bonuses/create', [BonusController::class, 'create'])
+        ->middleware('permission:create-bonuses')
+        ->name('bonuses.create');
+
+    Route::post('/bonuses', [BonusController::class, 'store'])
+        ->middleware('permission:create-bonuses')
+        ->name('bonuses.store');
+
+    Route::get('/bonuses/{bonus}/edit', [BonusController::class, 'edit'])
+        ->middleware('permission:edit-bonuses')
+        ->name('bonuses.edit');
+
+    Route::put('/bonuses/{bonus}', [BonusController::class, 'update'])
+        ->middleware('permission:edit-bonuses')
+        ->name('bonuses.update');
+
+    Route::delete('/bonuses/{bonus}', [BonusController::class, 'destroy'])
+        ->middleware('permission:delete-bonuses')
+        ->name('bonuses.destroy');
+
     // ── PAYROLL METHOD MANAGEMENT (Metode Penggajian) ──
     Route::get('/payroll-methods', [PayrollMethodController::class, 'index'])
         ->middleware('permission:view-payroll-methods')
@@ -93,25 +137,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/payroll-methods/{payrollMethod}', [PayrollMethodController::class, 'destroy'])
         ->middleware('permission:delete-payroll-methods')
         ->name('payroll-methods.destroy');
-
-    // ── JABATAN MANAGEMENT ──
-    Route::get('/jabatan', [JabatanController::class, 'index'])
-        ->name('jabatan.index');
-
-    Route::get('/jabatan/create', [JabatanController::class, 'create'])
-        ->name('jabatan.create');
-
-    Route::post('/jabatan', [JabatanController::class, 'store'])
-        ->name('jabatan.store');
-
-    Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])
-        ->name('jabatan.edit');
-
-    Route::put('/jabatan/{jabatan}', [JabatanController::class, 'update'])
-        ->name('jabatan.update');
-
-    Route::delete('/jabatan/{jabatan}', [JabatanController::class, 'destroy'])
-        ->name('jabatan.destroy');
 
     // ── EMPLOYEE MANAGEMENT ──
     Route::resource('employees', AdminEmployeeController::class);
