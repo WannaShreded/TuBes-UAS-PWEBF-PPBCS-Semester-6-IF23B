@@ -22,13 +22,15 @@ class JabatanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'   => 'required|string|max:100|unique:jabatans,name',
-            'salary' => 'required|numeric|min:0',
+            'name'        => 'required|string|max:100|unique:jabatans,name',
+            'salary'      => 'required|numeric|min:0',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         Jabatan::create([
-            'name'   => $request->name,
-            'salary' => $request->salary,
+            'name'        => $request->name,
+            'salary'      => $request->salary,
+            'description' => $request->description,
         ]);
 
         return redirect()->route('admin.jabatan.index')
@@ -43,13 +45,15 @@ class JabatanController extends Controller
     public function update(Request $request, Jabatan $jabatan)
     {
         $request->validate([
-            'name'   => 'required|string|max:100|unique:jabatans,name,' . $jabatan->id,
-            'salary' => 'required|numeric|min:0',
+            'name'        => 'required|string|max:100|unique:jabatans,name,' . $jabatan->id,
+            'salary'      => 'required|numeric|min:0',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         $jabatan->update([
-            'name'   => $request->name,
-            'salary' => $request->salary,
+            'name'        => $request->name,
+            'salary'      => $request->salary,
+            'description' => $request->description,
         ]);
 
         return redirect()->route('admin.jabatan.index')

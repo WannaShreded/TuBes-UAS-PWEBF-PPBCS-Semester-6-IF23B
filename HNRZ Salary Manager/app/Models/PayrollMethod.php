@@ -23,4 +23,9 @@ class PayrollMethod extends Model
             'is_active' => 'boolean',
         ];
     }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'payroll_method_id');
+    }
 }

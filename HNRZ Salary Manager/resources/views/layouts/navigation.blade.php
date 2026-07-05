@@ -13,21 +13,27 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @can('view-payroll-methods')
+                    @role('admin')
                         <x-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
                             {{ __('Metode Penggajian') }}
                         </x-nav-link>
-                    @endcan
 
-                    @role('admin')
                         <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
                             {{ __('Karyawan') }}
                         </x-nav-link>
-                    @endrole
 
-                    <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
-                        {{ __('Jabatan') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
+                            {{ __('Jabatan') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
+                            {{ __('Jabatan Saya') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
+                            {{ __('Metode Penggajian') }}
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -80,21 +86,27 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            @can('view-payroll-methods')
+            @role('admin')
                 <x-responsive-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
                     {{ __('Metode Penggajian') }}
                 </x-responsive-nav-link>
-            @endcan
 
-            @role('admin')
                 <x-responsive-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
                     {{ __('Karyawan') }}
                 </x-responsive-nav-link>
-            @endrole
 
-            <x-responsive-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
-                {{ __('Jabatan') }}
-            </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
+                    {{ __('Jabatan') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
+                    {{ __('Jabatan Saya') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
+                    {{ __('Metode Penggajian') }}
+                </x-responsive-nav-link>
+            @endrole
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

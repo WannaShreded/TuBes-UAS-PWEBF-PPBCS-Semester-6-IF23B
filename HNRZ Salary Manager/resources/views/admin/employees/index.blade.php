@@ -48,7 +48,7 @@
                                         <td class="p-3">{{ $employee->id_pekerja }}</td>
                                         <td class="p-3">{{ $employee->nik }}</td>
                                         <td class="p-3 font-semibold">{{ $employee->nama_lengkap }}</td>
-                                        <td class="p-3">{{ $employee->jabatan }}</td>
+                                        <td class="p-3">{{ $employee->position_name }}</td>
                                         <td class="p-3">{{ $employee->no_telepon }}</td>
                                         <td class="p-3">{{ $employee->email }}</td>
                                         <td class="p-3">{{ $employee->role }}</td>
