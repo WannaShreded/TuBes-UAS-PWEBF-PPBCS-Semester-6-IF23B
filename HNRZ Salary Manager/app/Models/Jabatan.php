@@ -11,7 +11,14 @@ class Jabatan extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'salary', 'description'];
+
     protected $casts = [
         'salary' => 'integer',
     ];
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'jabatan_id');
+    }
 }

@@ -4,10 +4,12 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Data Jabatan
             </h2>
-            <a href="{{ route('admin.jabatan.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Tambah Jabatan
-            </a>
+            @role('admin')
+                <a href="{{ route('admin.jabatan.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Tambah Jabatan
+                </a>
+            @endrole
         </div>
     </x-slot>
 
@@ -38,17 +40,19 @@
                                     <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
                                     <td class="p-3">
                                         <div class="flex items-center gap-3">
-                                            <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
-                                               class="text-blue-600 hover:underline">Edit</a>
-                                            <form action="{{ route('admin.jabatan.destroy', $jabatan) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:underline">
-                                                    Hapus
-                                                </button>
-                                            </form>
+                                            @role('admin')
+                                                <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
+                                                   class="text-blue-600 hover:underline">Edit</a>
+                                                <form action="{{ route('admin.jabatan.destroy', $jabatan) }}"
+                                                      method="POST"
+                                                      onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:underline">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endrole
                                         </div>
                                     </td>
                                 </tr>

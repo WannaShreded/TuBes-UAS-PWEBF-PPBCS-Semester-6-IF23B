@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,7 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Employee::query();
+        $query = Employee::query()->with(['jabatanRelation', 'payrollMethod']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -57,6 +58,8 @@ class EmployeeController extends Controller
 
             $user->syncRoles([$validated['role']]);
 
+            $job = Jabatan::where('name', $validated['jabatan'])->first();
+
             $employee = Employee::create([
                 'user_id' => $user->id,
                 'id_pekerja' => $validated['id_pekerja'],
@@ -68,6 +71,7 @@ class EmployeeController extends Controller
                 'email' => $validated['email'],
                 'alamat' => $validated['alamat'],
                 'jabatan' => $validated['jabatan'],
+                'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
             ]);
 
@@ -97,6 +101,8 @@ class EmployeeController extends Controller
         $validated = $request->validated();
 
         return DB::transaction(function () use ($employee, $validated, $request) {
+            $job = Jabatan::where('name', $validated['jabatan'])->first();
+
             $employee->update([
                 'nik' => $validated['nik'],
                 'nama_lengkap' => $validated['nama_lengkap'],
@@ -106,6 +112,7 @@ class EmployeeController extends Controller
                 'email' => $validated['email'],
                 'alamat' => $validated['alamat'],
                 'jabatan' => $validated['jabatan'],
+                'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
             ]);
 

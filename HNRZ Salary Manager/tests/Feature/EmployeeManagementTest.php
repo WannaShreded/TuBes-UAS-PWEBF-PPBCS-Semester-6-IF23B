@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Employee;
+use App\Models\Jabatan;
+use App\Models\PayrollMethod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
@@ -65,5 +68,78 @@ class EmployeeManagementTest extends TestCase
         $response = $this->actingAs($employeeUser)->get('/admin/employees');
 
         $response->assertStatus(403);
+    }
+
+    public function test_salary_falls_back_to_position_by_name_for_existing_employees_without_jabatan_id(): void
+    {
+        $position = Jabatan::create([
+            'name' => 'Software Engineer',
+            'salary' => 8000000,
+        ]);
+
+        $employee = Employee::create([
+            'id_pekerja' => 'PKR0002',
+            'nik' => '3201010101010002',
+            'nama_lengkap' => 'Legacy Employee',
+            'no_telepon' => '081111111111',
+            'nama_bank' => 'BCA',
+            'nomor_rekening' => '2222222222',
+            'email' => 'legacy@example.com',
+            'alamat' => 'Bandung',
+            'jabatan' => $position->name,
+            'role' => 'karyawan',
+        ]);
+
+        $this->assertSame(8000000, $employee->salary);
+    }
+
+    public function test_employee_can_view_their_own_position_salary_and_update_payroll_method(): void
+    {
+        $employeeUser = User::factory()->create();
+        $employeeUser->assignRole('karyawan');
+
+        $position = Jabatan::create([
+            'name' => 'Software Engineer',
+            'salary' => 8000000,
+        ]);
+
+        $payrollMethod = PayrollMethod::create([
+            'name' => 'Bank Transfer',
+            'code' => 'BANK-TRANSFER',
+            'type' => 'Bank',
+            'description' => 'Transfer to bank account',
+            'is_active' => true,
+        ]);
+
+        $employee = Employee::create([
+            'user_id' => $employeeUser->id,
+            'id_pekerja' => 'PKR0001',
+            'nik' => '3201010101010001',
+            'nama_lengkap' => 'Budi Santoso',
+            'no_telepon' => '081234567890',
+            'nama_bank' => 'BCA',
+            'nomor_rekening' => '1234567890',
+            'email' => 'budi@example.com',
+            'alamat' => 'Jakarta',
+            'jabatan' => $position->name,
+            'jabatan_id' => $position->id,
+            'role' => 'karyawan',
+        ]);
+
+        $position->update(['salary' => 9000000]);
+
+        $response = $this->actingAs($employeeUser)->get('/employee/my-position');
+
+        $response->assertOk();
+        $response->assertSee('Software Engineer');
+        $response->assertSee('Rp 9.000.000');
+
+        $response = $this->actingAs($employeeUser)->patch('/employee/payroll-methods', [
+            'payroll_method_id' => $payrollMethod->id,
+        ]);
+
+        $response->assertRedirect('/employee/payroll-methods');
+        $employee->refresh();
+        $this->assertEquals($payrollMethod->id, $employee->payroll_method_id);
     }
 }

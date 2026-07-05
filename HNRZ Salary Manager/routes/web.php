@@ -3,12 +3,13 @@
 // File: routes/web.php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\EmployeeController as AdminEmployeeController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PayrollMethodController;
+use App\Http\Controllers\EmployeeController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -113,7 +114,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->name('jabatan.destroy');
 
     // ── EMPLOYEE MANAGEMENT ──
-    Route::resource('employees', EmployeeController::class);
+    Route::resource('employees', AdminEmployeeController::class);
+});
+
+Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/my-position', [EmployeeController::class, 'position'])->name('position');
+    Route::get('/payroll-methods', [EmployeeController::class, 'payrollMethods'])->name('payroll-methods.index');
+    Route::patch('/payroll-methods', [EmployeeController::class, 'updatePayrollMethod'])->name('payroll-methods.update');
 });
 
 // =============================================

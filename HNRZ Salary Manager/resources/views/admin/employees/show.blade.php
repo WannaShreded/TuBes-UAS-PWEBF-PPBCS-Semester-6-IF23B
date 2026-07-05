@@ -16,7 +16,9 @@
                     <div><p class="text-sm text-gray-500">Nama Bank</p><p class="font-semibold">{{ $employee->nama_bank }}</p></div>
                     <div><p class="text-sm text-gray-500">Nomor Rekening</p><p class="font-semibold">{{ $employee->nomor_rekening }}</p></div>
                     <div><p class="text-sm text-gray-500">Email</p><p class="font-semibold">{{ $employee->email }}</p></div>
-                    <div><p class="text-sm text-gray-500">Jabatan</p><p class="font-semibold">{{ $employee->jabatan }}</p></div>
+                    <div><p class="text-sm text-gray-500">Jabatan</p><p class="font-semibold">{{ $employee->position_name }}</p></div>
+                    <div><p class="text-sm text-gray-500">Gaji</p><p class="font-semibold">{{ $employee->salary > 0 ? 'Rp ' . number_format($employee->salary, 0, ',', '.') : 'No Position Assigned' }}</p></div>
+                    <div><p class="text-sm text-gray-500">Metode Penggajian</p><p class="font-semibold">{{ $employee->payrollMethod?->name ?? '-' }}</p></div>
                     <div class="md:col-span-2"><p class="text-sm text-gray-500">Alamat</p><p class="font-semibold">{{ $employee->alamat }}</p></div>
                     <div><p class="text-sm text-gray-500">Role</p><p class="font-semibold">{{ $employee->role }}</p></div>
                 </div>
