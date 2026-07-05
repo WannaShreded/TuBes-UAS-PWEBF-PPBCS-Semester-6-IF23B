@@ -19,6 +19,11 @@ class Bonus extends Model
         'nominal_bonus' => 'decimal:2',
     ];
 
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'bonus_employee');
+    }
+
     // Accessor untuk menampilkan periode dalam format Bulan Tahun
     public function getPeriodeLabelAttribute(): string
     {

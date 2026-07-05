@@ -6,13 +6,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PayrollMethod;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class PayrollMethodController extends Controller
 {
     public function index()
     {
-        $payrollMethods = PayrollMethod::latest()->paginate(10);
+        $payrollMethods = PayrollMethod::latest()->paginate(5);
         return view('admin.payroll-methods.index', compact('payrollMethods'));
     }
 
@@ -30,7 +29,6 @@ class PayrollMethodController extends Controller
             'is_active'   => 'sometimes|boolean',
         ]);
 
-        $validated['code'] = $this->generateUniqueCode($validated['type'], $validated['name']);
         $validated['is_active'] = $request->boolean('is_active');
 
         PayrollMethod::create($validated);
@@ -55,11 +53,6 @@ class PayrollMethodController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
 
-        // Regenerate kode kalau tipe atau nama berubah
-        if ($validated['type'] !== $payrollMethod->type || $validated['name'] !== $payrollMethod->name) {
-            $validated['code'] = $this->generateUniqueCode($validated['type'], $validated['name'], $payrollMethod->id);
-        }
-
         $payrollMethod->update($validated);
 
         return redirect()->route('admin.payroll-methods.index')
@@ -72,27 +65,5 @@ class PayrollMethodController extends Controller
 
         return redirect()->route('admin.payroll-methods.index')
             ->with('success', 'Metode penggajian berhasil dihapus.');
-    }
-
-    /**
-     * Buat kode unik otomatis, contoh: BANK-BCAUTAMA, EWALLET-GOPAYSTAFF
-     * $ignoreId dipakai saat update, biar tidak bentrok sama kode dirinya sendiri
-     */
-    private function generateUniqueCode(string $type, string $name, ?int $ignoreId = null): string
-    {
-        $base = strtoupper(Str::slug($type, '')) . '-' . strtoupper(Str::slug($name, ''));
-        $code = $base;
-        $i = 1;
-
-        $query = fn ($code) => PayrollMethod::where('code', $code)
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->exists();
-
-        while ($query($code)) {
-            $code = $base . '-' . $i;
-            $i++;
-        }
-
-        return $code;
     }
 }

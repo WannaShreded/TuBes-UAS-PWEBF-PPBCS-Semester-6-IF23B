@@ -112,6 +112,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/bonuses/{bonus}', [BonusController::class, 'destroy'])
         ->middleware('permission:delete-bonuses')
         ->name('bonuses.destroy');
+    Route::post('/bonuses/{bonus}/give-to-all', [BonusController::class, 'giveToAll'])
+        ->middleware('permission:edit-bonuses')
+        ->name('bonuses.give-to-all');
 
     // ── PAYROLL METHOD MANAGEMENT (Metode Penggajian) ──
     Route::get('/payroll-methods', [PayrollMethodController::class, 'index'])

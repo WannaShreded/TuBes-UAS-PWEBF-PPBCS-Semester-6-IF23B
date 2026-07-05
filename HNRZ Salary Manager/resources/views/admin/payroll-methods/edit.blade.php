@@ -29,12 +29,7 @@
                         @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- Kode (tampil saja) --}}
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kode</label>
-                        <input type="text" value="{{ $payrollMethod->code }}" disabled
-                               class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed">
-                    </div>
+                    
 
                     {{-- Deskripsi --}}
                     <div class="mb-6">

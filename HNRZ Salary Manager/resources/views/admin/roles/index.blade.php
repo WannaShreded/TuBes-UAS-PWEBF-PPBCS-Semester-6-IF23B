@@ -44,8 +44,7 @@
                         <tbody>
                             @forelse($roles as $index => $role)
                                 <tr class="border-b">
-                                    <td class="p-3">{{ $index + 1 }}</td>
-                                    <td class="p-3 font-semibold">{{ $role->name }}</td>
+                                <td class="p-3">{{ $roles->firstItem() + $index }}</td>                                    <td class="p-3 font-semibold">{{ $role->name }}</td>
                                     <td class="p-3">
                                         <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
                                             {{ $role->permissions_count }} permission
@@ -81,10 +80,14 @@
                                     </td>
                                 </tr>
                             @endforelse
-                        </tbody>
-                    </table>
+                       </tbody>
+                        </table>
 
-                </div>
+                        <div class="mt-4">
+                            {{ $roles->links() }}
+                        </div>
+
+                        </div>
             </div>
         </div>
     </div>

@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bonus;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class BonusController extends Controller
 {
     public function index()
     {
-        $bonuses = Bonus::latest()->paginate(10);
+        $bonuses = Bonus::latest()->paginate(5);
         return view('admin.bonuses.index', compact('bonuses'));
     }
 
@@ -75,5 +76,15 @@ class BonusController extends Controller
 
         return redirect()->route('admin.bonuses.index')
             ->with('success', 'Data bonus berhasil dihapus.');
+    }
+    public function giveToAll(Bonus $bonus)
+    {
+        $employeeIds = Employee::pluck('id');
+
+        // syncWithoutDetaching supaya karyawan yang sudah pernah dapat bonus ini tidak dobel
+        $bonus->employees()->syncWithoutDetaching($employeeIds);
+
+        return redirect()->route('admin.bonuses.index')
+            ->with('success', "Bonus \"{$bonus->nama_bonus}\" berhasil diberikan ke semua karyawan ({$employeeIds->count()} orang).");
     }
 }

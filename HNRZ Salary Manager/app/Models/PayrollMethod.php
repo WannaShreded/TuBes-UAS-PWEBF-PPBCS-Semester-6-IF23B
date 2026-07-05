@@ -9,9 +9,8 @@ class PayrollMethod extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+        protected $fillable = [
         'name',
-        'code',
         'type',
         'description',
         'is_active',

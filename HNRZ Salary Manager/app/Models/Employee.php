@@ -44,6 +44,10 @@ class Employee extends Model
     {
         return $this->belongsTo(PayrollMethod::class, 'payroll_method_id');
     }
+    public function bonuses()
+    {
+        return $this->belongsToMany(Bonus::class, 'bonus_employee');
+    }
 
     public function getPositionNameAttribute(): string
     {

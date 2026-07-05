@@ -64,6 +64,19 @@
                                                     <a href="{{ route('admin.bonuses.edit', $bonus) }}"
                                                        class="text-blue-600 hover:underline">Edit</a>
                                                 @endcan
+                                                @if($bonus->jenis_bonus === 'Tetap')
+                                                    @can('edit-bonuses')
+                                                        <form action="{{ route('admin.bonuses.give-to-all', $bonus) }}"
+                                                              method="POST"
+                                                              onsubmit="return confirm('Berikan bonus &quot;{{ $bonus->nama_bonus }}&quot; ke SEMUA karyawan?')">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                    class="text-purple-600 hover:underline">
+                                                                Berikan ke Semua
+                                                            </button>
+                                                        </form>
+                                                    @endcan
+                                                @endif
                                                 @can('delete-bonuses')
                                                     <form action="{{ route('admin.bonuses.destroy', $bonus) }}"
                                                           method="POST"

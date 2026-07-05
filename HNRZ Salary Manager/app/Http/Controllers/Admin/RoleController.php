@@ -10,9 +10,9 @@ use Spatie\Permission\Models\Permission;
 class RoleController extends Controller
 {
     // Tampilkan daftar semua role
-    public function index()
+        public function index()
     {
-        $roles = Role::withCount('permissions')->get();
+        $roles = Role::withCount('permissions')->paginate(5);
         return view('admin.roles.index', compact('roles'));
     }
 
