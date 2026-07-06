@@ -26,6 +26,7 @@
                             <tr>
                                 <th class="p-3">No</th>
                                 <th class="p-3">Nama Jabatan</th>
+                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Gaji</th>
                                 <th class="p-3">Aksi</th>
                             </tr>
@@ -35,6 +36,7 @@
                                 <tr class="border-b">
                                     <td class="p-3">{{ $jabatans->firstItem() + $index }}</td>
                                     <td class="p-3 font-semibold">{{ $jabatan->name }}</td>
+                                    <td class="p-3">{{ $jabatan->description ?? '-' }}</td>
                                     <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
                                     <td class="p-3">
                                         <div class="flex items-center gap-3">
@@ -54,7 +56,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="p-3 text-center text-gray-400">
+                                    <td colspan="5" class="p-3 text-center text-gray-400">
                                         Belum ada data jabatan.
                                     </td>
                                 </tr>
