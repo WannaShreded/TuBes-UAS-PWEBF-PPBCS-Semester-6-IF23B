@@ -4,18 +4,27 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Data Jabatan
             </h2>
+<<<<<<< Updated upstream
             <a href="{{ route('admin.jabatan.create') }}"
                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
                 + Tambah Jabatan
             </a>
+=======
+            @role('admin')
+                <a href="{{ route('admin.jabatan.create') }}"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Tambah Jabatan
+                </a>
+            @endrole
+>>>>>>> Stashed changes
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
                             {{ session('success') }}
                         </div>
@@ -35,6 +44,7 @@
                             @forelse($jabatans as $index => $jabatan)
                                 <tr class="border-b">
                                     <td class="p-3">{{ $jabatans->firstItem() + $index }}</td>
+<<<<<<< Updated upstream
                                     <td class="p-3 font-semibold">{{ $jabatan->name }}</td>
                                     <td class="p-3">{{ $jabatan->description ?? '-' }}</td>
                                     <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
@@ -51,6 +61,38 @@
                                                     Hapus
                                                 </button>
                                             </form>
+=======
+
+                                    <td class="p-3 font-semibold">
+                                        {{ $jabatan->name }}
+                                    </td>
+
+                                    <td class="p-3 max-w-sm whitespace-normal break-words">
+                                        {{ $jabatan->description ?? '-' }}
+                                    </td>
+
+                                    <td class="p-3">
+                                        Rp {{ number_format($jabatan->salary, 0, ',', '.') }}
+                                    </td>
+
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-3">
+                                            @role('admin')
+                                                <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
+                                                    class="text-blue-600 hover:underline">
+                                                    Edit
+                                                </a>
+
+                                                <form action="{{ route('admin.jabatan.destroy', $jabatan) }}" method="POST"
+                                                    onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:underline">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endrole
+>>>>>>> Stashed changes
                                         </div>
                                     </td>
                                 </tr>
