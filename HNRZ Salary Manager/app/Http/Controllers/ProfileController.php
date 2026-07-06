@@ -16,8 +16,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $user->load(['employee.position', 'employee.payrollMethod']);
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'employee' => $user->employee,
         ]);
     }
 

@@ -18,7 +18,7 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Employee::query()->with(['jabatanRelation', 'payrollMethod']);
+        $query = Employee::query()->with(['position', 'payrollMethod']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -87,6 +87,8 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
+        $employee->load(['position', 'payrollMethod']);
+
         return view('admin.employees.show', compact('employee'));
     }
 
