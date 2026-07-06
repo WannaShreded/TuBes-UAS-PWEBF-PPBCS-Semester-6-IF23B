@@ -16,7 +16,7 @@ class EmployeeController extends Controller
             abort(403);
         }
 
-        $employee->load('jabatanRelation');
+        $employee->load('position');
 
         return view('employee.position', compact('employee'));
     }
@@ -67,6 +67,6 @@ class EmployeeController extends Controller
             return null;
         }
 
-        return $user->employee()->with(['jabatanRelation', 'payrollMethod'])->first();
+        return $user->employee()->with(['position', 'payrollMethod'])->first();
     }
 }
