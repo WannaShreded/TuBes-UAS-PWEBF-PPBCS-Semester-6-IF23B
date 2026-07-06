@@ -31,3 +31,4 @@ automated_test_output/
 # Temporary files
 .tmp/
 tmp/
+HNRZ Salary Manager/node_modules/.vite/deps/_metadata.json
