@@ -24,7 +24,7 @@
                         </span>
                     </p>
 
-                    @php($employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod', 'bonuses'])->first())
+                    @php($employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod'])->first())
 
                     @if($employeeProfile)
                         <div class="mt-6 p-4 bg-indigo-50 rounded-lg">

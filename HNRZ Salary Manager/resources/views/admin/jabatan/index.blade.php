@@ -23,52 +23,7 @@
                         </div>
                     @endif
 
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="p-3">No</th>
-                                <th class="p-3">Nama Jabatan</th>
-                                <th class="p-3">Gaji</th>
-                                <th class="p-3">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($jabatans as $index => $jabatan)
-                                <tr class="border-b">
-                                    <td class="p-3">{{ $jabatans->firstItem() + $index }}</td>
-                                    <td class="p-3 font-semibold">{{ $jabatan->name }}</td>
-                                    <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
-                                    <td class="p-3">
-                                        <div class="flex items-center gap-3">
-                                            @role('admin')
-                                                <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
-                                                   class="text-blue-600 hover:underline">Edit</a>
-                                                <form action="{{ route('admin.jabatan.destroy', $jabatan) }}"
-                                                      method="POST"
-                                                      onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:underline">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            @endrole
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="p-3 text-center text-gray-400">
-                                        Belum ada data jabatan.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    <div class="mt-4">
-                        {{ $jabatans->links() }}
-                    </div>
+                    <livewire:admin.jabatan-table />
                 </div>
             </div>
         </div>
