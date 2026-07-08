@@ -35,7 +35,7 @@
                                 <th class="p-3">No</th>
                                 <th class="p-3">Nama Metode</th>
                                 <th class="p-3">Tipe</th>
-
+                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Status</th>
                                 @canany(['edit-payroll-methods', 'delete-payroll-methods'])
                                     <th class="p-3">Aksi</th>
@@ -50,6 +50,9 @@
                                         <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
                                         {{ $method->type }}
                                     </span>
+                                    </td>
+                                    <td class="p-3 text-gray-600">
+                                        {{ $method->description ?: '-' }}
                                     </td>
 
                                     <td class="p-3">
@@ -84,7 +87,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-3 text-center text-gray-400">
+                                    <td colspan="6" class="p-3 text-center text-gray-400">
                                         Belum ada metode penggajian.
                                     </td>
                                 </tr>
