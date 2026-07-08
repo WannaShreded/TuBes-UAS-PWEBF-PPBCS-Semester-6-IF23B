@@ -59,7 +59,19 @@
                                                 <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('Hapus karyawan {{ $employee->nama_lengkap }}?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                                                    <button
+                                                        type="button"
+                                                        data-type="danger"
+                                                        data-title="Konfirmasi Hapus"
+                                                        data-message="Anda akan menghapus karyawan '{{ $employee->nama_lengkap }}'. Tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-text="Ya, Hapus"
+                                                        data-action-url="{{ route('admin.employees.destroy', $employee) }}"
+                                                        data-action-method="DELETE"
+                                                        onclick="openConfirmFromEl(this)"
+                                                        class="text-red-600 hover:underline"
+                                                    >
+                                                        Hapus
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>

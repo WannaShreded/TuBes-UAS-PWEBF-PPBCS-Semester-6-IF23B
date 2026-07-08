@@ -9,7 +9,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
 
-                <form method="POST" action="{{ route('admin.roles.update', $role) }}">
+                <form method="POST" action="{{ route('admin.roles.update', $role) }}" id="editForm">
                     @csrf
                     @method('PUT')
 
@@ -52,13 +52,21 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Save Role
+                        <button
+                            type="button"
+                            data-type="warning"
+                            data-title="Konfirmasi Simpan"
+                            data-message="Anda akan menyimpan perubahan role '{{ $role->name }}'. Lanjutkan?"
+                            data-confirm-text="Ya, Simpan"
+                            data-form-id="editForm"
+                            onclick="openConfirmFromEl(this)"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        >
+                            Simpan Perubahan
                         </button>
                         <a href="{{ route('admin.roles.index') }}"
-                           class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
-                            Cancel
+                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
+                            Batal
                         </a>
                     </div>
                 </form>

@@ -59,15 +59,19 @@
                                                 @endcan
 
                                                 @can('delete-roles')
-                                                    <form action="{{ route('admin.roles.destroy', $role) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Hapus role {{ $role->name }}?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:underline">
-                                                            Hapus
-                                                        </button>
-                                                    </form>
+                                                    <button
+                                                        type="button"
+                                                        data-type="danger"
+                                                        data-title="Konfirmasi Hapus"
+                                                        data-message="Anda akan menghapus role '{{ $role->name }}'. Tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-text="Ya, Hapus"
+                                                        data-action-url="{{ route('admin.roles.destroy', $role) }}"
+                                                        data-action-method="DELETE"
+                                                        onclick="openConfirmFromEl(this)"
+                                                        class="text-red-600 hover:underline"
+                                                    >
+                                                        Hapus
+                                                    </button>
                                                 @endcan
                                             </div>
                                         </td>

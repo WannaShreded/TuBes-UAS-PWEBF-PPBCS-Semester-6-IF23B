@@ -9,7 +9,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
 
-                <form method="POST" action="{{ route('admin.payroll-methods.update', $payrollMethod) }}">
+                <form method="POST" action="{{ route('admin.payroll-methods.update', $payrollMethod) }}" id="editForm">
                     @csrf
                     @method('PUT')
 
@@ -29,8 +29,6 @@
                         @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    
-
                     {{-- Deskripsi --}}
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi (opsional)</label>
@@ -47,11 +45,22 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
+                        <button
+                            type="button"
+                            data-type="warning"
+                            data-title="Konfirmasi Update"
+                            data-message="Anda akan menyimpan perubahan metode gaji '{{ $payrollMethod->name }}'. Lanjutkan?"
+                            data-confirm-text="Ya, Simpan"
+                            data-form-id="editForm"
+                            onclick="openConfirmFromEl(this)"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        >
+                            Simpan Perubahan
+                        </button>
                         <a href="{{ route('admin.payroll-methods.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Batal</a>
                     </div>
-                </form>
 
+                </form>
             </div>
         </div>
     </div>

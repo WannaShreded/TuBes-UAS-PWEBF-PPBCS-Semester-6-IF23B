@@ -53,15 +53,19 @@
                                             @endcan
 
                                             @can('delete-users')
-                                                <form action="{{ route('admin.users.destroy', $user) }}"
-                                                    method="POST"
-                                                    onsubmit="return confirm('Hapus user ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:underline">
-                                                        Hapus
-                                                    </button>
-                                                </form>
+                                                <button
+                                                    onclick="openConfirmModal({
+                                                        type: 'danger',
+                                                        title: 'Konfirmasi Hapus',
+                                                        message: 'Anda akan menghapus user \'{{ addslashes($user->name) }}\'. Tindakan ini tidak dapat dibatalkan.',
+                                                        confirmText: 'Ya, Hapus',
+                                                        actionUrl: '{{ route('admin.users.destroy', $user) }}',
+                                                        actionMethod: 'DELETE'
+                                                    })"
+                                                    class="text-red-600 hover:underline"
+                                                >
+                                                    Hapus
+                                                </button>
                                             @endcan
                                         </td>
                                     @endcanany
