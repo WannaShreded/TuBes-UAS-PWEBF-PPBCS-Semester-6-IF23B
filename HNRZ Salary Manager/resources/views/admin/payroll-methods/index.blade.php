@@ -76,7 +76,17 @@
                                                         onsubmit="return confirm('Hapus metode penggajian {{ $method->name }}?')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:underline">
+                                                        <button
+                                                            type="button"
+                                                            data-type="danger"
+                                                            data-title="Konfirmasi Hapus"
+                                                            data-message="Anda akan menghapus metode penggajian '{{ $method->name }}'. Tindakan ini tidak dapat dibatalkan."
+                                                            data-confirm-text="Ya, Hapus"
+                                                            data-action-url="{{ route('admin.payroll-methods.destroy', $method) }}"
+                                                            data-action-method="DELETE"
+                                                            onclick="openConfirmFromEl(this)"
+                                                            class="text-red-600 hover:underline"
+                                                        >
                                                             Hapus
                                                         </button>
                                                     </form>

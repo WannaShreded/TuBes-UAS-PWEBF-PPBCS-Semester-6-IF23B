@@ -29,8 +29,8 @@
                             <tr>
                                 <th class="p-3">No</th>
                                 <th class="p-3">Nama Jabatan</th>
-                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Gaji</th>
+                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Aksi</th>
                             </tr>
                         </thead>
@@ -46,12 +46,12 @@
                                         {{ $jabatan->name }}
                                     </td>
 
-                                    <td class="p-3 max-w-sm whitespace-normal break-words">
-                                        {{ $jabatan->description ?? '-' }}
-                                    </td>
-
                                     <td class="p-3">
                                         Rp {{ number_format($jabatan->salary, 0, ',', '.') }}
+                                    </td>
+
+                                    <td class="p-3 max-w-sm whitespace-normal break-words">
+                                        {{ $jabatan->description ?? '-' }}
                                     </td>
 
                                     <td class="p-3">
@@ -68,8 +68,17 @@
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button type="submit"
-                                                        class="text-red-600 hover:underline">
+                                                    <button
+                                                        type="button"
+                                                        data-type="danger"
+                                                        data-title="Konfirmasi Hapus"
+                                                        data-message="Anda akan menghapus jabatan '{{ $jabatan->name }}'. Tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-text="Ya, Hapus"
+                                                        data-action-url="{{ route('admin.jabatan.destroy', $jabatan) }}"
+                                                        data-action-method="DELETE"
+                                                        onclick="openConfirmFromEl(this)"
+                                                        class="text-red-600 hover:underline"
+                                                    >
                                                         Hapus
                                                     </button>
                                                 </form>

@@ -66,28 +66,43 @@
                                                 @endcan
                                                 @if($bonus->jenis_bonus === 'Tetap')
                                                     @can('edit-bonuses')
-                                                        <form action="{{ route('admin.bonuses.give-to-all', $bonus) }}"
-                                                              method="POST"
-                                                              onsubmit="return confirm('Berikan bonus &quot;{{ $bonus->nama_bonus }}&quot; ke SEMUA karyawan?')">
+                                                        {{-- Form tersembunyi khusus untuk "Berikan ke Semua" --}}
+                                                        <form id="give-all-form-{{ $bonus->id }}"
+                                                            action="{{ route('admin.bonuses.give-to-all', $bonus) }}"
+                                                            method="POST"
+                                                            class="hidden">
                                                             @csrf
-                                                            <button type="submit"
-                                                                    class="text-purple-600 hover:underline">
-                                                                Berikan ke Semua
-                                                            </button>
                                                         </form>
+
+                                                        {{-- Tombol yang memicu popup --}}
+                                                        <button
+                                                            type="button"
+                                                            data-type="warning"
+                                                            data-title="Konfirmasi Pemberian Bonus"
+                                                            data-message="Anda akan memberikan bonus &quot;{{ $bonus->nama_bonus }}&quot; ke SEMUA karyawan. Tindakan ini tidak dapat dibatalkan."
+                                                            data-confirm-text="Ya, Berikan"
+                                                            data-form-id="give-all-form-{{ $bonus->id }}"
+                                                            onclick="openConfirmFromEl(this)"
+                                                            class="text-purple-600 hover:underline"
+                                                        >
+                                                            Berikan ke Semua
+                                                        </button>
                                                     @endcan
                                                 @endif
                                                 @can('delete-bonuses')
-                                                    <form action="{{ route('admin.bonuses.destroy', $bonus) }}"
-                                                          method="POST"
-                                                          onsubmit="return confirm('Hapus bonus ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                                class="text-red-600 hover:underline">
-                                                            Hapus
-                                                        </button>
-                                                    </form>
+                                                    <button
+                                                        type="button"
+                                                        data-type="danger"
+                                                        data-title="Konfirmasi Hapus"
+                                                        data-message="Anda akan menghapus bonus '{{ $bonus->nama_bonus }}'. Tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-text="Ya, Hapus"
+                                                        data-action-url="{{ route('admin.bonuses.destroy', $bonus) }}"
+                                                        data-action-method="DELETE"
+                                                        onclick="openConfirmFromEl(this)"
+                                                        class="text-red-600 hover:underline"
+                                                    >
+                                                        Hapus
+                                                    </button>
                                                 @endcan
                                             </div>
                                         </td>
