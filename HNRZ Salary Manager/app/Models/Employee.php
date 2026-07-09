@@ -17,6 +17,7 @@ class Employee extends Model
         'no_telepon',
         'nama_bank',
         'nomor_rekening',
+        'nomor_e_wallet',
         'email',
         'alamat',
         'jabatan',

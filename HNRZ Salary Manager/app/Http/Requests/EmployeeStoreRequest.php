@@ -17,8 +17,6 @@ class EmployeeStoreRequest extends FormRequest
             'nik' => ['required', 'string', 'max:50', 'unique:employees,nik'],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'no_telepon' => ['required', 'string', 'max:20'],
-            'nama_bank' => ['required', 'string', 'max:100'],
-            'nomor_rekening' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:255', 'unique:employees,email', 'unique:users,email'],
             'alamat' => ['required', 'string'],
             'jabatan' => ['required', 'string', 'max:100'],

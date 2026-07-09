@@ -52,9 +52,16 @@
                                 <div class="pt-4 border-t border-indigo-200">
                                     <h4 class="font-semibold text-indigo-800 mb-3">Informasi Penggajian</h4>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div><span class="text-gray-500">Metode Penggajian</span><div class="font-semibold">{{ $employeeProfile->payrollMethod?->name ?? 'Not Selected' }}</div></div>
-                                        <div><span class="text-gray-500">Nama Bank</span><div class="font-semibold">{{ $employeeProfile->nama_bank ?: 'No Bank Information' }}</div></div>
-                                        <div><span class="text-gray-500">Nomor Rekening</span><div class="font-semibold">{{ $employeeProfile->nomor_rekening ?: 'No Bank Information' }}</div></div>
+                                        @php($methodType = strtolower($employeeProfile->payrollMethod?->type ?? ''))
+                                        @php($paymentMethodLabel = str_contains($methodType, 'bank') ? 'Bank' : ($employeeProfile->payrollMethod?->name ?? 'Not Selected'))
+                                        @php($bankDisplayName = $employeeProfile->nama_bank ?: preg_replace('/^(bank|e-wallet|ewallet)\s+/i', '', $employeeProfile->payrollMethod?->name ?? ''))
+                                        <div><span class="text-gray-500">Metode Penggajian</span><div class="font-semibold">{{ $paymentMethodLabel }}</div></div>
+                                        @if(str_contains($methodType, 'bank'))
+                                            <div><span class="text-gray-500">Nama Bank</span><div class="font-semibold">{{ $bankDisplayName ?: 'No Bank Information' }}</div></div>
+                                            <div><span class="text-gray-500">Nomor Rekening</span><div class="font-semibold">{{ $employeeProfile->nomor_rekening ?: 'No Bank Information' }}</div></div>
+                                        @elseif(str_contains($methodType, 'wallet') || str_contains($methodType, 'e-wallet') || str_contains($methodType, 'ewallet'))
+                                            <div><span class="text-gray-500">Nomor E-Wallet</span><div class="font-semibold">{{ $employeeProfile->nomor_e_wallet ?: 'No E-Wallet Information' }}</div></div>
+                                        @endif
                                     </div>
                                 </div>
 
