@@ -13,8 +13,9 @@
                     <div><p class="text-sm text-gray-500">NIK</p><p class="font-semibold">{{ $employee->nik }}</p></div>
                     <div><p class="text-sm text-gray-500">Nama Lengkap</p><p class="font-semibold">{{ $employee->nama_lengkap }}</p></div>
                     <div><p class="text-sm text-gray-500">No Telepon</p><p class="font-semibold">{{ $employee->no_telepon }}</p></div>
-                    <div><p class="text-sm text-gray-500">Nama Bank</p><p class="font-semibold">{{ $employee->nama_bank }}</p></div>
-                    <div><p class="text-sm text-gray-500">Nomor Rekening</p><p class="font-semibold">{{ $employee->nomor_rekening }}</p></div>
+                    <div><p class="text-sm text-gray-500">Nama Bank</p><p class="font-semibold">{{ $employee->nama_bank ?: '-' }}</p></div>
+                    <div><p class="text-sm text-gray-500">Nomor Rekening</p><p class="font-semibold">{{ $employee->nomor_rekening ?: '-' }}</p></div>
+                    <div><p class="text-sm text-gray-500">Nomor E-Wallet</p><p class="font-semibold">{{ $employee->nomor_e_wallet ?: '-' }}</p></div>
                     <div><p class="text-sm text-gray-500">Email</p><p class="font-semibold">{{ $employee->email }}</p></div>
                     <div><p class="text-sm text-gray-500">Jabatan</p><p class="font-semibold">{{ $employee->position_name }}</p></div>
                     <div><p class="text-sm text-gray-500">Gaji</p><p class="font-semibold">{{ $employee->salary > 0 ? 'Rp ' . number_format($employee->salary, 0, ',', '.') : 'No Position Assigned' }}</p></div>

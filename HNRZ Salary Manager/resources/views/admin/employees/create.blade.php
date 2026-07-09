@@ -28,16 +28,6 @@
                             @error('no_telepon')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Bank</label>
-                            <input type="text" name="nama_bank" value="{{ old('nama_bank') }}" class="block w-full border rounded px-3 py-2">
-                            @error('nama_bank')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Rekening</label>
-                            <input type="text" name="nomor_rekening" value="{{ old('nomor_rekening') }}" class="block w-full border rounded px-3 py-2">
-                            @error('nomor_rekening')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             <input type="email" name="email" value="{{ old('email') }}" class="block w-full border rounded px-3 py-2">
                             @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror

@@ -29,16 +29,6 @@
                             @error('no_telepon')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Bank</label>
-                            <input type="text" name="nama_bank" value="{{ old('nama_bank', $employee->nama_bank) }}" class="block w-full border rounded px-3 py-2">
-                            @error('nama_bank')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Rekening</label>
-                            <input type="text" name="nomor_rekening" value="{{ old('nomor_rekening', $employee->nomor_rekening) }}" class="block w-full border rounded px-3 py-2">
-                            @error('nomor_rekening')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             <input type="email" name="email" value="{{ old('email', $employee->email) }}" class="block w-full border rounded px-3 py-2">
                             @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -116,6 +106,32 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
                             <input type="password" name="password_confirmation" class="block w-full border rounded px-3 py-2">
+                        </div>
+                        <div class="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">Informasi Pembayaran Karyawan</h3>
+                            <p class="text-sm text-gray-600 mb-4">Metode penggajian yang dipilih karyawan ditampilkan sebagai informasi read-only. Admin hanya dapat melihatnya.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Metode Penggajian</label>
+                                    <input type="text" value="{{ optional($employee->payrollMethod)->name ? optional($employee->payrollMethod)->name . ' (' . optional($employee->payrollMethod)->type . ')' : 'Belum ditentukan' }}" class="block w-full border rounded px-3 py-2 bg-gray-100" readonly disabled>
+                                </div>
+                                @php($methodType = strtolower(optional($employee->payrollMethod)->type ?? ''))
+                                @if(str_contains($methodType, 'bank'))
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Rekening</label>
+                                        <input type="text" value="{{ old('nomor_rekening', $employee->nomor_rekening) }}" class="block w-full border rounded px-3 py-2 bg-gray-100" readonly disabled>
+                                    </div>
+                                @elseif(str_contains($methodType, 'wallet') || str_contains($methodType, 'e-wallet') || str_contains($methodType, 'ewallet'))
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor E-Wallet</label>
+                                        <input type="text" value="{{ old('nomor_e_wallet', $employee->nomor_e_wallet) }}" class="block w-full border rounded px-3 py-2 bg-gray-100" readonly disabled>
+                                    </div>
+                                @else
+                                    <div class="md:col-span-2 rounded border border-gray-200 bg-white p-3 text-sm text-gray-600">
+                                        Karyawan menggunakan metode Cash, sehingga tidak ada data rekening atau e-wallet yang perlu ditampilkan.
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <br>
