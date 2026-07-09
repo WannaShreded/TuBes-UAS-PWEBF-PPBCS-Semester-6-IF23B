@@ -62,10 +62,23 @@
                                    placeholder="Otomatis terisi setelah memilih jabatan">
                             <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data Jabatan.</p>
                         </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                            <textarea name="alamat" rows="3" class="block w-full border rounded px-3 py-2">{{ old('alamat', $employee->alamat) }}</textarea>
-                            @error('alamat')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Bonus Tetap</label>
+                            <div class="block w-full border rounded px-3 py-2 space-y-2 max-h-40 overflow-y-auto">
+                                @forelse($tetapBonuses as $tetapBonus)
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input type="checkbox"
+                                               name="bonus_tetap_ids[]"
+                                               value="{{ $tetapBonus->id }}"
+                                               {{ in_array($tetapBonus->id, old('bonus_tetap_ids', $currentTetapBonusIds)) ? 'checked' : '' }}
+                                               class="rounded border-gray-300">
+                                        <span>{{ $tetapBonus->nama_bonus }} — {{ $tetapBonus->nominal_format }}</span>
+                                    </label>
+                                @empty
+                                    <span class="text-gray-400 text-sm">Belum ada bonus tetap yang tersedia</span>
+                                @endforelse
+                            </div>
+                            @error('bonus_tetap_ids')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Bonus Variabel</label>
@@ -80,6 +93,11 @@
                             </select>
                             @error('bonus_variabel_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             <p class="text-xs text-gray-400 mt-1">Pilih bonus variabel khusus untuk karyawan ini (opsional).</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                            <textarea name="alamat" rows="3" class="block w-full border rounded px-3 py-2">{{ old('alamat', $employee->alamat) }}</textarea>
+                            @error('alamat')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
@@ -100,7 +118,7 @@
                             <input type="password" name="password_confirmation" class="block w-full border rounded px-3 py-2">
                         </div>
                     </div>
-
+                    <br>
                     <div class="flex gap-3">
                         <button
                             type="button"

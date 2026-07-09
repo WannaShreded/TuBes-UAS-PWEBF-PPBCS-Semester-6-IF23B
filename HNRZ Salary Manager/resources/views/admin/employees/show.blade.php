@@ -19,6 +19,19 @@
                     <div><p class="text-sm text-gray-500">Jabatan</p><p class="font-semibold">{{ $employee->position_name }}</p></div>
                     <div><p class="text-sm text-gray-500">Gaji</p><p class="font-semibold">{{ $employee->salary > 0 ? 'Rp ' . number_format($employee->salary, 0, ',', '.') : 'No Position Assigned' }}</p></div>
                     <div><p class="text-sm text-gray-500">Metode Penggajian</p><p class="font-semibold">{{ $employee->payrollMethod?->name ?? '-' }}</p></div>
+                    <div><p class="text-sm text-gray-500">Metode Penggajian</p><p class="font-semibold">{{ $employee->payrollMethod?->name ?? '-' }}</p></div>
+                    <div class="md:col-span-2">
+                        <p class="text-sm text-gray-500">Bonus Tetap</p>
+                        <div class="mt-1">
+                            @forelse($employee->bonuses->where('jenis_bonus', 'Tetap') as $tetapBonus)
+                                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded mr-1 mb-1">
+                                    {{ $tetapBonus->nama_bonus }} — {{ $tetapBonus->nominal_format }}
+                                </span>
+                            @empty
+                                <p class="font-semibold text-gray-400">Belum ada bonus tetap</p>
+                            @endforelse
+                        </div>
+                    </div>
                     <div class="md:col-span-2"><p class="text-sm text-gray-500">Alamat</p><p class="font-semibold">{{ $employee->alamat }}</p></div>
                     <div><p class="text-sm text-gray-500">Role</p><p class="font-semibold">{{ $employee->role }}</p></div>
                 </div>
