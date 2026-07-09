@@ -85,7 +85,7 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
-        $employee->load(['position', 'payrollMethod']);
+        $employee->load(['position', 'payrollMethod', 'bonuses']);
 
         return view('admin.employees.show', compact('employee'));
     }
@@ -96,12 +96,27 @@ class EmployeeController extends Controller
         $variableBonuses = Bonus::where('jenis_bonus', 'Variabel')->orderBy('nama_bonus')->get();
         $currentBonusVariabelId = $employee->bonuses()->where('jenis_bonus', 'Variabel')->value('bonuses.id');
 
-        return view('admin.employees.edit', compact('employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId'));
+        $tetapBonuses = Bonus::where('jenis_bonus', 'Tetap')->orderBy('nama_bonus')->get();
+        $currentTetapBonusIds = $employee->bonuses()
+            ->where('jenis_bonus', 'Tetap')
+            ->pluck('bonuses.id')
+            ->toArray();
+
+        return view('admin.employees.edit', compact(
+            'employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId',
+            'tetapBonuses', 'currentTetapBonusIds'
+        ));
     }
 
     public function update(EmployeeUpdateRequest $request, Employee $employee)
     {
         $validated = $request->validated();
+
+        // Validasi tambahan untuk pilihan bonus tetap (dicentang = tetap diberikan, tidak dicentang = dibatalkan)
+        $request->validate([
+            'bonus_tetap_ids'   => 'nullable|array',
+            'bonus_tetap_ids.*' => 'exists:bonuses,id',
+        ]);
 
         return DB::transaction(function () use ($employee, $validated, $request) {
             $job = Jabatan::where('name', $validated['jabatan'])->first();
@@ -129,18 +144,14 @@ class EmployeeController extends Controller
                     $userData['password'] = Hash::make($validated['password']);
                 }
 
-               $user->update($userData);
+            $user->update($userData);
                 $user->syncRoles([$validated['role']]);
             }
 
-            // Simpan pilihan bonus variabel untuk karyawan ini,
-            // tanpa menghapus bonus tetap yang sudah diberikan lewat "Berikan ke Semua"
-            $tetapBonusIds = $employee->bonuses()
-                ->where('jenis_bonus', 'Tetap')
-                ->pluck('bonuses.id')
-                ->toArray();
+            // Bonus tetap sekarang mengikuti pilihan admin di form (checklist),
+            // bukan otomatis dipertahankan semua seperti sebelumnya
+            $syncIds = $request->input('bonus_tetap_ids', []);
 
-            $syncIds = $tetapBonusIds;
             if (! empty($validated['bonus_variabel_id'])) {
                 $syncIds[] = $validated['bonus_variabel_id'];
             }
