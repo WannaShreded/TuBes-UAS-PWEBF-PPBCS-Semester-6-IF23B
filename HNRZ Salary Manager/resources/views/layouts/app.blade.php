@@ -31,6 +31,8 @@
             <!-- Page Content -->
             <main>
                 {{ $slot }}
+                {{-- Modal Konfirmasi Global --}}
+                <x-confirm-modal />
             </main>
         </div>
         @livewireScripts

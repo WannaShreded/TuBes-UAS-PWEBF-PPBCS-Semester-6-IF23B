@@ -22,8 +22,6 @@ class EmployeeUpdateRequest extends FormRequest
             'nik' => ['required', 'string', 'max:50', 'unique:employees,nik,' . $employeeId],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'no_telepon' => ['required', 'string', 'max:20'],
-            'nama_bank' => ['required', 'string', 'max:100'],
-            'nomor_rekening' => ['required', 'string', 'max:50'],
             'email' => [
                 'required',
                 'email',
@@ -34,6 +32,7 @@ class EmployeeUpdateRequest extends FormRequest
             'alamat' => ['required', 'string'],
             'jabatan' => ['required', 'string', 'max:100'],
             'role' => ['required', 'in:admin,karyawan'],
+            'is_active' => ['nullable', 'boolean'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'bonus_variabel_id' => ['nullable', 'exists:bonuses,id'],
         ];

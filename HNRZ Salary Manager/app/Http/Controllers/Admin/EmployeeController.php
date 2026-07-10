@@ -10,18 +10,25 @@ use App\Models\Employee;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
+            'jabatan' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'in:aktif,nonaktif'],
+        ]);
+
         $query = Employee::query()->with(['position', 'payrollMethod']);
 
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if (! empty($validated['search'])) {
+            $search = $validated['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('id_pekerja', 'like', "%{$search}%")
                     ->orWhere('nik', 'like', "%{$search}%")
@@ -33,9 +40,26 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees = $query->orderBy('created_at', 'desc')->paginate(5);
+        // continue building query with possible filters and then paginate below
 
-        return view('admin.employees.index', compact('employees'));
+        if (! empty($validated['jabatan'])) {
+            $query->where(function ($q) use ($validated) {
+                $q->where('jabatan', 'like', "%{$validated['jabatan']}%")
+                    ->orWhereHas('position', function ($positionQuery) use ($validated) {
+                        $positionQuery->where('name', 'like', "%{$validated['jabatan']}%" );
+                    });
+            });
+        }
+
+        if (! empty($validated['status'])) {
+            $query->where('is_active', $validated['status'] === 'aktif');
+        }
+
+        $employees = $query->orderBy('created_at', 'desc')->paginate(5)->appends($request->query());
+        $roles = \Spatie\Permission\Models\Role::pluck('name')->toArray();
+        $jabatans = Jabatan::orderBy('name')->pluck('name')->toArray();
+
+        return view('admin.employees.index', compact('employees', 'roles', 'jabatans'));
     }
 
     public function create()
@@ -50,7 +74,7 @@ class EmployeeController extends Controller
         $validated = $request->validated();
         $validated['id_pekerja'] = $this->generateEmployeeId();
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
             $user = User::create([
                 'name' => $validated['nama_lengkap'],
                 'email' => $validated['email'],
@@ -67,13 +91,12 @@ class EmployeeController extends Controller
                 'nik' => $validated['nik'],
                 'nama_lengkap' => $validated['nama_lengkap'],
                 'no_telepon' => $validated['no_telepon'],
-                'nama_bank' => $validated['nama_bank'],
-                'nomor_rekening' => $validated['nomor_rekening'],
                 'email' => $validated['email'],
                 'alamat' => $validated['alamat'],
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             if (! $employee->exists) {
@@ -87,7 +110,7 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
-        $employee->load(['position', 'payrollMethod']);
+        $employee->load(['position', 'payrollMethod', 'bonuses']);
 
         return view('admin.employees.show', compact('employee'));
     }
@@ -98,12 +121,26 @@ class EmployeeController extends Controller
         $variableBonuses = Bonus::where('jenis_bonus', 'Variabel')->orderBy('nama_bonus')->get();
         $currentBonusVariabelId = $employee->bonuses()->where('jenis_bonus', 'Variabel')->value('bonuses.id');
 
-        return view('admin.employees.edit', compact('employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId'));
+        $tetapBonuses = Bonus::where('jenis_bonus', 'Tetap')->orderBy('nama_bonus')->get();
+        $currentTetapBonusIds = $employee->bonuses()
+            ->where('jenis_bonus', 'Tetap')
+            ->pluck('bonuses.id')
+            ->toArray();
+
+        return view('admin.employees.edit', compact(
+            'employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId',
+            'tetapBonuses', 'currentTetapBonusIds'
+        ));
     }
 
     public function update(EmployeeUpdateRequest $request, Employee $employee)
     {
         $validated = $request->validated();
+
+        $request->validate([
+            'bonus_tetap_ids' => 'nullable|array',
+            'bonus_tetap_ids.*' => 'exists:bonuses,id',
+        ]);
 
         return DB::transaction(function () use ($employee, $validated, $request) {
             $job = Jabatan::where('name', $validated['jabatan'])->first();
@@ -112,13 +149,12 @@ class EmployeeController extends Controller
                 'nik' => $validated['nik'],
                 'nama_lengkap' => $validated['nama_lengkap'],
                 'no_telepon' => $validated['no_telepon'],
-                'nama_bank' => $validated['nama_bank'],
-                'nomor_rekening' => $validated['nomor_rekening'],
                 'email' => $validated['email'],
                 'alamat' => $validated['alamat'],
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             $user = $employee->user;
@@ -133,18 +169,12 @@ class EmployeeController extends Controller
                     $userData['password'] = Hash::make($validated['password']);
                 }
 
-               $user->update($userData);
+                $user->update($userData);
                 $user->syncRoles([$validated['role']]);
             }
 
-            // Simpan pilihan bonus variabel untuk karyawan ini,
-            // tanpa menghapus bonus tetap yang sudah diberikan lewat "Berikan ke Semua"
-            $tetapBonusIds = $employee->bonuses()
-                ->where('jenis_bonus', 'Tetap')
-                ->pluck('bonuses.id')
-                ->toArray();
+            $syncIds = $request->input('bonus_tetap_ids', []);
 
-            $syncIds = $tetapBonusIds;
             if (! empty($validated['bonus_variabel_id'])) {
                 $syncIds[] = $validated['bonus_variabel_id'];
             }
@@ -168,7 +198,75 @@ class EmployeeController extends Controller
         });
 
         return redirect()->route('admin.employees.index')
-            ->with('success', 'Data karyawan berhasil dihapus.');
+            ->with('success', 'Data karyawan berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar karyawan yang berada di Recycle Bin.
+     */
+    public function trash(Request $request)
+    {
+        $query = Employee::onlyTrashed()->with(['position', 'payrollMethod']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id_pekerja', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('jabatan', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%")
+                    ->orWhere('no_telepon', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.employees.trash', compact('employees'));
+    }
+
+    /**
+     * Kembalikan karyawan (beserta akun user terkait) dari Recycle Bin.
+     */
+    public function restore($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+
+        DB::transaction(function () use ($employee) {
+            $employee->restore();
+
+            $user = User::onlyTrashed()->where('id', $employee->user_id)->first();
+            if ($user) {
+                $user->restore();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$employee->nama_lengkap}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus karyawan (beserta akun user terkait) secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+        $nama = $employee->nama_lengkap;
+        $userId = $employee->user_id;
+
+        DB::transaction(function () use ($employee, $userId) {
+            // Hapus employee terlebih dahulu agar tidak melanggar foreign key ke users.
+            $employee->forceDelete();
+
+            $user = User::onlyTrashed()->where('id', $userId)->first();
+            if ($user) {
+                $user->forceDelete();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$nama}' berhasil dihapus permanen.");
     }
 
     private function generateEmployeeId(): string

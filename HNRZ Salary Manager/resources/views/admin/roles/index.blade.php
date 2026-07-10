@@ -4,12 +4,20 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Role Management
         </h2>
-        @can('create-roles')
-            <a href="{{ route('admin.roles.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Add Role
+        <div class="flex items-center gap-2">
+            @can('delete-roles')
+                <a href="{{ route('admin.roles.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
                 </a>
             @endcan
+            @can('create-roles')
+                <a href="{{ route('admin.roles.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Add Role
+                    </a>
+                @endcan
+        </div>
         </div>
     </x-slot>
 
@@ -31,6 +39,82 @@
                     @endif
 
                     <livewire:admin.role-table />
+                    <form method="GET" action="{{ route('admin.roles.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama role"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="permission" class="border rounded px-3 py-2">
+                            <option value="">Semua permission</option>
+                            @foreach($permissions as $permission)
+                                <option value="{{ $permission }}" @selected(request('permission') === $permission)>{{ $permission }}</option>
+                            @endforeach
+                        </select>
+                        <div class="md:col-span-3 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.roles.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
+
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Role Name</th>
+                                <th class="p-3">Permissions</th>
+                                @canany(['edit-roles', 'delete-roles'])
+                                    <th class="p-3">Action</th>
+                                @endcanany
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($roles as $index => $role)
+                                <tr class="border-b">
+                                <td class="p-3">{{ $roles->firstItem() + $index }}</td>                                    <td class="p-3 font-semibold">{{ $role->name }}</td>
+                                    <td class="p-3">
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
+                                            {{ $role->permissions_count }} permission
+                                        </span>
+                                    </td>
+                                    @canany(['edit-roles', 'delete-roles'])
+                                        <td class="p-3">
+                                            <div class="flex items-center gap-3">
+                                                @can('edit-roles')
+                                                    <a href="{{ route('admin.roles.edit', $role) }}"
+                                                    class="text-blue-600 hover:underline">Edit</a>
+                                                @endcan
+
+                                                @can('delete-roles')
+                                                    <button
+                                                        type="button"
+                                                        data-type="danger"
+                                                        data-title="Konfirmasi Hapus"
+                                                        data-message="Anda akan menghapus role '{{ $role->name }}'. Tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-text="Ya, Hapus"
+                                                        data-action-url="{{ route('admin.roles.destroy', $role) }}"
+                                                        data-action-method="DELETE"
+                                                        onclick="openConfirmFromEl(this)"
+                                                        class="text-red-600 hover:underline"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                @endcan
+                                            </div>
+                                        </td>
+                                    @endcanany
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="p-3 text-center text-gray-400">
+                                        Belum ada role.
+                                    </td>
+                                </tr>
+                            @endforelse
+                       </tbody>
+                        </table>
+
+                        <div class="mt-4">
+                            {{ $roles->links() }}
+                        </div>
 
                         </div>
             </div>

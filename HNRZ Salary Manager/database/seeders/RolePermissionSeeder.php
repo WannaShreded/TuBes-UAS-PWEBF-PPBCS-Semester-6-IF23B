@@ -52,12 +52,6 @@ class RolePermissionSeeder extends Seeder
         $karyawanRole = Role::firstOrCreate(['name' => 'karyawan']);
         $karyawanRole->syncPermissions(['view-dashboard']);
 
-        // ✅ Role manager (INI YANG KURANG)
-        $managerRole = Role::firstOrCreate([
-            'name' => 'manager',
-            'guard_name' => 'web',
-        ]);
-
         // User Admin (AMAN)
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@example.com'],
@@ -69,19 +63,6 @@ class RolePermissionSeeder extends Seeder
 
         if (! $adminUser->hasRole('admin')) {
             $adminUser->assignRole('admin');
-        }
-
-        // User Manager (AMAN)
-        $managerUser = User::firstOrCreate(
-            ['email' => 'manager@example.com'],
-            [
-                'name'     => 'Manager User',
-                'password' => Hash::make('password'),
-            ]
-        );
-
-        if (! $managerUser->hasRole('manager')) {
-            $managerUser->assignRole('manager');
         }
     }
 }

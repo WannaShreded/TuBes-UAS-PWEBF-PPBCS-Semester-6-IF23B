@@ -14,10 +14,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
 
 
-                <form method="POST" action="{{ route('admin.users.update', $user) }}">
+                <form method="POST" action="{{ route('admin.users.update', $user) }}" id="editForm">
                     @csrf
                     @method('PUT')
-
 
                     {{-- Nama --}}
                     <div class="mb-4">
@@ -29,7 +28,6 @@
                         @enderror
                     </div>
 
-
                     {{-- Email --}}
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Email</label>
@@ -39,7 +37,6 @@
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-
 
                     {{-- Role --}}
                     <div class="mb-4">
@@ -54,18 +51,25 @@
                         </select>
                     </div>
 
-
                     <div class="flex gap-3">
-                        <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        {{-- Tombol Simpan diganti jadi type="button" yang memicu popup --}}
+                        <button
+                            type="button"
+                            data-type="warning"
+                            data-title="Konfirmasi Simpan"
+                            data-message="Anda akan menyimpan perubahan data user '{{ $user->name }}'. Lanjutkan?"
+                            data-confirm-text="Ya, Simpan"
+                            data-form-id="editForm"
+                            onclick="openConfirmFromEl(this)"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        >
                             Simpan Perubahan
                         </button>
                         <a href="{{ route('admin.users.index') }}"
-                           class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
+                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
                             Batal
                         </a>
                     </div>
-
 
                 </form>
             </div>

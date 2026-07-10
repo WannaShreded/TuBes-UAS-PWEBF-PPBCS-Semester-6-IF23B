@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -17,12 +18,18 @@ class Employee extends Model
         'no_telepon',
         'nama_bank',
         'nomor_rekening',
+        'nomor_e_wallet',
         'email',
         'alamat',
         'jabatan',
         'jabatan_id',
         'payroll_method_id',
         'role',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function user()
@@ -85,5 +92,10 @@ class Employee extends Model
         }
 
         return 0;
+    }
+
+    public function canBeProcessedInPayroll(): bool
+    {
+        return (bool) $this->is_active;
     }
 }
