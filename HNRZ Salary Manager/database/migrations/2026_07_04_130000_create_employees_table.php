@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('jabatan');
             $table->string('role');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

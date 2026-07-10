@@ -17,10 +17,12 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
+
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
             'jabatan' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'in:aktif,nonaktif'],
         ]);
 
         $query = Employee::query()->with(['position', 'payrollMethod']);
@@ -38,9 +40,7 @@ class EmployeeController extends Controller
             });
         }
 
-        if (! empty($validated['role'])) {
-            $query->where('role', $validated['role']);
-        }
+        // continue building query with possible filters and then paginate below
 
         if (! empty($validated['jabatan'])) {
             $query->where(function ($q) use ($validated) {
@@ -49,6 +49,10 @@ class EmployeeController extends Controller
                         $positionQuery->where('name', 'like', "%{$validated['jabatan']}%" );
                     });
             });
+        }
+
+        if (! empty($validated['status'])) {
+            $query->where('is_active', $validated['status'] === 'aktif');
         }
 
         $employees = $query->orderBy('created_at', 'desc')->paginate(5)->appends($request->query());
@@ -70,7 +74,7 @@ class EmployeeController extends Controller
         $validated = $request->validated();
         $validated['id_pekerja'] = $this->generateEmployeeId();
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
             $user = User::create([
                 'name' => $validated['nama_lengkap'],
                 'email' => $validated['email'],
@@ -92,6 +96,7 @@ class EmployeeController extends Controller
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             if (! $employee->exists) {
@@ -149,6 +154,7 @@ class EmployeeController extends Controller
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             $user = $employee->user;

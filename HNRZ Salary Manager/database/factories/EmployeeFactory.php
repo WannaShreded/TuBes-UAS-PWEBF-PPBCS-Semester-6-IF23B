@@ -25,6 +25,7 @@ class EmployeeFactory extends Factory
             'alamat' => $this->faker->address(),
             'jabatan' => $this->faker->jobTitle(),
             'role' => 'karyawan',
+            'is_active' => $this->faker->boolean(85),
         ];
     }
 }

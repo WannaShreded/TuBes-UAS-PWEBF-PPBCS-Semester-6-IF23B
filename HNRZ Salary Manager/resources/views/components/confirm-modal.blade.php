@@ -4,6 +4,15 @@
     x-cloak
     class="fixed inset-0 z-50 flex items-center justify-center"
 >
+    @php
+        try {
+            if (isset($attributes) && is_array($attributes)) {
+                \Illuminate\Support\Facades\Log::error('confirm-modal: $attributes is array: ' . var_export($attributes, true));
+            }
+        } catch (\Throwable $e) {
+            // swallow - diagnostic only
+        }
+    @endphp
     {{-- Overlay --}}
     <div
         class="absolute inset-0 bg-black bg-opacity-50"
