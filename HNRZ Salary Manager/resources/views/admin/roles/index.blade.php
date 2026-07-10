@@ -4,12 +4,20 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Role Management
         </h2>
-        @can('create-roles')
-            <a href="{{ route('admin.roles.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Add Role
+        <div class="flex items-center gap-2">
+            @can('delete-roles')
+                <a href="{{ route('admin.roles.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
                 </a>
             @endcan
+            @can('create-roles')
+                <a href="{{ route('admin.roles.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Add Role
+                    </a>
+                @endcan
+        </div>
         </div>
     </x-slot>
 
@@ -29,6 +37,22 @@
                             {{ session('error') }}
                         </div>
                     @endif
+
+                    <form method="GET" action="{{ route('admin.roles.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama role"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="permission" class="border rounded px-3 py-2">
+                            <option value="">Semua permission</option>
+                            @foreach($permissions as $permission)
+                                <option value="{{ $permission }}" @selected(request('permission') === $permission)>{{ $permission }}</option>
+                            @endforeach
+                        </select>
+                        <div class="md:col-span-3 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.roles.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
 
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">

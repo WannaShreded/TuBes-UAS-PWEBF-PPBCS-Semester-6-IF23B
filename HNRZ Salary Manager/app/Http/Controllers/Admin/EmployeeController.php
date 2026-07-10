@@ -10,9 +10,8 @@ use App\Models\Employee;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -28,8 +27,8 @@ class EmployeeController extends Controller
 
         $query = Employee::query()->with(['position', 'payrollMethod']);
 
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if (! empty($validated['search'])) {
+            $search = $validated['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('id_pekerja', 'like', "%{$search}%")
                     ->orWhere('nik', 'like', "%{$search}%")
@@ -138,9 +137,8 @@ class EmployeeController extends Controller
     {
         $validated = $request->validated();
 
-        // Validasi tambahan untuk pilihan bonus tetap (dicentang = tetap diberikan, tidak dicentang = dibatalkan)
         $request->validate([
-            'bonus_tetap_ids'   => 'nullable|array',
+            'bonus_tetap_ids' => 'nullable|array',
             'bonus_tetap_ids.*' => 'exists:bonuses,id',
         ]);
 
@@ -171,12 +169,10 @@ class EmployeeController extends Controller
                     $userData['password'] = Hash::make($validated['password']);
                 }
 
-            $user->update($userData);
+                $user->update($userData);
                 $user->syncRoles([$validated['role']]);
             }
 
-            // Bonus tetap sekarang mengikuti pilihan admin di form (checklist),
-            // bukan otomatis dipertahankan semua seperti sebelumnya
             $syncIds = $request->input('bonus_tetap_ids', []);
 
             if (! empty($validated['bonus_variabel_id'])) {
@@ -202,7 +198,75 @@ class EmployeeController extends Controller
         });
 
         return redirect()->route('admin.employees.index')
-            ->with('success', 'Data karyawan berhasil dihapus.');
+            ->with('success', 'Data karyawan berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar karyawan yang berada di Recycle Bin.
+     */
+    public function trash(Request $request)
+    {
+        $query = Employee::onlyTrashed()->with(['position', 'payrollMethod']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id_pekerja', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('jabatan', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%")
+                    ->orWhere('no_telepon', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.employees.trash', compact('employees'));
+    }
+
+    /**
+     * Kembalikan karyawan (beserta akun user terkait) dari Recycle Bin.
+     */
+    public function restore($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+
+        DB::transaction(function () use ($employee) {
+            $employee->restore();
+
+            $user = User::onlyTrashed()->where('id', $employee->user_id)->first();
+            if ($user) {
+                $user->restore();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$employee->nama_lengkap}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus karyawan (beserta akun user terkait) secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+        $nama = $employee->nama_lengkap;
+        $userId = $employee->user_id;
+
+        DB::transaction(function () use ($employee, $userId) {
+            // Hapus employee terlebih dahulu agar tidak melanggar foreign key ke users.
+            $employee->forceDelete();
+
+            $user = User::onlyTrashed()->where('id', $userId)->first();
+            if ($user) {
+                $user->forceDelete();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$nama}' berhasil dihapus permanen.");
     }
 
     private function generateEmployeeId(): string

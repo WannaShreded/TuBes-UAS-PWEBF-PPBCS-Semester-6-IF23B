@@ -4,10 +4,16 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Data Karyawan
             </h2>
-            <a href="{{ route('admin.employees.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Tambah Karyawan
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.employees.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
+                </a>
+                <a href="{{ route('admin.employees.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Tambah Karyawan
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -21,7 +27,7 @@
                         </div>
                     @endif
 
-                    <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3 grid grid-cols-1 md:grid-cols-5 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama, NIK, email, jabatan..."
                                class="border rounded px-3 py-2 md:col-span-2">

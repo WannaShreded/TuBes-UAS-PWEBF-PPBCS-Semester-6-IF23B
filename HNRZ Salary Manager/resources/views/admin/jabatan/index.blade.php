@@ -6,10 +6,16 @@
             </h2>
 
             @role('admin')
-                <a href="{{ route('admin.jabatan.create') }}"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                    + Tambah Jabatan
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.jabatan.trash') }}"
+                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                        Recycle Bin
+                    </a>
+                    <a href="{{ route('admin.jabatan.create') }}"
+                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                        + Tambah Jabatan
+                    </a>
+                </div>
             @endrole
         </div>
     </x-slot>
@@ -29,6 +35,22 @@
                             {{ session('error') }}
                         </div>
                     @endif
+
+                    <form method="GET" action="{{ route('admin.jabatan.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama jabatan atau deskripsi"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <input type="number" name="salary_min" value="{{ request('salary_min') }}"
+                               placeholder="Gaji min"
+                               class="border rounded px-3 py-2">
+                        <input type="number" name="salary_max" value="{{ request('salary_max') }}"
+                               placeholder="Gaji max"
+                               class="border rounded px-3 py-2">
+                        <div class="md:col-span-4 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.jabatan.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
 
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">

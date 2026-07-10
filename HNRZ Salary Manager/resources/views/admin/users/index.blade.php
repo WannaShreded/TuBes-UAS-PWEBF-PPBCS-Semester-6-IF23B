@@ -3,9 +3,17 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Manajemen User
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Manajemen User
+            </h2>
+            @can('delete-users')
+                <a href="{{ route('admin.users.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
+                </a>
+            @endcan
+        </div>
     </x-slot>
 
 
@@ -21,6 +29,22 @@
                             {{ session('success') }}
                         </div>
                     @endif
+
+                    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama atau email"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="role" class="border rounded px-3 py-2">
+                            <option value="">Semua role</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role }}" @selected(request('role') === $role)>{{ $role }}</option>
+                            @endforeach
+                        </select>
+                        <div class="md:col-span-3 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.users.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
 
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">
