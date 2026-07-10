@@ -37,6 +37,7 @@
                         </div>
                     @endif
 
+                    <livewire:admin.payroll-method-table />
                     <form method="GET" action="{{ route('admin.payroll-methods.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama, tipe, deskripsi"
