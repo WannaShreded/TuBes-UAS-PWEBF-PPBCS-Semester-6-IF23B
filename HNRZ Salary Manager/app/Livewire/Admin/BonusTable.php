@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Bonus;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class BonusTable extends SearchableTable
 {
@@ -34,8 +36,18 @@ class BonusTable extends SearchableTable
             });
         }
 
-        $query->when($this->jenis_bonus !== '', fn ($q, $jenis) => $q->where('jenis_bonus', $jenis));
-        $query->when($this->periode_bonus !== '', fn ($q, $periode) => $q->where('periode_bonus', 'like', $periode . '%'));
+        $jenisBonus = trim((string) $this->jenis_bonus);
+        if ($jenisBonus !== '') {
+            $query->whereRaw('LOWER(jenis_bonus) = ?', [Str::lower($jenisBonus)]);
+        }
+
+        $periodeBonus = trim((string) $this->periode_bonus);
+        if ($periodeBonus !== '') {
+            $monthStart = Carbon::createFromFormat('Y-m', $periodeBonus)->startOfMonth()->toDateString();
+            $monthEnd = Carbon::createFromFormat('Y-m', $periodeBonus)->endOfMonth()->toDateString();
+
+            $query->whereBetween('periode_bonus', [$monthStart, $monthEnd]);
+        }
 
         return $query->paginate($this->perPage);
     }

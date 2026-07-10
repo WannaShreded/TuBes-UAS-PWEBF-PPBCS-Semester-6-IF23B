@@ -21,6 +21,7 @@
                         </div>
                     @endif
 
+                    <livewire:admin.payroll-history-table />
                     <form method="GET" action="{{ route('admin.payroll-histories.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama/NIK"
