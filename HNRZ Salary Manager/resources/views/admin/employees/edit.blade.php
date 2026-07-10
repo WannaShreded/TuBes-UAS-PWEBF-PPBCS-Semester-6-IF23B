@@ -14,6 +14,17 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                ID Pekerja
+                            </label>
+                            <input
+                                type="text"
+                                value="{{ $employee->id_pekerja }}"
+                                readonly
+                                class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
+                            >
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
                             <input type="text" name="nik" value="{{ old('nik', $employee->nik) }}" class="block w-full border rounded px-3 py-2">
                             @error('nik')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
