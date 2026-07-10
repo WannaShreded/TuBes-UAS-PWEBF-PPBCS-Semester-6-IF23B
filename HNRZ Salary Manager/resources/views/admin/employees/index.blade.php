@@ -21,13 +21,6 @@
                         </div>
                     @endif
 
-<<<<<<< Updated upstream
-                    <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                               placeholder="Cari nama, NIK, email, jabatan..."
-                               class="w-full md:w-80 border rounded px-3 py-2">
-                        <button type="submit" class="ml-2 bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
-=======
                     <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama, NIK, email, jabatan..."
@@ -53,7 +46,6 @@
                             <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
                             <a href="{{ route('admin.employees.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
                         </div>
->>>>>>> Stashed changes
                     </form>
 
                     <div class="overflow-x-auto">

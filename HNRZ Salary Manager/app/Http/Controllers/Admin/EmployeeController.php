@@ -18,8 +18,7 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-<<<<<<< Updated upstream
-=======
+
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
@@ -27,7 +26,6 @@ class EmployeeController extends Controller
             'status' => ['nullable', 'in:aktif,nonaktif'],
         ]);
 
->>>>>>> Stashed changes
         $query = Employee::query()->with(['position', 'payrollMethod']);
 
         if ($request->filled('search')) {
@@ -43,11 +41,8 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees = $query->orderBy('created_at', 'desc')->paginate(5);
+        // continue building query with possible filters and then paginate below
 
-<<<<<<< Updated upstream
-        return view('admin.employees.index', compact('employees'));
-=======
         if (! empty($validated['jabatan'])) {
             $query->where(function ($q) use ($validated) {
                 $q->where('jabatan', 'like', "%{$validated['jabatan']}%")
@@ -66,7 +61,6 @@ class EmployeeController extends Controller
         $jabatans = Jabatan::orderBy('name')->pluck('name')->toArray();
 
         return view('admin.employees.index', compact('employees', 'roles', 'jabatans'));
->>>>>>> Stashed changes
     }
 
     public function create()
