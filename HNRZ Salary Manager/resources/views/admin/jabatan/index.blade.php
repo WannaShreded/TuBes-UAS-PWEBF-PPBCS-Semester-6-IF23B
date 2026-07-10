@@ -52,6 +52,7 @@
                         </div>
                     </form>
 
+                    <livewire:admin.jabatan-table />
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">
                             <tr>

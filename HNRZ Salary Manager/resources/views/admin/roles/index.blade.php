@@ -38,6 +38,7 @@
                         </div>
                     @endif
 
+                    <livewire:admin.role-table />
                     <form method="GET" action="{{ route('admin.roles.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama role"
