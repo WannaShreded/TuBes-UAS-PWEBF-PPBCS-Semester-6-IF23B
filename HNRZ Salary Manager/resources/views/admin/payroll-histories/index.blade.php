@@ -21,35 +21,17 @@
                         </div>
                     @endif
 
-                    <form method="GET" action="{{ route('admin.payroll-histories.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <form method="GET" action="{{ route('admin.payroll-histories.index') }}" class="mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama/NIK"
-                               class="border rounded px-3 py-2 md:col-span-2">
-                        <select name="jabatan" class="border rounded px-3 py-2">
-                            <option value="">Semua jabatan</option>
-                            @foreach($jabatans as $jabatan)
-                                <option value="{{ $jabatan }}" @selected(request('jabatan') === $jabatan)>{{ $jabatan }}</option>
-                            @endforeach
-                        </select>
-                        <select name="payment_status" class="border rounded px-3 py-2">
-                            <option value="">Semua status</option>
-                            <option value="Sudah Dibayar" @selected(request('payment_status') === 'Sudah Dibayar')>Sudah Dibayar</option>
-                            <option value="Belum Dibayar" @selected(request('payment_status') === 'Belum Dibayar')>Belum Dibayar</option>
-                        </select>
-                        <select name="payment_method" class="border rounded px-3 py-2">
-                            <option value="">Semua metode</option>
-                            @foreach($paymentMethods as $method)
-                                <option value="{{ $method }}" @selected(request('payment_method') === $method)>{{ $method }}</option>
-                            @endforeach
-                        </select>
-                        <input type="month" name="payroll_period" value="{{ request('payroll_period') }}" class="border rounded px-3 py-2">
-                        <input type="date" name="start_date" value="{{ request('start_date') }}" class="border rounded px-3 py-2">
-                        <input type="date" name="end_date" value="{{ request('end_date') }}" class="border rounded px-3 py-2">
-                        <div class="md:col-span-4 flex gap-2">
-                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
-                            <a href="{{ route('admin.payroll-histories.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
-                        </div>
+                               class="border rounded px-3 py-2 w-full md:w-80">
+                        <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                        <a href="{{ route('admin.payroll-histories.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
                     </form>
+
+                    <div class="mb-4 text-sm text-gray-600">
+                        Menampilkan riwayat pembayaran yang sudah dibayar dan memiliki tanggal pembayaran dalam 1 bulan terakhir.
+                    </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left">
@@ -90,7 +72,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran.</td>
+                                    <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran dalam 1 bulan terakhir.</td>
                                 </tr>
                             @endforelse
                             </tbody>
