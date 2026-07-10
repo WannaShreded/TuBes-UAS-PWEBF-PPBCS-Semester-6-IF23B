@@ -26,7 +26,7 @@ Route::get('/dashboard', function () {
     ->name('dashboard');
 
 // ── USER MANAGEMENT ──
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])
         ->middleware('permission:view-users')
@@ -43,6 +43,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->middleware('permission:delete-users')
         ->name('users.destroy');
+
+    // Recycle Bin - User
+    Route::get('/users/trash', [UserController::class, 'trash'])
+        ->middleware('permission:delete-users')
+        ->name('users.trash');
+
+    Route::patch('/users/{id}/restore', [UserController::class, 'restore'])
+        ->middleware('permission:delete-users')
+        ->name('users.restore');
+
+    Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])
+        ->middleware('permission:delete-users')
+        ->name('users.force-delete');
 
     // ── ROLE MANAGEMENT ──
     Route::get('/roles', [RoleController::class, 'index'])
@@ -69,7 +82,30 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->middleware('permission:delete-roles')
         ->name('roles.destroy');
 
+    // Recycle Bin - Role
+    Route::get('/roles/trash', [RoleController::class, 'trash'])
+        ->middleware('permission:delete-roles')
+        ->name('roles.trash');
+
+    Route::patch('/roles/{id}/restore', [RoleController::class, 'restore'])
+        ->middleware('permission:delete-roles')
+        ->name('roles.restore');
+
+    Route::delete('/roles/{id}/force-delete', [RoleController::class, 'forceDelete'])
+        ->middleware('permission:delete-roles')
+        ->name('roles.force-delete');
+
     // ── JABATAN MANAGEMENT ──
+    // Recycle Bin - Jabatan (didaftarkan sebelum route '/jabatan/{jabatan}/...' agar tidak bentrok)
+    Route::get('/jabatan/trash', [JabatanController::class, 'trash'])
+        ->name('jabatan.trash');
+
+    Route::patch('/jabatan/{id}/restore', [JabatanController::class, 'restore'])
+        ->name('jabatan.restore');
+
+    Route::delete('/jabatan/{id}/force-delete', [JabatanController::class, 'forceDelete'])
+        ->name('jabatan.force-delete');
+
     Route::get('/jabatan', [JabatanController::class, 'index'])
         ->name('jabatan.index');
 
@@ -116,6 +152,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->middleware('permission:edit-bonuses')
         ->name('bonuses.give-to-all');
 
+    // Recycle Bin - Bonus
+    Route::get('/bonuses/trash', [BonusController::class, 'trash'])
+        ->middleware('permission:delete-bonuses')
+        ->name('bonuses.trash');
+
+    Route::patch('/bonuses/{id}/restore', [BonusController::class, 'restore'])
+        ->middleware('permission:delete-bonuses')
+        ->name('bonuses.restore');
+
+    Route::delete('/bonuses/{id}/force-delete', [BonusController::class, 'forceDelete'])
+        ->middleware('permission:delete-bonuses')
+        ->name('bonuses.force-delete');
+
     // ── PAYROLL METHOD MANAGEMENT (Metode Penggajian) ──
     Route::get('/payroll-methods', [PayrollMethodController::class, 'index'])
         ->middleware('permission:view-payroll-methods')
@@ -141,7 +190,31 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->middleware('permission:delete-payroll-methods')
         ->name('payroll-methods.destroy');
 
+    // Recycle Bin - Payroll Method
+    Route::get('/payroll-methods/trash', [PayrollMethodController::class, 'trash'])
+        ->middleware('permission:delete-payroll-methods')
+        ->name('payroll-methods.trash');
+
+    Route::patch('/payroll-methods/{id}/restore', [PayrollMethodController::class, 'restore'])
+        ->middleware('permission:delete-payroll-methods')
+        ->name('payroll-methods.restore');
+
+    Route::delete('/payroll-methods/{id}/force-delete', [PayrollMethodController::class, 'forceDelete'])
+        ->middleware('permission:delete-payroll-methods')
+        ->name('payroll-methods.force-delete');
+
     // ── EMPLOYEE MANAGEMENT ──
+    // Recycle Bin - Employee (didaftarkan sebelum Route::resource agar tidak
+    // bentrok dengan route show 'employees/{employee}')
+    Route::get('/employees/trash', [AdminEmployeeController::class, 'trash'])
+        ->name('employees.trash');
+
+    Route::patch('/employees/{id}/restore', [AdminEmployeeController::class, 'restore'])
+        ->name('employees.restore');
+
+    Route::delete('/employees/{id}/force-delete', [AdminEmployeeController::class, 'forceDelete'])
+        ->name('employees.force-delete');
+
     Route::resource('employees', AdminEmployeeController::class);
 });
 

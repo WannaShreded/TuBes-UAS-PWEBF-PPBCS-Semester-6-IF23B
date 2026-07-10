@@ -4,12 +4,20 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Metode Penggajian
         </h2>
-        @can('create-payroll-methods')
-            <a href="{{ route('admin.payroll-methods.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Tambah Metode
-            </a>
-        @endcan
+        <div class="flex items-center gap-2">
+            @can('delete-payroll-methods')
+                <a href="{{ route('admin.payroll-methods.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
+                </a>
+            @endcan
+            @can('create-payroll-methods')
+                <a href="{{ route('admin.payroll-methods.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Tambah Metode
+                </a>
+            @endcan
+        </div>
         </div>
     </x-slot>
 

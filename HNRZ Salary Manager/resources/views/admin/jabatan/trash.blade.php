@@ -2,20 +2,14 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Data Jabatan
+                Recycle Bin - Jabatan
             </h2>
 
             @role('admin')
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.jabatan.trash') }}"
-                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
-                        Recycle Bin
-                    </a>
-                    <a href="{{ route('admin.jabatan.create') }}"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                        + Tambah Jabatan
-                    </a>
-                </div>
+                <a href="{{ route('admin.jabatan.index') }}"
+                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    &larr; Kembali ke Data Jabatan
+                </a>
             @endrole
         </div>
     </x-slot>
@@ -43,6 +37,7 @@
                                 <th class="p-3">Nama Jabatan</th>
                                 <th class="p-3">Gaji</th>
                                 <th class="p-3">Deskripsi</th>
+                                <th class="p-3">Dihapus Pada</th>
                                 <th class="p-3">Aksi</th>
                             </tr>
                         </thead>
@@ -66,42 +61,48 @@
                                         {{ $jabatan->description ?? '-' }}
                                     </td>
 
+                                    <td class="p-3 text-gray-500">
+                                        {{ $jabatan->deleted_at?->format('d M Y H:i') }}
+                                    </td>
+
                                     <td class="p-3">
                                         <div class="flex items-center gap-3">
                                             @role('admin')
-                                                <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
-                                                    class="text-blue-600 hover:underline">
-                                                    Edit
-                                                </a>
+                                                <button
+                                                    type="button"
+                                                    data-type="warning"
+                                                    data-title="Konfirmasi Pulihkan"
+                                                    data-message="Kembalikan jabatan '{{ $jabatan->name }}' ke data utama?"
+                                                    data-confirm-text="Ya, Pulihkan"
+                                                    data-action-url="{{ route('admin.jabatan.restore', $jabatan->id) }}"
+                                                    data-action-method="PATCH"
+                                                    onclick="openConfirmFromEl(this)"
+                                                    class="text-green-600 hover:underline"
+                                                >
+                                                    Restore
+                                                </button>
 
-                                                <form action="{{ route('admin.jabatan.destroy', $jabatan) }}"
-                                                    method="POST"
-                                                    onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
-                                                    @csrf
-                                                    @method('DELETE')
-
-                                                    <button
-                                                        type="button"
-                                                        data-type="danger"
-                                                        data-title="Konfirmasi Hapus"
-                                                        data-message="Anda akan menghapus jabatan '{{ $jabatan->name }}'. Tindakan ini tidak dapat dibatalkan."
-                                                        data-confirm-text="Ya, Hapus"
-                                                        data-action-url="{{ route('admin.jabatan.destroy', $jabatan) }}"
-                                                        data-action-method="DELETE"
-                                                        onclick="openConfirmFromEl(this)"
-                                                        class="text-red-600 hover:underline"
-                                                    >
-                                                        Hapus
-                                                    </button>
-                                                </form>
+                                                <button
+                                                    type="button"
+                                                    data-type="danger"
+                                                    data-title="Konfirmasi Hapus Permanen"
+                                                    data-message="Jabatan '{{ $jabatan->name }}' akan dihapus permanen dan tidak dapat dikembalikan lagi. Lanjutkan?"
+                                                    data-confirm-text="Ya, Hapus Permanen"
+                                                    data-action-url="{{ route('admin.jabatan.force-delete', $jabatan->id) }}"
+                                                    data-action-method="DELETE"
+                                                    onclick="openConfirmFromEl(this)"
+                                                    class="text-red-600 hover:underline"
+                                                >
+                                                    Delete Permanently
+                                                </button>
                                             @endrole
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-3 text-center text-gray-400">
-                                        Belum ada data jabatan.
+                                    <td colspan="6" class="p-3 text-center text-gray-400">
+                                        Recycle Bin jabatan kosong.
                                     </td>
                                 </tr>
                             @endforelse

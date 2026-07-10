@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
@@ -82,6 +82,41 @@ class RoleController extends Controller
         $role->delete();
 
         return redirect()->route('admin.roles.index')
-            ->with('success', 'Role berhasil dihapus.');
+            ->with('success', 'Role berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar role yang berada di Recycle Bin.
+     */
+    public function trash()
+    {
+        $roles = Role::onlyTrashed()->withCount('permissions')->paginate(5);
+
+        return view('admin.roles.trash', compact('roles'));
+    }
+
+    /**
+     * Kembalikan role dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $role = Role::onlyTrashed()->findOrFail($id);
+        $role->restore();
+
+        return redirect()->route('admin.roles.trash')
+            ->with('success', "Role '{$role->name}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus role secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $role = Role::onlyTrashed()->findOrFail($id);
+        $nama = $role->name;
+        $role->forceDelete();
+
+        return redirect()->route('admin.roles.trash')
+            ->with('success', "Role '{$nama}' berhasil dihapus permanen.");
     }
 }

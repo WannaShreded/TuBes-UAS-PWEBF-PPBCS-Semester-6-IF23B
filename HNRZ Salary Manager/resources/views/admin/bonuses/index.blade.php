@@ -4,12 +4,20 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Kelola Bonus
             </h2>
-            @can('create-bonuses')
-                <a href="{{ route('admin.bonuses.create') }}"
-                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                    + Tambah Bonus
-                </a>
-            @endcan
+            <div class="flex items-center gap-2">
+                @can('delete-bonuses')
+                    <a href="{{ route('admin.bonuses.trash') }}"
+                       class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                        Recycle Bin
+                    </a>
+                @endcan
+                @can('create-bonuses')
+                    <a href="{{ route('admin.bonuses.create') }}"
+                       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                        + Tambah Bonus
+                    </a>
+                @endcan
+            </div>
         </div>
     </x-slot>
 

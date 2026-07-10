@@ -3,9 +3,17 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Manajemen User
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Manajemen User
+            </h2>
+            @can('delete-users')
+                <a href="{{ route('admin.users.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
+                </a>
+            @endcan
+        </div>
     </x-slot>
 
 
