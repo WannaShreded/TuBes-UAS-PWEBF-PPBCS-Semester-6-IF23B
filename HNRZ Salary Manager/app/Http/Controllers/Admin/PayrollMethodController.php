@@ -95,6 +95,41 @@ class PayrollMethodController extends Controller
         $payrollMethod->delete();
 
         return redirect()->route('admin.payroll-methods.index')
-            ->with('success', 'Metode penggajian berhasil dihapus.');
+            ->with('success', 'Metode penggajian berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar metode penggajian yang berada di Recycle Bin.
+     */
+    public function trash()
+    {
+        $payrollMethods = PayrollMethod::onlyTrashed()->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.payroll-methods.trash', compact('payrollMethods'));
+    }
+
+    /**
+     * Kembalikan metode penggajian dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $payrollMethod = PayrollMethod::onlyTrashed()->findOrFail($id);
+        $payrollMethod->restore();
+
+        return redirect()->route('admin.payroll-methods.trash')
+            ->with('success', "Metode penggajian '{$payrollMethod->name}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus metode penggajian secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $payrollMethod = PayrollMethod::onlyTrashed()->findOrFail($id);
+        $nama = $payrollMethod->name;
+        $payrollMethod->forceDelete();
+
+        return redirect()->route('admin.payroll-methods.trash')
+            ->with('success', "Metode penggajian '{$nama}' berhasil dihapus permanen.");
     }
 }

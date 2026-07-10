@@ -95,6 +95,41 @@ class JabatanController extends Controller
         $jabatan->delete();
 
         return redirect()->route('admin.jabatan.index')
-            ->with('success', 'Jabatan berhasil dihapus.');
+            ->with('success', 'Jabatan berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar jabatan yang berada di Recycle Bin.
+     */
+    public function trash()
+    {
+        $jabatans = Jabatan::onlyTrashed()->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.jabatan.trash', compact('jabatans'));
+    }
+
+    /**
+     * Kembalikan jabatan dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $jabatan = Jabatan::onlyTrashed()->findOrFail($id);
+        $jabatan->restore();
+
+        return redirect()->route('admin.jabatan.trash')
+            ->with('success', "Jabatan '{$jabatan->name}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus jabatan secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $jabatan = Jabatan::onlyTrashed()->findOrFail($id);
+        $nama = $jabatan->name;
+        $jabatan->forceDelete();
+
+        return redirect()->route('admin.jabatan.trash')
+            ->with('success', "Jabatan '{$nama}' berhasil dihapus permanen.");
     }
 }

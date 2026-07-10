@@ -192,7 +192,75 @@ class EmployeeController extends Controller
         });
 
         return redirect()->route('admin.employees.index')
-            ->with('success', 'Data karyawan berhasil dihapus.');
+            ->with('success', 'Data karyawan berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar karyawan yang berada di Recycle Bin.
+     */
+    public function trash(Request $request)
+    {
+        $query = Employee::onlyTrashed()->with(['position', 'payrollMethod']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id_pekerja', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('jabatan', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%")
+                    ->orWhere('no_telepon', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.employees.trash', compact('employees'));
+    }
+
+    /**
+     * Kembalikan karyawan (beserta akun user terkait) dari Recycle Bin.
+     */
+    public function restore($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+
+        DB::transaction(function () use ($employee) {
+            $employee->restore();
+
+            $user = User::onlyTrashed()->where('id', $employee->user_id)->first();
+            if ($user) {
+                $user->restore();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$employee->nama_lengkap}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus karyawan (beserta akun user terkait) secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+        $nama = $employee->nama_lengkap;
+        $userId = $employee->user_id;
+
+        DB::transaction(function () use ($employee, $userId) {
+            // Hapus employee terlebih dahulu agar tidak melanggar foreign key ke users.
+            $employee->forceDelete();
+
+            $user = User::onlyTrashed()->where('id', $userId)->first();
+            if ($user) {
+                $user->forceDelete();
+            }
+        });
+
+        return redirect()->route('admin.employees.trash')
+            ->with('success', "Karyawan '{$nama}' berhasil dihapus permanen.");
     }
 
     private function generateEmployeeId(): string

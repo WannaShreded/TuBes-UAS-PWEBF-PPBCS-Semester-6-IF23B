@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
@@ -75,6 +76,49 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')
+                         ->with('success', 'Data user berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar user yang berada di Recycle Bin.
+     */
+    public function trash()
+    {
+        $users = User::onlyTrashed()->with('roles')->paginate(5);
+
+        return view('admin.users.trash', compact('users'));
+    }
+
+    /**
+     * Kembalikan user dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('admin.users.trash')
+                         ->with('success', "User '{$user->name}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus user secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        if (auth()->id() === $user->id) {
+            return redirect()->route('admin.users.trash')
+                             ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $nama = $user->name;
+        $user->forceDelete();
+
+        return redirect()->route('admin.users.trash')
+                         ->with('success', "User '{$nama}' berhasil dihapus permanen.");
+    }
             ->with('success', 'Data user berhasil dihapus.');
     }
 }

@@ -6,10 +6,16 @@
             </h2>
 
             @role('admin')
-                <a href="{{ route('admin.jabatan.create') }}"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                    + Tambah Jabatan
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.jabatan.trash') }}"
+                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                        Recycle Bin
+                    </a>
+                    <a href="{{ route('admin.jabatan.create') }}"
+                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                        + Tambah Jabatan
+                    </a>
+                </div>
             @endrole
         </div>
     </x-slot>

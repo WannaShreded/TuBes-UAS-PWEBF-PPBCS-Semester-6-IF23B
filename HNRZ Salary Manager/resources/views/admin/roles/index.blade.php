@@ -4,12 +4,20 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Role Management
         </h2>
-        @can('create-roles')
-            <a href="{{ route('admin.roles.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Add Role
+        <div class="flex items-center gap-2">
+            @can('delete-roles')
+                <a href="{{ route('admin.roles.trash') }}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                    Recycle Bin
                 </a>
             @endcan
+            @can('create-roles')
+                <a href="{{ route('admin.roles.create') }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Add Role
+                    </a>
+                @endcan
+        </div>
         </div>
     </x-slot>
 

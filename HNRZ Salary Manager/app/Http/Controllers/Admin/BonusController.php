@@ -105,7 +105,42 @@ class BonusController extends Controller
         $bonus->delete();
 
         return redirect()->route('admin.bonuses.index')
-            ->with('success', 'Data bonus berhasil dihapus.');
+            ->with('success', 'Data bonus berhasil dipindahkan ke Recycle Bin.');
+    }
+
+    /**
+     * Tampilkan daftar bonus yang berada di Recycle Bin.
+     */
+    public function trash()
+    {
+        $bonuses = Bonus::onlyTrashed()->orderByDesc('deleted_at')->paginate(5);
+
+        return view('admin.bonuses.trash', compact('bonuses'));
+    }
+
+    /**
+     * Kembalikan bonus dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $bonus = Bonus::onlyTrashed()->findOrFail($id);
+        $bonus->restore();
+
+        return redirect()->route('admin.bonuses.trash')
+            ->with('success', "Bonus '{$bonus->nama_bonus}' berhasil dipulihkan.");
+    }
+
+    /**
+     * Hapus bonus secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $bonus = Bonus::onlyTrashed()->findOrFail($id);
+        $nama = $bonus->nama_bonus;
+        $bonus->forceDelete();
+
+        return redirect()->route('admin.bonuses.trash')
+            ->with('success', "Bonus '{$nama}' berhasil dihapus permanen.");
     }
 
     public function giveToAll(Bonus $bonus)
