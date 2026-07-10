@@ -21,11 +21,39 @@
                         </div>
                     @endif
 
+<<<<<<< Updated upstream
                     <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari nama, NIK, email, jabatan..."
                                class="w-full md:w-80 border rounded px-3 py-2">
                         <button type="submit" class="ml-2 bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+=======
+                    <form method="GET" action="{{ route('admin.employees.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama, NIK, email, jabatan..."
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="role" class="border rounded px-3 py-2">
+                            <option value="">Semua role</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role }}" @selected(request('role') === $role)>{{ $role }}</option>
+                            @endforeach
+                        </select>
+                        <select name="jabatan" class="border rounded px-3 py-2">
+                            <option value="">Semua jabatan</option>
+                            @foreach($jabatans as $jabatan)
+                                <option value="{{ $jabatan }}" @selected(request('jabatan') === $jabatan)>{{ $jabatan }}</option>
+                            @endforeach
+                        </select>
+                        <select name="status" class="border rounded px-3 py-2">
+                            <option value="">Semua status</option>
+                            <option value="aktif" @selected(request('status') === 'aktif')>Aktif</option>
+                            <option value="nonaktif" @selected(request('status') === 'nonaktif')>Tidak Aktif</option>
+                        </select>
+                        <div class="md:col-span-5 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.employees.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+>>>>>>> Stashed changes
                     </form>
 
                     <div class="overflow-x-auto">
@@ -39,6 +67,7 @@
                                     <th class="p-3">Telepon</th>
                                     <th class="p-3">Email</th>
                                     <th class="p-3">Role</th>
+                                    <th class="p-3">Status</th>
                                     <th class="p-3">Aksi</th>
                                 </tr>
                             </thead>
@@ -52,6 +81,13 @@
                                         <td class="p-3">{{ $employee->no_telepon }}</td>
                                         <td class="p-3">{{ $employee->email }}</td>
                                         <td class="p-3">{{ $employee->role }}</td>
+                                        <td class="p-3">
+                                            @if($employee->is_active)
+                                                <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">Aktif</span>
+                                            @else
+                                                <span class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">Tidak Aktif</span>
+                                            @endif
+                                        </td>
                                         <td class="p-3">
                                             <div class="flex items-center gap-3">
                                                 <a href="{{ route('admin.employees.show', $employee) }}" class="text-green-600 hover:underline">Detail</a>
@@ -78,7 +114,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="p-3 text-center text-gray-400">
+                                        <td colspan="9" class="p-3 text-center text-gray-400">
                                             Belum ada data karyawan.
                                         </td>
                                     </tr>

@@ -18,6 +18,16 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
+<<<<<<< Updated upstream
+=======
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
+            'jabatan' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'in:aktif,nonaktif'],
+        ]);
+
+>>>>>>> Stashed changes
         $query = Employee::query()->with(['position', 'payrollMethod']);
 
         if ($request->filled('search')) {
@@ -35,7 +45,28 @@ class EmployeeController extends Controller
 
         $employees = $query->orderBy('created_at', 'desc')->paginate(5);
 
+<<<<<<< Updated upstream
         return view('admin.employees.index', compact('employees'));
+=======
+        if (! empty($validated['jabatan'])) {
+            $query->where(function ($q) use ($validated) {
+                $q->where('jabatan', 'like', "%{$validated['jabatan']}%")
+                    ->orWhereHas('position', function ($positionQuery) use ($validated) {
+                        $positionQuery->where('name', 'like', "%{$validated['jabatan']}%" );
+                    });
+            });
+        }
+
+        if (! empty($validated['status'])) {
+            $query->where('is_active', $validated['status'] === 'aktif');
+        }
+
+        $employees = $query->orderBy('created_at', 'desc')->paginate(5)->appends($request->query());
+        $roles = \Spatie\Permission\Models\Role::pluck('name')->toArray();
+        $jabatans = Jabatan::orderBy('name')->pluck('name')->toArray();
+
+        return view('admin.employees.index', compact('employees', 'roles', 'jabatans'));
+>>>>>>> Stashed changes
     }
 
     public function create()
@@ -50,7 +81,7 @@ class EmployeeController extends Controller
         $validated = $request->validated();
         $validated['id_pekerja'] = $this->generateEmployeeId();
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
             $user = User::create([
                 'name' => $validated['nama_lengkap'],
                 'email' => $validated['email'],
@@ -72,6 +103,7 @@ class EmployeeController extends Controller
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             if (! $employee->exists) {
@@ -130,6 +162,7 @@ class EmployeeController extends Controller
                 'jabatan' => $validated['jabatan'],
                 'jabatan_id' => $job?->id,
                 'role' => $validated['role'],
+                'is_active' => $request->boolean('is_active', true),
             ]);
 
             $user = $employee->user;

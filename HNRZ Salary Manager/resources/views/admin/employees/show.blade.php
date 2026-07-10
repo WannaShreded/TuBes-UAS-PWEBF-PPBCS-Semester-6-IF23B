@@ -46,6 +46,14 @@
                     </div>
                     <div><p class="text-sm text-gray-500">Alamat</p><p class="font-semibold">{{ $employee->alamat }}</p></div>
                     <div><p class="text-sm text-gray-500">Role</p><p class="font-semibold">{{ $employee->role }}</p></div>
+                    <div>
+                        <p class="text-sm text-gray-500">Status</p>
+                        @if($employee->is_active)
+                            <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">Aktif</span>
+                        @else
+                            <span class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">Tidak Aktif</span>
+                        @endif
+                    </div>
                     <div class="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
                         <h3 class="font-semibold text-gray-800 mb-2">Informasi Pembayaran Karyawan</h3>
                         <p class="text-sm text-gray-600 mb-4">Metode penggajian yang dipilih karyawan ditampilkan sebagai informasi read-only. Admin hanya dapat melihatnya.</p>

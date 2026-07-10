@@ -21,6 +21,7 @@ class EmployeeStoreRequest extends FormRequest
             'alamat' => ['required', 'string'],
             'jabatan' => ['required', 'string', 'max:100'],
             'role' => ['required', 'in:admin,karyawan'],
+            'is_active' => ['nullable', 'boolean'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }

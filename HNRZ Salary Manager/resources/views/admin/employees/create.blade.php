@@ -66,6 +66,14 @@
                             @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="is_active" class="block w-full border rounded px-3 py-2">
+                                <option value="1" {{ old('is_active', true) ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ old('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
+                            </select>
+                            <p class="text-xs text-gray-400 mt-1">Karyawan nonaktif tidak diproses dalam payroll.</p>
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                             <input type="password" name="password" class="block w-full border rounded px-3 py-2">
                             @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
