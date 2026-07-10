@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\PayrollMethod;
+use Illuminate\Support\Str;
 
 class PayrollMethodTable extends SearchableTable
 {
@@ -40,8 +41,15 @@ class PayrollMethodTable extends SearchableTable
             });
         }
 
-        $query->when($this->type !== '', fn ($q, $type) => $q->where('type', $type));
-        $query->when($this->is_active !== '', fn ($q, $active) => $q->where('is_active', (bool) $active));
+        $typeFilter = trim((string) $this->type);
+        if ($typeFilter !== '') {
+            $query->whereRaw('LOWER(type) = ?', [Str::lower($typeFilter)]);
+        }
+
+        $statusFilter = trim((string) $this->is_active);
+        if ($statusFilter !== '') {
+            $query->where('is_active', $statusFilter === '1');
+        }
 
         return $query->paginate($this->perPage);
     }
