@@ -38,6 +38,10 @@ class RolePermissionSeeder extends Seeder
             'create-bonuses',
             'edit-bonuses',
             'delete-bonuses',
+            'view-payroll-histories',
+            'create-payroll-histories',
+            'edit-payroll-histories',
+            'delete-payroll-histories',
         ];
 
         foreach ($permissions as $permission) {
