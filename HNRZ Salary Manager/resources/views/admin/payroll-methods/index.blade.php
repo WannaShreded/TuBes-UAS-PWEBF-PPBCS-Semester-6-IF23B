@@ -29,6 +29,27 @@
                         </div>
                     @endif
 
+                    <form method="GET" action="{{ route('admin.payroll-methods.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama, tipe, deskripsi"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="type" class="border rounded px-3 py-2">
+                            <option value="">Semua tipe</option>
+                            @foreach($types as $type)
+                                <option value="{{ $type }}" @selected(request('type') === $type)>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                        <select name="is_active" class="border rounded px-3 py-2">
+                            <option value="">Semua status</option>
+                            <option value="1" @selected(request('is_active') === '1')>Aktif</option>
+                            <option value="0" @selected(request('is_active') === '0')>Nonaktif</option>
+                        </select>
+                        <div class="md:col-span-4 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.payroll-methods.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
+
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">
                             <tr>
