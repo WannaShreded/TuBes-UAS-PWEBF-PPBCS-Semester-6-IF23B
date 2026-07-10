@@ -87,6 +87,11 @@ class JabatanController extends Controller
 
     public function destroy(Jabatan $jabatan)
     {
+        if ($jabatan->employees()->exists()) {
+            return redirect()->route('admin.jabatan.index')
+                ->with('error', "Jabatan '{$jabatan->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.");
+        }
+
         $jabatan->delete();
 
         return redirect()->route('admin.jabatan.index')

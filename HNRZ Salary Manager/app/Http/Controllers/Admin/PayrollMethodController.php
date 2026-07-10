@@ -87,6 +87,11 @@ class PayrollMethodController extends Controller
 
     public function destroy(PayrollMethod $payrollMethod)
     {
+        if ($payrollMethod->employees()->exists()) {
+            return redirect()->route('admin.payroll-methods.index')
+                ->with('error', "Metode penggajian '{$payrollMethod->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.");
+        }
+
         $payrollMethod->delete();
 
         return redirect()->route('admin.payroll-methods.index')

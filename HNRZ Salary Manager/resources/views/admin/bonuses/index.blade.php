@@ -23,6 +23,11 @@
                             {{ session('success') }}
                         </div>
                     @endif
+                    @if(session('error'))
+                        <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     <form method="GET" action="{{ route('admin.bonuses.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" name="search" value="{{ request('search') }}"
