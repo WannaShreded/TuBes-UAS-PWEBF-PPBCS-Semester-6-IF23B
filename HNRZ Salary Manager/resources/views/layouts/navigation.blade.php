@@ -29,6 +29,10 @@
                         <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
                             {{ __('Karyawan') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('admin.payroll-histories.index')" :active="request()->routeIs('admin.payroll-histories.*')">
+                            {{ __('Riwayat Gaji') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
                             {{ __('Jabatan Saya') }}
@@ -105,6 +109,10 @@
 
     <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
         {{ __('Karyawan') }}
+    </x-nav-link>
+
+    <x-nav-link :href="route('admin.payroll-histories.index')" :active="request()->routeIs('admin.payroll-histories.*')">
+        {{ __('Riwayat Gaji') }}
     </x-nav-link>
 @else
     <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
