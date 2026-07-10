@@ -37,6 +37,22 @@
                         </div>
                     @endif
 
+                    <form method="GET" action="{{ route('admin.bonuses.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Cari nama bonus atau keterangan"
+                               class="border rounded px-3 py-2 md:col-span-2">
+                        <select name="jenis_bonus" class="border rounded px-3 py-2">
+                            <option value="">Semua jenis</option>
+                            <option value="Tetap" @selected(request('jenis_bonus') === 'Tetap')>Tetap</option>
+                            <option value="Variabel" @selected(request('jenis_bonus') === 'Variabel')>Variabel</option>
+                        </select>
+                        <input type="month" name="periode_bonus" value="{{ request('periode_bonus') }}" class="border rounded px-3 py-2">
+                        <div class="md:col-span-4 flex gap-2">
+                            <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded">Cari</button>
+                            <a href="{{ route('admin.bonuses.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Reset</a>
+                        </div>
+                    </form>
+
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-100">
                             <tr>

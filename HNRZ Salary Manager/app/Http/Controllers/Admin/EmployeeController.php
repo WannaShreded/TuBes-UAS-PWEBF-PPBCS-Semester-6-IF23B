@@ -10,18 +10,23 @@ use App\Models\Employee;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
+            'jabatan' => ['nullable', 'string', 'max:100'],
+        ]);
+
         $query = Employee::query()->with(['position', 'payrollMethod']);
 
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if (! empty($validated['search'])) {
+            $search = $validated['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('id_pekerja', 'like', "%{$search}%")
                     ->orWhere('nik', 'like', "%{$search}%")
@@ -33,9 +38,24 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees = $query->orderBy('created_at', 'desc')->paginate(5);
+        if (! empty($validated['role'])) {
+            $query->where('role', $validated['role']);
+        }
 
-        return view('admin.employees.index', compact('employees'));
+        if (! empty($validated['jabatan'])) {
+            $query->where(function ($q) use ($validated) {
+                $q->where('jabatan', 'like', "%{$validated['jabatan']}%")
+                    ->orWhereHas('position', function ($positionQuery) use ($validated) {
+                        $positionQuery->where('name', 'like', "%{$validated['jabatan']}%" );
+                    });
+            });
+        }
+
+        $employees = $query->orderBy('created_at', 'desc')->paginate(5)->appends($request->query());
+        $roles = \Spatie\Permission\Models\Role::pluck('name')->toArray();
+        $jabatans = Jabatan::orderBy('name')->pluck('name')->toArray();
+
+        return view('admin.employees.index', compact('employees', 'roles', 'jabatans'));
     }
 
     public function create()
@@ -112,9 +132,8 @@ class EmployeeController extends Controller
     {
         $validated = $request->validated();
 
-        // Validasi tambahan untuk pilihan bonus tetap (dicentang = tetap diberikan, tidak dicentang = dibatalkan)
         $request->validate([
-            'bonus_tetap_ids'   => 'nullable|array',
+            'bonus_tetap_ids' => 'nullable|array',
             'bonus_tetap_ids.*' => 'exists:bonuses,id',
         ]);
 
@@ -144,12 +163,10 @@ class EmployeeController extends Controller
                     $userData['password'] = Hash::make($validated['password']);
                 }
 
-            $user->update($userData);
+                $user->update($userData);
                 $user->syncRoles([$validated['role']]);
             }
 
-            // Bonus tetap sekarang mengikuti pilihan admin di form (checklist),
-            // bukan otomatis dipertahankan semua seperti sebelumnya
             $syncIds = $request->input('bonus_tetap_ids', []);
 
             if (! empty($validated['bonus_variabel_id'])) {

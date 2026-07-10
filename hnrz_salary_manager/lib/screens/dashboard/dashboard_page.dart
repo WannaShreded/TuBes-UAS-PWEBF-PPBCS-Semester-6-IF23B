@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../auth/login_page.dart';
 import '../jabatan/jabatan_page.dart';
+import '../bonus/bonus_page.dart';
 import '../../services/auth_service.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -44,7 +45,14 @@ class DashboardPage extends StatelessWidget {
             DashboardCard(
               title: "Bonus",
               icon: Icons.card_giftcard,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const BonusPage(),
+                  ),
+                );
+              },
             ),
 
             DashboardCard(
