@@ -12,48 +12,45 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
+            'role' => ['nullable', 'string', 'max:50'],
             'jabatan' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', 'in:aktif,nonaktif'],
+            'status' => ['nullable', 'string', 'max:20'],
         ]);
 
-        $query = Employee::query()->with(['position', 'payrollMethod']);
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('id_pekerja', 'like', "%{$search}%")
-                    ->orWhere('nik', 'like', "%{$search}%")
-                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('jabatan', 'like', "%{$search}%")
-                    ->orWhere('role', 'like', "%{$search}%")
-                    ->orWhere('no_telepon', 'like', "%{$search}%");
+        $query = Employee::query()
+            ->with(['position', 'payrollMethod'])
+            ->when($validated['search'] ?? null, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('id_pekerja', 'like', "%{$search}%")
+                        ->orWhere('nik', 'like', "%{$search}%")
+                        ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('jabatan', 'like', "%{$search}%")
+                        ->orWhere('role', 'like', "%{$search}%")
+                        ->orWhere('no_telepon', 'like', "%{$search}%");
+                });
+            })
+            ->when($validated['jabatan'] ?? null, function ($q, $jabatan) {
+                $jabatan = trim((string) $jabatan);
+                $q->where(function ($sub) use ($jabatan) {
+                    $sub->where('jabatan', $jabatan)
+                        ->orWhereHas('position', fn($positionQuery) => $positionQuery->where('name', $jabatan));
+                });
+            })
+            ->when(($validated['status'] ?? null) !== null, function ($q, $status) {
+                $q->where('is_active', in_array(Str::lower(trim((string) $status)), ['aktif', '1', 'true', 'yes', 'on'], true));
+            })
+            ->when($validated['role'] ?? null, function ($q, $role) {
+                $q->whereRaw('LOWER(role) = ?', [Str::lower(trim((string) $role))]);
             });
-        }
-
-        // continue building query with possible filters and then paginate below
-
-        if (! empty($validated['jabatan'])) {
-            $query->where(function ($q) use ($validated) {
-                $q->where('jabatan', 'like', "%{$validated['jabatan']}%")
-                    ->orWhereHas('position', function ($positionQuery) use ($validated) {
-                        $positionQuery->where('name', 'like', "%{$validated['jabatan']}%" );
-                    });
-            });
-        }
-
-        if (! empty($validated['status'])) {
-            $query->where('is_active', $validated['status'] === 'aktif');
-        }
 
         $employees = $query->orderBy('created_at', 'desc')->paginate(5)->appends($request->query());
         $roles = \Spatie\Permission\Models\Role::pluck('name')->toArray();

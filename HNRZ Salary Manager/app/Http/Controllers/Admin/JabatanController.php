@@ -16,23 +16,15 @@ class JabatanController extends Controller
             'salary_max' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $query = Jabatan::query();
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        if (! empty($validated['salary_min'])) {
-            $query->where('salary', '>=', $validated['salary_min']);
-        }
-
-        if (! empty($validated['salary_max'])) {
-            $query->where('salary', '<=', $validated['salary_max']);
-        }
+        $query = Jabatan::query()
+            ->when($validated['search'] ?? null, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when(($validated['salary_min'] ?? null) !== null, fn($q, $min) => $q->where('salary', '>=', (int) $min))
+            ->when(($validated['salary_max'] ?? null) !== null, fn($q, $max) => $q->where('salary', '<=', (int) $max));
 
         $jabatans = $query->orderBy('id')->paginate(5)->appends($request->query());
 

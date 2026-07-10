@@ -17,24 +17,16 @@ class BonusController extends Controller
             'periode_bonus' => ['nullable', 'date_format:Y-m'],
         ]);
 
-        $query = Bonus::query();
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_bonus', 'like', "%{$search}%")
-                    ->orWhere('keterangan', 'like', "%{$search}%")
-                    ->orWhere('jenis_bonus', 'like', "%{$search}%");
-            });
-        }
-
-        if (! empty($validated['jenis_bonus'])) {
-            $query->where('jenis_bonus', $validated['jenis_bonus']);
-        }
-
-        if (! empty($validated['periode_bonus'])) {
-            $query->where('periode_bonus', 'like', $validated['periode_bonus'] . '%');
-        }
+        $query = Bonus::query()
+            ->when($validated['search'] ?? null, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('nama_bonus', 'like', "%{$search}%")
+                        ->orWhere('keterangan', 'like', "%{$search}%")
+                        ->orWhere('jenis_bonus', 'like', "%{$search}%");
+                });
+            })
+            ->when($validated['jenis_bonus'] ?? null, fn($q, $jenis) => $q->where('jenis_bonus', $jenis))
+            ->when($validated['periode_bonus'] ?? null, fn($q, $periode) => $q->where('periode_bonus', 'like', $periode . '%'));
 
         $bonuses = $query->latest()->paginate(5)->appends($request->query());
 

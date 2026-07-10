@@ -16,24 +16,16 @@ class PayrollMethodController extends Controller
             'is_active' => ['nullable', 'in:0,1'],
         ]);
 
-        $query = PayrollMethod::query();
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('type', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        if (! empty($validated['type'])) {
-            $query->where('type', $validated['type']);
-        }
-
-        if ($request->filled('is_active')) {
-            $query->where('is_active', (bool) $validated['is_active']);
-        }
+        $query = PayrollMethod::query()
+            ->when($validated['search'] ?? null, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%")
+                        ->orWhere('type', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when($validated['type'] ?? null, fn($q, $type) => $q->where('type', $type))
+            ->when($validated['is_active'] ?? null, fn($q, $active) => $q->where('is_active', (bool) $active));
 
         $payrollMethods = $query->latest()->paginate(5)->appends($request->query());
         $types = PayrollMethod::query()->distinct()->pluck('type')->filter()->values();

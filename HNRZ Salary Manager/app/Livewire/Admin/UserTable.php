@@ -3,9 +3,23 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserTable extends SearchableTable
 {
+    public string $role = '';
+    public array $roles = [];
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'role' => ['except' => ''],
+    ];
+
+    public function mount(): void
+    {
+        $this->roles = Role::pluck('name')->toArray();
+    }
+
     protected function getView(): string
     {
         return 'livewire.admin.user-table';
@@ -26,6 +40,8 @@ class UserTable extends SearchableTable
                     });
             });
         }
+
+        $query->when($this->role !== '', fn ($q, $role) => $q->whereHas('roles', fn ($roleQuery) => $roleQuery->where('name', $role)));
 
         return $query->paginate($this->perPage);
     }
