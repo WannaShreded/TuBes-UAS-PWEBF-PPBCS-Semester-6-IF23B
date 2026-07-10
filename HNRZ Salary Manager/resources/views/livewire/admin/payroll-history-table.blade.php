@@ -1,40 +1,13 @@
 <div>
-    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+    <div class="mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari nama atau NIK..."
-               class="w-full md:col-span-2 border rounded px-3 py-2">
+               class="border rounded px-3 py-2 w-full md:w-80">
+    </div>
 
-        {{-- <select wire:model.live="employee_id" class="border rounded px-3 py-2">
-            <option value="">Semua karyawan</option>
-            @foreach($employeeOptions as $employeeOption)
-                <option value="{{ $employeeOption['id'] }}">{{ $employeeOption['label'] }}</option>
-            @endforeach
-        </select> --}}
-
-        <select wire:model.live="jabatan" class="border rounded px-3 py-2">
-            <option value="">Semua jabatan</option>
-            @foreach($jabatans as $jabatanOption)
-                <option value="{{ $jabatanOption }}">{{ $jabatanOption }}</option>
-            @endforeach
-        </select>
-
-        <select wire:model.live="payment_status" class="border rounded px-3 py-2">
-            <option value="">Semua status</option>
-            <option value="Sudah Dibayar">Sudah Dibayar</option>
-            <option value="Belum Dibayar">Belum Dibayar</option>
-        </select>
-
-        <select wire:model.live="payment_method" class="border rounded px-3 py-2">
-            <option value="">Semua metode</option>
-            @foreach($paymentMethods as $method)
-                <option value="{{ $method }}">{{ $method }}</option>
-            @endforeach
-        </select>
-
-        <input type="month" wire:model.live="payroll_period" class="border rounded px-3 py-2">
-        <input type="date" wire:model.live="start_date" class="border rounded px-3 py-2">
-        <input type="date" wire:model.live="end_date" class="border rounded px-3 py-2">
+    <div class="mb-4 text-sm text-gray-600">
+        Menampilkan riwayat pembayaran yang sudah dibayar dan memiliki tanggal pembayaran dalam 1 bulan terakhir.
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">
@@ -77,7 +50,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran.</td>
+                        <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran dalam 1 bulan terakhir.</td>
                     </tr>
                 @endforelse
                 </tbody>
