@@ -1,9 +1,31 @@
 <div>
-    <div class="mb-4">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari nama, NIK, email, jabatan..."
-               class="w-full md:w-80 border rounded px-3 py-2">
+               class="w-full md:col-span-2 border rounded px-3 py-2">
+
+        <select wire:model.live="role" class="border rounded px-3 py-2">
+            <option value="">Semua role</option>
+            @foreach($roles as $roleOption)
+                <option value="{{ $roleOption }}">{{ $roleOption }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model.live="status" class="border rounded px-3 py-2">
+            <option value="">Semua status</option>
+            <option value="aktif">Aktif</option>
+            <option value="nonaktif">Nonaktif</option>
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <select wire:model.live="jabatan" class="w-full md:w-80 border rounded px-3 py-2">
+            <option value="">Semua jabatan</option>
+            @foreach($jabatans as $jabatanOption)
+                <option value="{{ $jabatanOption }}">{{ $jabatanOption }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">

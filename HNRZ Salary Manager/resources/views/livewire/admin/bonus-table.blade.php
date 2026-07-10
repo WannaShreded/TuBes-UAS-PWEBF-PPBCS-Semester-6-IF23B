@@ -1,9 +1,19 @@
 <div>
-    <div class="mb-4">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari bonus, jenis, atau keterangan..."
-               class="w-full md:w-80 border rounded px-3 py-2">
+               class="w-full md:col-span-2 border rounded px-3 py-2">
+
+        <select wire:model.live="jenis_bonus" class="border rounded px-3 py-2">
+            <option value="">Semua jenis</option>
+            <option value="Tetap">Tetap</option>
+            <option value="Variabel">Variabel</option>
+        </select>
+
+        <input type="month"
+               wire:model.live="periode_bonus"
+               class="border rounded px-3 py-2">
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">

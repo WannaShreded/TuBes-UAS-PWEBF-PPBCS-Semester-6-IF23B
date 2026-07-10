@@ -1,9 +1,22 @@
 <div>
-    <div class="mb-4">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari nama, tipe, atau deskripsi..."
-               class="w-full md:w-80 border rounded px-3 py-2">
+               class="w-full md:col-span-2 border rounded px-3 py-2">
+
+        <select wire:model.live="type" class="border rounded px-3 py-2">
+            <option value="">Semua tipe</option>
+            @foreach($types as $typeOption)
+                <option value="{{ $typeOption }}">{{ $typeOption }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model.live="is_active" class="border rounded px-3 py-2">
+            <option value="">Semua status</option>
+            <option value="1">Aktif</option>
+            <option value="0">Nonaktif</option>
+        </select>
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">

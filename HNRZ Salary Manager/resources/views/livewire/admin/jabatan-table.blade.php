@@ -1,9 +1,19 @@
 <div>
-    <div class="mb-4">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari nama jabatan atau deskripsi..."
-               class="w-full md:w-80 border rounded px-3 py-2">
+               class="w-full md:col-span-1 border rounded px-3 py-2">
+
+        <input type="number"
+               wire:model.live.debounce.300ms="salary_min"
+               placeholder="Gaji min"
+               class="border rounded px-3 py-2">
+
+        <input type="number"
+               wire:model.live.debounce.300ms="salary_max"
+               placeholder="Gaji max"
+               class="border rounded px-3 py-2">
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">

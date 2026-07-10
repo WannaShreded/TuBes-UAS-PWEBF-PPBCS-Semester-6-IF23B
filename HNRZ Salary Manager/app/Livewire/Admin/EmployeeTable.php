@@ -3,9 +3,31 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Employee;
+use App\Models\Jabatan;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class EmployeeTable extends SearchableTable
 {
+    public string $role = '';
+    public string $jabatan = '';
+    public string $status = '';
+    public array $roles = [];
+    public array $jabatans = [];
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'role' => ['except' => ''],
+        'jabatan' => ['except' => ''],
+        'status' => ['except' => ''],
+    ];
+
+    public function mount(): void
+    {
+        $this->roles = Role::pluck('name')->toArray();
+        $this->jabatans = Jabatan::orderBy('name')->pluck('name')->toArray();
+    }
+
     protected function getView(): string
     {
         return 'livewire.admin.employee-table';
@@ -31,6 +53,35 @@ class EmployeeTable extends SearchableTable
             });
         }
 
+        $jabatanFilter = trim((string) $this->jabatan);
+        if ($jabatanFilter !== '') {
+            $query->where(function ($sub) use ($jabatanFilter) {
+                $sub->where('jabatan', $jabatanFilter)
+                    ->orWhereHas('position', fn ($positionQuery) => $positionQuery->where('name', $jabatanFilter));
+            });
+        }
+
+        $statusFilter = $this->normalizeStatusFilter($this->status);
+        if ($statusFilter !== null) {
+            $query->where('is_active', $statusFilter);
+        }
+
+        $roleFilter = trim((string) $this->role);
+        if ($roleFilter !== '') {
+            $query->whereRaw('LOWER(role) = ?', [Str::lower($roleFilter)]);
+        }
+
         return $query->paginate($this->perPage);
+    }
+
+    private function normalizeStatusFilter(?string $status): ?bool
+    {
+        if ($status === null || trim((string) $status) === '') {
+            return null;
+        }
+
+        $normalized = Str::lower(trim((string) $status));
+
+        return in_array($normalized, ['aktif', '1', 'true', 'yes', 'on'], true);
     }
 }

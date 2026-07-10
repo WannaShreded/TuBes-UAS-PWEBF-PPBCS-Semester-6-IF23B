@@ -6,6 +6,15 @@ use App\Models\Jabatan;
 
 class JabatanTable extends SearchableTable
 {
+    public string $salary_min = '';
+    public string $salary_max = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'salary_min' => ['except' => ''],
+        'salary_max' => ['except' => ''],
+    ];
+
     protected function getView(): string
     {
         return 'livewire.admin.jabatan-table';
@@ -24,6 +33,25 @@ class JabatanTable extends SearchableTable
             });
         }
 
+        $salaryMin = $this->normalizeNumericFilter($this->salary_min);
+        if ($salaryMin !== null) {
+            $query->where('salary', '>=', $salaryMin);
+        }
+
+        $salaryMax = $this->normalizeNumericFilter($this->salary_max);
+        if ($salaryMax !== null) {
+            $query->where('salary', '<=', $salaryMax);
+        }
+
         return $query->paginate($this->perPage);
+    }
+
+    private function normalizeNumericFilter(?string $value): ?int
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return null;
+        }
+
+        return (int) trim((string) $value);
     }
 }

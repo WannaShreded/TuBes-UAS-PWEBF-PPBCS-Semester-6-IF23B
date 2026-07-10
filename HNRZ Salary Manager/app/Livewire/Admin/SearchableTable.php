@@ -15,14 +15,11 @@ abstract class SearchableTable extends Component
 
     protected $queryString = ['search' => ['except' => '']];
 
-    public function updatingSearch(): void
+    public function updating(string $name): void
     {
-        $this->resetPage();
-    }
-
-    public function updatingPerPage(): void
-    {
-        $this->resetPage();
+        if ($name !== 'page') {
+            $this->resetPage();
+        }
     }
 
     protected function getView(): string

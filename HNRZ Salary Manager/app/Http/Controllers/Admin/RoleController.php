@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -17,18 +16,11 @@ class RoleController extends Controller
             'permission' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $query = Role::query()->withCount('permissions');
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where('name', 'like', "%{$search}%");
-        }
-
-        if (! empty($validated['permission'])) {
-            $query->whereHas('permissions', function ($permissionQuery) use ($validated) {
-                $permissionQuery->where('name', 'like', "%{$validated['permission']}%" );
+        $query = Role::query()->withCount('permissions')
+            ->when($validated['search'] ?? null, fn($q, $search) => $q->where('name', 'like', "%{$search}%"))
+            ->when($validated['permission'] ?? null, function ($q, $permission) {
+                $q->whereHas('permissions', fn($permissionQuery) => $permissionQuery->where('name', 'like', "%{$permission}%"));
             });
-        }
 
         $roles = $query->paginate(5)->appends($request->query());
         $permissions = Permission::pluck('name')->toArray();
