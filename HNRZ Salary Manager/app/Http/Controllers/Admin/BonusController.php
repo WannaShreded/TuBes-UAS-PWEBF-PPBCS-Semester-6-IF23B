@@ -72,11 +72,17 @@ class BonusController extends Controller
 
     public function destroy(Bonus $bonus)
     {
+        if ($bonus->employees()->exists()) {
+            return redirect()->route('admin.bonuses.index')
+                ->with('error', "Bonus \"{$bonus->nama_bonus}\" tidak dapat dihapus karena masih digunakan oleh karyawan.");
+        }
+
         $bonus->delete();
 
         return redirect()->route('admin.bonuses.index')
             ->with('success', 'Data bonus berhasil dihapus.');
     }
+
     public function giveToAll(Bonus $bonus)
     {
         $employeeIds = Employee::pluck('id');
