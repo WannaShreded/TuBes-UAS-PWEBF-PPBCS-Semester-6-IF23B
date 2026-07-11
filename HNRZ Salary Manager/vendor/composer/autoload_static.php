@@ -674,6 +674,7 @@ class ComposerStaticInit741a60e03a66d52c45aa4611a33d18d8
     public static $classMap = array (
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Admin\\BonusController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BonusController.php',
+        'App\\Http\\Controllers\\Admin\\DashboardStatisticController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardStatisticController.php',
         'App\\Http\\Controllers\\Admin\\EmployeeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/EmployeeController.php',
         'App\\Http\\Controllers\\Admin\\JabatanController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/JabatanController.php',
         'App\\Http\\Controllers\\Admin\\PayrollHistoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/PayrollHistoryController.php',

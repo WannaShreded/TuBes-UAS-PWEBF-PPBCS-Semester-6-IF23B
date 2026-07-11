@@ -46,6 +46,14 @@
                 </div>
 
                 @role('admin')
+                    @php
+                        $totalKaryawanAktif = \App\Models\Employee::where('is_active', true)->count();
+                        $totalJabatanAktif = \App\Models\Jabatan::count();
+                        $jabatanChartStats = \App\Models\Jabatan::withCount(['employees' => function ($q) {
+                            $q->where('is_active', true);
+                        }])->orderBy('name')->get(['id', 'name']);
+                    @endphp
+
                     @php($dashboardCards = [
                         [
                             'title' => 'Role',
@@ -119,6 +127,51 @@
                             </x-dashboard-card>
                         @endforeach
                     </div>
+
+                    {{-- ================= STATISTIC CARDS ================= --}}
+                    <div class="grid gap-4 sm:grid-cols-2" id="admin-stat-cards">
+                        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Total Karyawan Aktif</p>
+                                <p class="mt-2 text-3xl font-bold text-gray-900" id="stat-total-karyawan">
+                                    {{ $totalKaryawanAktif }}
+                                </p>
+                            </div>
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87m6-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-6 8v-2a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v2H7Z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Total Jabatan Aktif</p>
+                                <p class="mt-2 text-3xl font-bold text-gray-900" id="stat-total-jabatan">
+                                    {{ $totalJabatanAktif }}
+                                </p>
+                            </div>
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Zm3 2.25h10M8 12h8" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ================= VERTICAL BAR CHART ================= --}}
+                    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200 sm:p-6">
+                        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-900">Jumlah Karyawan per Jabatan</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4" style="position: relative; height: 200px;">
+                            <canvas id="employeeByJabatanChart"
+                                data-labels='@json($jabatanChartStats->pluck("name"))'
+                                data-values='@json($jabatanChartStats->pluck("employees_count"))'></canvas>
+                        </div>
+                    </div>
                 @endrole
 
                 @php($employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod', 'bonuses'])->first())
@@ -188,4 +241,87 @@
             </div>
         </div>
     </div>
+
+    @role('admin')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const canvas = document.getElementById('employeeByJabatanChart');
+                if (!canvas) return;
+
+                const statsUrl = @json(route('admin.dashboard.statistics'));
+
+                let labels = JSON.parse(canvas.dataset.labels || '[]');
+                let values = JSON.parse(canvas.dataset.values || '[]');
+
+                const chart = new Chart(canvas.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Jumlah Karyawan',
+                            data: values,
+                            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            maxBarThickness: 56,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'x',
+                        scales: {
+                            x: {
+                                ticks: { autoSkip: false, maxRotation: 40, minRotation: 0 },
+                                grid: { display: false },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0 },
+                            },
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.parsed.y} karyawan`,
+                                },
+                            },
+                        },
+                    },
+                });
+
+                async function refreshDashboardStatistics() {
+                    try {
+                        const res = await fetch(statsUrl, {
+                            headers: { 'Accept': 'application/json' },
+                        });
+                        if (!res.ok) return;
+                        const stats = await res.json();
+
+                        const totalKaryawanEl = document.getElementById('stat-total-karyawan');
+                        const totalJabatanEl = document.getElementById('stat-total-jabatan');
+                        if (totalKaryawanEl) totalKaryawanEl.textContent = stats.total_karyawan_aktif;
+                        if (totalJabatanEl) totalJabatanEl.textContent = stats.total_jabatan_aktif;
+
+                        chart.data.labels = stats.chart.labels;
+                        chart.data.datasets[0].data = stats.chart.data;
+                        chart.update();
+                    } catch (e) {
+                        console.error('Gagal memperbarui statistik dashboard:', e);
+                    }
+                }
+
+                setInterval(refreshDashboardStatistics, 5000);
+
+                document.addEventListener('visibilitychange', function () {
+                    if (document.visibilityState === 'visible') {
+                        refreshDashboardStatistics();
+                    }
+                });
+            });
+        </script>
+    @endrole
 </x-app-layout>

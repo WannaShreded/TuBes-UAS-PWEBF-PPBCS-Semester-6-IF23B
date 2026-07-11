@@ -6,10 +6,7 @@ import '../../services/jabatan_service.dart';
 class EditJabatanPage extends StatefulWidget {
   final Jabatan jabatan;
 
-  const EditJabatanPage({
-    super.key,
-    required this.jabatan,
-  });
+  const EditJabatanPage({super.key, required this.jabatan});
 
   @override
   State<EditJabatanPage> createState() => _EditJabatanPageState();
@@ -65,17 +62,13 @@ class _EditJabatanPageState extends State<EditJabatanPage> {
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Jabatan berhasil diperbarui"),
-        ),
+        const SnackBar(content: Text("Jabatan berhasil diperbarui")),
       );
 
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Gagal memperbarui jabatan"),
-        ),
+        const SnackBar(content: Text("Gagal memperbarui jabatan")),
       );
     }
   }
@@ -83,9 +76,7 @@ class _EditJabatanPageState extends State<EditJabatanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Edit Jabatan"),
-      ),
+      appBar: AppBar(title: const Text("Edit Jabatan")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -156,9 +147,7 @@ class _EditJabatanPageState extends State<EditJabatanPage> {
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Text("Update"),
                 ),
