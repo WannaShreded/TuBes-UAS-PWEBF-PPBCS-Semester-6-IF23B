@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\JabatanController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BonusController;
+use App\Http\Controllers\Api\PayrollMethodController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,5 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('jabatan', JabatanController::class);
 
     Route::apiResource('bonus', BonusController::class);
+
+    Route::apiResource('payroll-methods', PayrollMethodController::class);
 
 });

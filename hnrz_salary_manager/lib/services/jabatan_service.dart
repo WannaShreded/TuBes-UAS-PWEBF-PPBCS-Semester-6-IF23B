@@ -11,19 +11,26 @@ class JabatanService {
 
     final response = await http.get(
       Uri.parse("${ApiClient.baseUrl}/jabatan"),
-      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Accept": "application/json",
+        if (token != null && token.isNotEmpty) "Authorization": "Bearer $token",
+      },
     );
-
-    print(response.statusCode);
-    print(response.body);
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
+      if (body is! Map<String, dynamic> || body['data'] is! List) {
+        throw Exception('Format respons tidak valid');
+      }
 
-      return (body["data"] as List).map((e) => Jabatan.fromJson(e)).toList();
+      return (body['data'] as List)
+          .map((e) => Jabatan.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
 
-    throw Exception(response.body);
+    throw Exception(
+      'Gagal mengambil data jabatan: ${response.statusCode} ${response.body}',
+    );
   }
 
   Future<bool> create({
@@ -37,7 +44,7 @@ class JabatanService {
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization": "Bearer $token",
+        if (token != null && token.isNotEmpty) "Authorization": "Bearer $token",
       },
       body: jsonEncode({
         "name": name,
@@ -46,7 +53,13 @@ class JabatanService {
       }),
     );
 
-    return response.statusCode == 201;
+    if (response.statusCode != 201) {
+      throw Exception(
+        'Gagal membuat jabatan: ${response.statusCode} ${response.body}',
+      );
+    }
+
+    return true;
   }
 
   Future<bool> update({
@@ -61,7 +74,7 @@ class JabatanService {
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization": "Bearer $token",
+        if (token != null && token.isNotEmpty) "Authorization": "Bearer $token",
       },
       body: jsonEncode({
         "name": name,
@@ -70,7 +83,13 @@ class JabatanService {
       }),
     );
 
-    return response.statusCode == 200;
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Gagal memperbarui jabatan: ${response.statusCode} ${response.body}',
+      );
+    }
+
+    return true;
   }
 
   Future<bool> delete(int id) async {
@@ -79,13 +98,16 @@ class JabatanService {
       Uri.parse("${ApiClient.baseUrl}/jabatan/$id"),
       headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer $token",
+        if (token != null && token.isNotEmpty) "Authorization": "Bearer $token",
       },
     );
 
-    print("Status Code: ${response.statusCode}");
-    print("Response: ${response.body}");
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Gagal menghapus jabatan: ${response.statusCode} ${response.body}',
+      );
+    }
 
-    return response.statusCode == 200;
+    return true;
   }
 }

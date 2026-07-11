@@ -28,7 +28,7 @@ class JabatanController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'salary' => 'required|integer',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $jabatan = Jabatan::create($validated);
@@ -56,7 +56,7 @@ class JabatanController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'salary' => 'required|integer',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $jabatan->update($validated);
