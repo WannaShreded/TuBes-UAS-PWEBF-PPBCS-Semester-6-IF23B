@@ -34,6 +34,7 @@
                             </p>
                         </div>
 
+                    @php($employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod'])->first())
                         <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
                             Kelola data karyawan, jabatan, bonus, dan metode penggajian dari satu dashboard.
                         </div>

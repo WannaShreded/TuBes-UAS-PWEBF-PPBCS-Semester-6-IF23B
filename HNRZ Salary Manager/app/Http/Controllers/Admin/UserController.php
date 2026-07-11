@@ -17,21 +17,16 @@ class UserController extends Controller
             'role' => ['nullable', 'string', 'max:50', 'exists:roles,name'],
         ]);
 
-        $query = User::query()->with('roles');
-
-        if (! empty($validated['search'])) {
-            $search = $validated['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+        $query = User::query()->with('roles')
+            ->when($validated['search'] ?? null, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->when($validated['role'] ?? null, function ($q, $role) {
+                $q->whereHas('roles', fn($roleQuery) => $roleQuery->where('name', $role));
             });
-        }
-
-        if (! empty($validated['role'])) {
-            $query->whereHas('roles', function ($roleQuery) use ($validated) {
-                $roleQuery->where('name', $validated['role']);
-            });
-        }
 
         $users = $query->paginate(5)->appends($request->query());
         $roles = Role::pluck('name')->toArray();

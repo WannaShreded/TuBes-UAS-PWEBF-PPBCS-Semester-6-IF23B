@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PayrollMethodController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\Admin\BonusController;
 use App\Http\Controllers\Admin\DashboardStatisticController;
+use App\Http\Controllers\Admin\PayrollHistoryController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -203,6 +204,31 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('ad
     Route::delete('/payroll-methods/{id}/force-delete', [PayrollMethodController::class, 'forceDelete'])
         ->middleware('permission:delete-payroll-methods')
         ->name('payroll-methods.force-delete');
+
+    // ── PAYROLL HISTORY ──
+    Route::get('/payroll-histories', [PayrollHistoryController::class, 'index'])
+        ->middleware('permission:view-payroll-histories')
+        ->name('payroll-histories.index');
+
+    Route::get('/payroll-histories/create', [PayrollHistoryController::class, 'create'])
+        ->middleware('permission:create-payroll-histories')
+        ->name('payroll-histories.create');
+
+    Route::post('/payroll-histories', [PayrollHistoryController::class, 'store'])
+        ->middleware('permission:create-payroll-histories')
+        ->name('payroll-histories.store');
+
+    Route::get('/payroll-histories/{payrollHistory}/edit', [PayrollHistoryController::class, 'edit'])
+        ->middleware('permission:edit-payroll-histories')
+        ->name('payroll-histories.edit');
+
+    Route::put('/payroll-histories/{payrollHistory}', [PayrollHistoryController::class, 'update'])
+        ->middleware('permission:edit-payroll-histories')
+        ->name('payroll-histories.update');
+
+    Route::delete('/payroll-histories/{payrollHistory}', [PayrollHistoryController::class, 'destroy'])
+        ->middleware('permission:delete-payroll-histories')
+        ->name('payroll-histories.destroy');
 
     // ── EMPLOYEE MANAGEMENT ──
     // Recycle Bin - Employee (didaftarkan sebelum Route::resource agar tidak
