@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
@@ -118,7 +117,5 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.trash')
                          ->with('success', "User '{$nama}' berhasil dihapus permanen.");
-    }
-            ->with('success', 'Data user berhasil dihapus.');
     }
 }
