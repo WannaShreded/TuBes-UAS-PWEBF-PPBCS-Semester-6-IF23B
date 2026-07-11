@@ -4,6 +4,7 @@ import '../auth/login_page.dart';
 import '../jabatan/jabatan_page.dart';
 import '../bonus/bonus_page.dart';
 import '../../services/auth_service.dart';
+import '../payroll_method/payroll_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -58,7 +59,14 @@ class DashboardPage extends StatelessWidget {
             DashboardCard(
               title: "Payroll",
               icon: Icons.payments,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PayrollPage(),
+                  ),
+                );
+              },
             ),
 
             DashboardCard(
@@ -71,7 +79,6 @@ class DashboardPage extends StatelessWidget {
               title: "Logout",
               icon: Icons.logout,
               onTap: () async {
-
                 await AuthService().logout();
 
                 if (!context.mounted) return;
@@ -83,7 +90,6 @@ class DashboardPage extends StatelessWidget {
                   ),
                   (route) => false,
                 );
-
               },
             ),
 
@@ -95,7 +101,6 @@ class DashboardPage extends StatelessWidget {
 }
 
 class DashboardCard extends StatelessWidget {
-
   final String title;
   final IconData icon;
   final VoidCallback onTap;
@@ -109,7 +114,6 @@ class DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       elevation: 4,
       child: InkWell(
@@ -118,14 +122,8 @@ class DashboardCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Icon(
-              icon,
-              size: 55,
-            ),
-
+            Icon(icon, size: 55),
             const SizedBox(height: 15),
-
             Text(
               title,
               style: const TextStyle(
@@ -133,7 +131,6 @@ class DashboardCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
           ],
         ),
       ),

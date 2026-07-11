@@ -14,9 +14,9 @@ class Jabatan {
   factory Jabatan.fromJson(Map<String, dynamic> json) {
     return Jabatan(
       id: json['id'],
-      name: json['name'],
-      salary: json['salary'],
-      description: json['description'],
+      name: json['name'] ?? '',
+      salary: json['salary'] ?? 0,
+      description: json['description'] ?? '',
     );
   }
 }
