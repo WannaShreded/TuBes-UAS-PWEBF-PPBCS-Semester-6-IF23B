@@ -6,13 +6,16 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Admin\\BonusController' => $baseDir . '/app/Http/Controllers/Admin/BonusController.php',
+    'App\\Http\\Controllers\\Admin\\DashboardStatisticController' => $baseDir . '/app/Http/Controllers/Admin/DashboardStatisticController.php',
     'App\\Http\\Controllers\\Admin\\EmployeeController' => $baseDir . '/app/Http/Controllers/Admin/EmployeeController.php',
     'App\\Http\\Controllers\\Admin\\JabatanController' => $baseDir . '/app/Http/Controllers/Admin/JabatanController.php',
     'App\\Http\\Controllers\\Admin\\PayrollMethodController' => $baseDir . '/app/Http/Controllers/Admin/PayrollMethodController.php',
     'App\\Http\\Controllers\\Admin\\RoleController' => $baseDir . '/app/Http/Controllers/Admin/RoleController.php',
     'App\\Http\\Controllers\\Admin\\UserController' => $baseDir . '/app/Http/Controllers/Admin/UserController.php',
     'App\\Http\\Controllers\\Api\\AuthController' => $baseDir . '/app/Http/Controllers/Api/AuthController.php',
+    'App\\Http\\Controllers\\Api\\BonusController' => $baseDir . '/app/Http/Controllers/Api/BonusController.php',
     'App\\Http\\Controllers\\Api\\JabatanController' => $baseDir . '/app/Http/Controllers/Api/JabatanController.php',
     'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => $baseDir . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
     'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => $baseDir . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
@@ -26,6 +29,7 @@ return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\EmployeeController' => $baseDir . '/app/Http/Controllers/EmployeeController.php',
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
+    'App\\Http\\Middleware\\PreventBackHistoryCache' => $baseDir . '/app/Http/Middleware/PreventBackHistoryCache.php',
     'App\\Http\\Requests\\Auth\\LoginRequest' => $baseDir . '/app/Http/Requests/Auth/LoginRequest.php',
     'App\\Http\\Requests\\EmployeeStoreRequest' => $baseDir . '/app/Http/Requests/EmployeeStoreRequest.php',
     'App\\Http\\Requests\\EmployeeUpdateRequest' => $baseDir . '/app/Http/Requests/EmployeeUpdateRequest.php',
@@ -34,6 +38,7 @@ return array(
     'App\\Models\\Employee' => $baseDir . '/app/Models/Employee.php',
     'App\\Models\\Jabatan' => $baseDir . '/app/Models/Jabatan.php',
     'App\\Models\\PayrollMethod' => $baseDir . '/app/Models/PayrollMethod.php',
+    'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\View\\Components\\AppLayout' => $baseDir . '/app/View/Components/AppLayout.php',

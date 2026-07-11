@@ -23,9 +23,6 @@ class DashboardStatisticController extends Controller
 
         $totalJabatanAktif = Jabatan::query()->count();
 
-        // Ambil setiap jabatan beserta jumlah karyawan aktif yang menempatinya.
-        // withCount otomatis melakukan GROUP BY jabatan_id di belakang layar
-        // melalui relasi Jabatan::employees() (hasMany ke Employee).
         $jabatanStats = Jabatan::query()
             ->withCount(['employees' => function ($query) {
                 $query->where('is_active', true);

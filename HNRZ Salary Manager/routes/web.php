@@ -241,11 +241,12 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('ad
 
     Route::delete('/employees/{id}/force-delete', [AdminEmployeeController::class, 'forceDelete'])
         ->name('employees.force-delete');
+
+    Route::resource('employees', AdminEmployeeController::class);
+
     // ── DASHBOARD STATISTICS (khusus Admin) ──
     Route::get('/dashboard/statistics', [DashboardStatisticController::class, 'index'])
         ->name('dashboard.statistics');
-
-    Route::resource('employees', AdminEmployeeController::class);
 });
 
 Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->group(function () {

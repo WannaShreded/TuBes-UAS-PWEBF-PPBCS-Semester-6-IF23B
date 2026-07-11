@@ -672,13 +672,16 @@ class ComposerStaticInit741a60e03a66d52c45aa4611a33d18d8
     );
 
     public static $classMap = array (
+        'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Admin\\BonusController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BonusController.php',
+        'App\\Http\\Controllers\\Admin\\DashboardStatisticController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardStatisticController.php',
         'App\\Http\\Controllers\\Admin\\EmployeeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/EmployeeController.php',
         'App\\Http\\Controllers\\Admin\\JabatanController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/JabatanController.php',
         'App\\Http\\Controllers\\Admin\\PayrollMethodController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/PayrollMethodController.php',
         'App\\Http\\Controllers\\Admin\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/RoleController.php',
         'App\\Http\\Controllers\\Admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UserController.php',
         'App\\Http\\Controllers\\Api\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AuthController.php',
+        'App\\Http\\Controllers\\Api\\BonusController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BonusController.php',
         'App\\Http\\Controllers\\Api\\JabatanController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/JabatanController.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
@@ -692,6 +695,7 @@ class ComposerStaticInit741a60e03a66d52c45aa4611a33d18d8
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\EmployeeController' => __DIR__ . '/../..' . '/app/Http/Controllers/EmployeeController.php',
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
+        'App\\Http\\Middleware\\PreventBackHistoryCache' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventBackHistoryCache.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\EmployeeStoreRequest' => __DIR__ . '/../..' . '/app/Http/Requests/EmployeeStoreRequest.php',
         'App\\Http\\Requests\\EmployeeUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/EmployeeUpdateRequest.php',
@@ -700,6 +704,7 @@ class ComposerStaticInit741a60e03a66d52c45aa4611a33d18d8
         'App\\Models\\Employee' => __DIR__ . '/../..' . '/app/Models/Employee.php',
         'App\\Models\\Jabatan' => __DIR__ . '/../..' . '/app/Models/Jabatan.php',
         'App\\Models\\PayrollMethod' => __DIR__ . '/../..' . '/app/Models/PayrollMethod.php',
+        'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\View\\Components\\AppLayout' => __DIR__ . '/../..' . '/app/View/Components/AppLayout.php',
