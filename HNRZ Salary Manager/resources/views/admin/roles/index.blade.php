@@ -14,9 +14,9 @@
             @can('create-roles')
                 <a href="{{ route('admin.roles.create') }}"
                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                    + Add Role
-                    </a>
-                @endcan
+                    + Tambah Role
+                </a>
+            @endcan
         </div>
         </div>
     </x-slot>

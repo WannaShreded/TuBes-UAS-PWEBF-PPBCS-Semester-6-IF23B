@@ -7,9 +7,6 @@
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Dashboard
                 </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Akses cepat ke modul utama HR, payroll, dan manajemen pengguna.
-                </p>
             </div>
         </div>
     </x-slot>
@@ -35,45 +32,28 @@
                         </div>
 
                     @php($employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod'])->first())
+                    @role('admin')
                         <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
-                            Kelola data karyawan, jabatan, bonus, dan metode penggajian dari satu dashboard.
+                            Kelola data role, user, jabatan, bonus, metode gaji, karyawan, dan riwayat gaji dari satu dashboard
                         </div>
+                    @endrole
+                    @role('karyawan')
+                        <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
+                            Kelola data metode gaji dari satu dashboard
+                        </div>
+                    @endrole
                     </div>
                 </div>
 
                 @role('admin')
                     @php($dashboardCards = [
                         [
-                            'title' => 'Employee',
-                            'description' => 'Kelola data karyawan, kontak, dan profil kerja.',
-                            'route' => route('admin.employees.index'),
-                            'count' => \App\Models\Employee::count(),
-                            'accent' => 'from-sky-500 to-blue-600',
-                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625-.372 9.337 9.337 0 0 0 3.375-2.152 9.34 9.34 0 0 0-3.375-2.152A9.38 9.38 0 0 0 15 13.128m0 6a9.38 9.38 0 0 1-2.625-.372 9.337 9.337 0 0 1-3.375-2.152 9.34 9.34 0 0 1 3.375-2.152A9.38 9.38 0 0 1 15 13.128m-6 6a9.38 9.38 0 0 0 2.625-.372 9.337 9.337 0 0 0 3.375-2.152 9.34 9.34 0 0 0-3.375-2.152A9.38 9.38 0 0 0 9 13.128m0 6v-6m0 0V7.5A2.5 2.5 0 0 1 11.5 5h1A2.5 2.5 0 0 1 15 7.5V13.128" /></svg>',
-                        ],
-                        [
-                            'title' => 'Jabatan',
-                            'description' => 'Atur struktur jabatan dan nominal gaji.',
-                            'route' => route('admin.jabatan.index'),
-                            'count' => \App\Models\Jabatan::count(),
-                            'accent' => 'from-violet-500 to-fuchsia-600',
-                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Zm3 2.25h10M8 12h8" /></svg>',
-                        ],
-                        [
-                            'title' => 'Payroll Method',
-                            'description' => 'Kelola metode pembayaran dan detail penggajian.',
-                            'route' => route('admin.payroll-methods.index'),
-                            'count' => \App\Models\PayrollMethod::count(),
-                            'accent' => 'from-emerald-500 to-teal-600',
-                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3Zm0 0V4m0 10v6M4 12h6m4 0h6" /></svg>',
-                        ],
-                        [
-                            'title' => 'Bonus',
-                            'description' => 'Tetapkan bonus tetap maupun variabel untuk karyawan.',
-                            'route' => route('admin.bonuses.index'),
-                            'count' => \App\Models\Bonus::count(),
-                            'accent' => 'from-amber-500 to-orange-600',
-                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m4-4H8m8 8H8M5 5h14" /></svg>',
+                            'title' => 'Role',
+                            'description' => 'Kelola role dan permission untuk tiap akses.',
+                            'route' => route('admin.roles.index'),
+                            'count' => \Spatie\Permission\Models\Role::count(),
+                            'accent' => 'from-cyan-500 to-sky-600',
+                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
                         ],
                         [
                             'title' => 'User',
@@ -84,11 +64,43 @@
                             'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-8 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4" /></svg>',
                         ],
                         [
-                            'title' => 'Role',
-                            'description' => 'Kelola role dan permission untuk tiap akses.',
-                            'route' => route('admin.roles.index'),
-                            'count' => \Spatie\Permission\Models\Role::count(),
-                            'accent' => 'from-cyan-500 to-sky-600',
+                            'title' => 'Jabatan',
+                            'description' => 'Atur struktur jabatan dan nominal gaji.',
+                            'route' => route('admin.jabatan.index'),
+                            'count' => \App\Models\Jabatan::count(),
+                            'accent' => 'from-violet-500 to-fuchsia-600',
+                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Zm3 2.25h10M8 12h8" /></svg>',
+                        ],
+                        [
+                            'title' => 'Bonus',
+                            'description' => 'Tetapkan bonus tetap maupun variabel untuk karyawan.',
+                            'route' => route('admin.bonuses.index'),
+                            'count' => \App\Models\Bonus::count(),
+                            'accent' => 'from-amber-500 to-orange-600',
+                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m4-4H8m8 8H8M5 5h14" /></svg>',
+                        ],
+                        [
+                            'title' => 'Metode Gaji',
+                            'description' => 'Kelola metode pembayaran dan detail gaji.',
+                            'route' => route('admin.payroll-methods.index'),
+                            'count' => \App\Models\PayrollMethod::count(),
+                            'accent' => 'from-emerald-500 to-teal-600',
+                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3Zm0 0V4m0 10v6M4 12h6m4 0h6" /></svg>',
+                        ],
+                        [
+                            'title' => 'Karyawan',
+                            'description' => 'Kelola data karyawan, kontak, dan profil kerja.',
+                            'route' => route('admin.employees.index'),
+                            'count' => \App\Models\Employee::count(),
+                            'accent' => 'from-sky-500 to-blue-600',
+                            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625-.372 9.337 9.337 0 0 0 3.375-2.152 9.34 9.34 0 0 0-3.375-2.152A9.38 9.38 0 0 0 15 13.128m0 6a9.38 9.38 0 0 1-2.625-.372 9.337 9.337 0 0 1-3.375-2.152 9.34 9.34 0 0 1 3.375-2.152A9.38 9.38 0 0 1 15 13.128m-6 6a9.38 9.38 0 0 0 2.625-.372 9.337 9.337 0 0 0 3.375-2.152 9.34 9.34 0 0 0-3.375-2.152A9.38 9.38 0 0 0 9 13.128m0 6v-6m0 0V7.5A2.5 2.5 0 0 1 11.5 5h1A2.5 2.5 0 0 1 15 7.5V13.128" /></svg>',
+                        ],
+                        [
+                            'title' => 'Riwayat Gaji',
+                            'description' => 'Lihat riwayat pembayaran gaji karyawan.',
+                            'route' => route('admin.payroll-histories.index'),
+                            'count' => \App\Models\PayrollHistory::count(),
+                            'accent' => 'from-fuchsia-500 to-pink-600',
                             'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
                         ],
                     ])
@@ -113,7 +125,7 @@
 
                 @if($employeeProfile)
                     <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 shadow-sm sm:p-8">
-                        <h3 class="text-lg font-semibold text-indigo-800">Informasi Profil Saya</h3>
+                        <h3 class="text-lg font-semibold text-indigo-800">Informasi Profil</h3>
 
                         <div class="mt-6 grid grid-cols-1 gap-6 text-sm text-gray-700">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -135,12 +147,12 @@
                             </div>
 
                             <div class="pt-4 border-t border-indigo-200">
-                                <h4 class="mb-3 font-semibold text-indigo-800">Informasi Penggajian</h4>
+                                <h4 class="mb-3 font-semibold text-indigo-800">Informasi Gaji</h4>
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     @php($methodType = strtolower($employeeProfile->payrollMethod?->type ?? ''))
                                     @php($paymentMethodLabel = str_contains($methodType, 'bank') ? 'Bank' : ($employeeProfile->payrollMethod?->name ?? 'Not Selected'))
                                     @php($bankDisplayName = $employeeProfile->nama_bank ?: preg_replace('/^(bank|e-wallet|ewallet)\s+/i', '', $employeeProfile->payrollMethod?->name ?? ''))
-                                    <div><span class="text-gray-500">Metode Penggajian</span><div class="font-semibold">{{ $paymentMethodLabel }}</div></div>
+                                    <div><span class="text-gray-500">Metode Gaji</span><div class="font-semibold">{{ $paymentMethodLabel }}</div></div>
                                     @if(str_contains($methodType, 'bank'))
                                         <div><span class="text-gray-500">Nama Bank</span><div class="font-semibold">{{ $bankDisplayName ?: 'No Bank Information' }}</div></div>
                                         <div><span class="text-gray-500">Nomor Rekening</span><div class="font-semibold">{{ $employeeProfile->nomor_rekening ?: 'No Bank Information' }}</div></div>

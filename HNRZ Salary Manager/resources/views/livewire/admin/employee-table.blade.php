@@ -37,31 +37,45 @@
                     <th class="p-3">NIK</th>
                     <th class="p-3">Nama</th>
                     <th class="p-3">Jabatan</th>
-                    <th class="p-3">Telepon</th>
+                    <th class="p-3">No Telepon</th>
                     <th class="p-3">Email</th>
-                    <th class="p-3">Role</th>
+                    <th class="p-3">Status</th>
                     <th class="p-3">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($items as $employee)
-                    <tr class="border-b">
+                    <tr class="border-b" wire:key="employee-row-{{ $employee->id }}">
                         <td class="p-3">{{ $employee->id_pekerja }}</td>
                         <td class="p-3">{{ $employee->nik }}</td>
                         <td class="p-3 font-semibold">{{ $employee->nama_lengkap }}</td>
                         <td class="p-3">{{ $employee->position_name }}</td>
                         <td class="p-3">{{ $employee->no_telepon }}</td>
                         <td class="p-3">{{ $employee->email }}</td>
-                        <td class="p-3">{{ $employee->role }}</td>
+                        <td class="p-3">
+                            @if($employee->is_active)
+                                <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                                    Aktif
+                                </span>
+                            @else
+                                <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-700">
+                                    Nonaktif
+                                </span>
+                            @endif
+                        </td>
                         <td class="p-3">
                             <div class="flex items-center gap-3">
-                                <a href="{{ route('admin.employees.show', $employee) }}" class="text-green-600 hover:underline">Detail</a>
-                                <a href="{{ route('admin.employees.edit', $employee) }}" class="text-blue-600 hover:underline">Edit</a>
-                                <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('Hapus karyawan {{ $employee->nama_lengkap }}?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                                </form>
+                                <a href="{{ route('admin.employees.show', $employee) }}"
+                                class="text-green-600 hover:underline">Detail</a>
+                                <a href="{{ route('admin.employees.edit', $employee) }}"
+                                class="text-blue-600 hover:underline">Edit</a>
+                                <button
+                                    type="button"
+                                    wire:click="confirmDelete({{ $employee->id }}, '{{ addslashes($employee->nama_lengkap) }}')"
+                                    class="text-red-600 hover:underline"
+                                >
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>

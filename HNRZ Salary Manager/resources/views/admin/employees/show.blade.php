@@ -24,7 +24,7 @@
                                     {{ $tetapBonus->nama_bonus }} — {{ $tetapBonus->nominal_format }}
                                 </span>
                             @empty
-                                <p class="font-semibold text-gray-400">Belum ada bonus tetap</p>
+                                <p class="font-semibold text-gray-400">Tidak ada bonus tetap</p>
                             @endforelse
                         </div>
                     </div>
@@ -51,15 +51,14 @@
                         @if($employee->is_active)
                             <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">Aktif</span>
                         @else
-                            <span class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">Tidak Aktif</span>
+                            <span class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">Nonaktif</span>
                         @endif
                     </div>
                     <div class="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
                         <h3 class="font-semibold text-gray-800 mb-2">Informasi Pembayaran Karyawan</h3>
-                        <p class="text-sm text-gray-600 mb-4">Metode penggajian yang dipilih karyawan ditampilkan sebagai informasi read-only. Admin hanya dapat melihatnya.</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Metode Penggajian</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Metode Gaji</label>
                                 <input type="text" value="{{ optional($employee->payrollMethod)->name ? optional($employee->payrollMethod)->name . ' (' . optional($employee->payrollMethod)->type . ')' : 'Belum ditentukan' }}" class="block w-full border rounded px-3 py-2 bg-gray-100" readonly disabled>
                             </div>
                             @php($methodType = strtolower(optional($employee->payrollMethod)->type ?? ''))
@@ -75,7 +74,7 @@
                                 </div>
                             @else
                                 <div class="md:col-span-2 rounded border border-gray-200 bg-white p-3 text-sm text-gray-600">
-                                    Karyawan menggunakan metode Cash, sehingga tidak ada data rekening atau e-wallet yang perlu ditampilkan.
+                                    Karyawan menggunakan metode Cash, sehingga tidak ada data rekening atau e-wallet yang perlu ditampilkan
                                 </div>
                             @endif
                         </div>

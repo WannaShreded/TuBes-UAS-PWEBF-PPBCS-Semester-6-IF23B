@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Employee extends Model
 {
@@ -97,5 +98,20 @@ class Employee extends Model
     public function canBeProcessedInPayroll(): bool
     {
         return (bool) $this->is_active;
+    }
+
+    /**
+     * Query bonus yang berlaku untuk periode payroll tertentu.
+     * - Bonus Tetap: selalu ikut, terlepas dari periode_bonus.
+     * - Bonus Variabel: hanya ikut jika periode_bonus-nya sama dengan $payrollPeriod.
+     *
+     * @param string $payrollPeriod format 'Y-m', contoh '2026-07'
+     */
+    public function payrollBonusesQuery(string $payrollPeriod)
+    {
+        $periodeStart = Carbon::createFromFormat('Y-m', $payrollPeriod)->startOfMonth()->toDateString();
+        $periodeEnd = Carbon::createFromFormat('Y-m', $payrollPeriod)->endOfMonth()->toDateString();
+
+        return $this->bonuses()->whereBetween('periode_bonus', [$periodeStart, $periodeEnd]);
     }
 }

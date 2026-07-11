@@ -41,4 +41,50 @@ class RoleTable extends SearchableTable
 
         return $query->paginate($this->perPage);
     }
+
+    protected $listeners = [
+        'call-livewire-action' => 'handleAction',
+    ];
+
+    public function handleAction(string $action, array $params): void
+    {
+        if (method_exists($this, $action)) {
+            $this->$action(...$params);
+        }
+    }
+
+    public function confirmDelete(int $id, string $name): void
+    {
+        // Dispatch event ke Alpine.js di luar Livewire
+        $this->dispatch('open-confirm-modal', [
+            'type'        => 'danger',
+            'title'       => 'Konfirmasi Hapus',
+            'message'     => "Anda akan menghapus role \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
+            'confirmText' => 'Ya, Hapus',
+            'roleId'      => $id,
+        ]);
+    }
+
+    public function deleteRole(int $id): void
+    {
+        $role = Role::findOrFail($id);
+
+        if ($role->users()->count() > 0) {
+            $this->dispatch('notify',
+                message: 'Role tidak dapat dihapus karena masih digunakan oleh ' . $role->users()->count() . ' user.',
+                type: 'error'
+            );
+            return;
+        }
+
+        $role->delete();
+        $this->dispatch('notify', message: 'Role berhasil dihapus.', type: 'success');
+    }
+
+    public function render()
+    {
+        return view($this->getView(), [
+            'items' => $this->getItems(),
+        ]);
+    }
 }

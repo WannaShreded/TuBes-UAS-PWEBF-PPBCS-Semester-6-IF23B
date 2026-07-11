@@ -24,24 +24,31 @@
                     <th class="p-3">No</th>
                     <th class="p-3">Nama Jabatan</th>
                     <th class="p-3">Gaji</th>
+                    <th class="p-3">Deskripsi</th>
                     <th class="p-3">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($items as $index => $jabatan)
-                    <tr class="border-b">
+                    <tr class="border-b" wire:key="jabatan-row-{{ $jabatan->id }}">
                         <td class="p-3">{{ $items->firstItem() + $index }}</td>
                         <td class="p-3 font-semibold">{{ $jabatan->name }}</td>
                         <td class="p-3">Rp {{ number_format($jabatan->salary, 0, ',', '.') }}</td>
+                        <td class="p-3 max-w-sm whitespace-normal break-words">
+                            {{ $jabatan->description ?? '-' }}
+                        </td>
                         <td class="p-3">
                             <div class="flex items-center gap-3">
                                 @role('admin')
-                                    <a href="{{ route('admin.jabatan.edit', $jabatan) }}" class="text-blue-600 hover:underline">Edit</a>
-                                    <form action="{{ route('admin.jabatan.destroy', $jabatan) }}" method="POST" onsubmit="return confirm('Hapus jabatan {{ $jabatan->name }}?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                                    </form>
+                                    <a href="{{ route('admin.jabatan.edit', $jabatan) }}"
+                                    class="text-blue-600 hover:underline">Edit</a>
+                                    <button
+                                        type="button"
+                                        wire:click="confirmDelete({{ $jabatan->id }}, '{{ addslashes($jabatan->name) }}')"
+                                        class="text-red-600 hover:underline"
+                                    >
+                                        Hapus
+                                    </button>
                                 @endrole
                             </div>
                         </td>

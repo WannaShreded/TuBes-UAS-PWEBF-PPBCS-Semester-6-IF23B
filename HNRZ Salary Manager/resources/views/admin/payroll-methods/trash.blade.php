@@ -33,9 +33,10 @@
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="p-3">No</th>
-                                <th class="p-3">Nama Metode</th>
-                                <th class="p-3">Tipe</th>
+                                <th class="p-3">Tipe Metode</th>
+                                <th class="p-3">Nama</th>
                                 <th class="p-3">Status</th>
+                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Dihapus Pada</th>
                                 <th class="p-3">Aksi</th>
                             </tr>
@@ -44,18 +45,21 @@
                             @forelse($payrollMethods as $index => $method)
                                 <tr class="border-b">
                                     <td class="p-3">{{ $payrollMethods->firstItem() + $index }}</td>
-                                    <td class="p-3 font-semibold">{{ $method->name }}</td>
                                     <td class="p-3">
                                         <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
                                             {{ $method->type }}
                                         </span>
                                     </td>
+                                    <td class="p-3 font-semibold">{{ $method->name }}</td>
                                     <td class="p-3">
                                         @if($method->is_active)
                                             <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Aktif</span>
                                         @else
                                             <span class="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs">Nonaktif</span>
                                         @endif
+                                    </td>
+                                    <td class="p-3 max-w-sm whitespace-normal break-words">
+                                        {{ $method->description ?? '-' }}
                                     </td>
                                     <td class="p-3 text-gray-500">
                                         {{ $method->deleted_at?->format('d M Y H:i') }}

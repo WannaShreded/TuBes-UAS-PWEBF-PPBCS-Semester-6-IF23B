@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 @foreach($items as $user)
-                    <tr class="border-b">
+                    <tr class="border-b" wire:key="user-row-{{ $user->id }}">
                         <td class="p-3">{{ $user->name }}</td>
                         <td class="p-3">{{ $user->email }}</td>
                         <td class="p-3">
@@ -42,11 +42,13 @@
                                     <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-600 hover:underline">Edit</a>
                                 @endcan
                                 @can('delete-users')
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                                    </form>
+                                    <button
+                                        type="button"
+                                        wire:click="confirmDelete({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                        class="text-red-600 hover:underline"
+                                    >
+                                        Hapus
+                                    </button>
                                 @endcan
                             </td>
                         @endcanany

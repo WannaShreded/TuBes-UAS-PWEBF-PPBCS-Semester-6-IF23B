@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Metode Penggajian Saya
+            Metode Gaji
         </h2>
     </x-slot>
 
@@ -15,7 +15,7 @@
                 @endif
 
                 <p class="text-sm text-gray-600 mb-4">
-                    Pilih salah satu metode penggajian yang tersedia. Setelah memilih, sistem akan menampilkan form yang sesuai untuk Anda isi.
+                    Pilih salah satu metode gaji yang tersedia. Setelah memilih, sistem akan menampilkan form yang sesuai untuk Anda isi.
                 </p>
 
                 <form method="POST" action="{{ route('employee.payroll-methods.update') }}">

@@ -21,7 +21,7 @@
                     <th class="p-3">Gaji Pokok</th>
                     <th class="p-3">Bonus</th>
                     <th class="p-3">Total</th>
-                    <th class="p-3">Metode</th>
+                    <th class="p-3">Metode Gaji</th>
                     <th class="p-3">Status</th>
                     <th class="p-3">Tanggal</th>
                     <th class="p-3">Aksi</th>
@@ -29,7 +29,7 @@
                 </thead>
                 <tbody>
                 @forelse($items as $history)
-                    <tr class="border-b">
+                    <tr class="border-b" wire:key="payroll-history-row-{{ $history->id }}">
                         <td class="p-3">{{ $history->employee->nama_lengkap ?? '-' }}</td>
                         <td class="p-3">{{ $history->jabatan }}</td>
                         <td class="p-3">{{ $history->payroll_period }}</td>
@@ -40,12 +40,15 @@
                         <td class="p-3">{{ $history->payment_status }}</td>
                         <td class="p-3">{{ $history->payment_date ? $history->payment_date->format('d-m-Y') : '-' }}</td>
                         <td class="p-3 flex gap-3">
-                            <a href="{{ route('admin.payroll-histories.edit', $history) }}" class="text-blue-600 hover:underline">Edit</a>
-                            <form action="{{ route('admin.payroll-histories.destroy', $history) }}" method="POST" onsubmit="return confirm('Hapus riwayat ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                            </form>
+                            <a href="{{ route('admin.payroll-histories.edit', $history) }}"
+                            class="text-blue-600 hover:underline">Edit</a>
+                            <button
+                                type="button"
+                                wire:click="confirmDelete({{ $history->id }}, 'riwayat gaji ini')"
+                                class="text-red-600 hover:underline"
+                            >
+                                Hapus
+                            </button>
                         </td>
                     </tr>
                 @empty

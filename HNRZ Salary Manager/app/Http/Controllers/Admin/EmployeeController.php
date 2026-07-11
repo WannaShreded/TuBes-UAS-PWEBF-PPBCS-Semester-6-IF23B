@@ -116,7 +116,10 @@ class EmployeeController extends Controller
     {
         $jabatans = Jabatan::orderBy('name')->get();
         $variableBonuses = Bonus::where('jenis_bonus', 'Variabel')->orderBy('nama_bonus')->get();
-        $currentBonusVariabelId = $employee->bonuses()->where('jenis_bonus', 'Variabel')->value('bonuses.id');
+        $currentVariableBonusIds = $employee->bonuses()
+            ->where('jenis_bonus', 'Variabel')
+            ->pluck('bonuses.id')
+            ->toArray();
 
         $tetapBonuses = Bonus::where('jenis_bonus', 'Tetap')->orderBy('nama_bonus')->get();
         $currentTetapBonusIds = $employee->bonuses()
@@ -125,7 +128,7 @@ class EmployeeController extends Controller
             ->toArray();
 
         return view('admin.employees.edit', compact(
-            'employee', 'jabatans', 'variableBonuses', 'currentBonusVariabelId',
+            'employee', 'jabatans', 'variableBonuses', 'currentVariableBonusIds',
             'tetapBonuses', 'currentTetapBonusIds'
         ));
     }
@@ -137,6 +140,8 @@ class EmployeeController extends Controller
         $request->validate([
             'bonus_tetap_ids' => 'nullable|array',
             'bonus_tetap_ids.*' => 'exists:bonuses,id',
+            'bonus_variabel_ids' => 'nullable|array',
+            'bonus_variabel_ids.*' => 'exists:bonuses,id',
         ]);
 
         return DB::transaction(function () use ($employee, $validated, $request) {
@@ -170,11 +175,10 @@ class EmployeeController extends Controller
                 $user->syncRoles([$validated['role']]);
             }
 
-            $syncIds = $request->input('bonus_tetap_ids', []);
-
-            if (! empty($validated['bonus_variabel_id'])) {
-                $syncIds[] = $validated['bonus_variabel_id'];
-            }
+            $syncIds = array_merge(
+                $request->input('bonus_tetap_ids', []),
+                $request->input('bonus_variabel_ids', [])
+            );
 
             $employee->bonuses()->sync($syncIds);
 
