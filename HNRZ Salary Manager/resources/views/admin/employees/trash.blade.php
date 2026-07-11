@@ -41,7 +41,9 @@
                                     <th class="p-3">NIK</th>
                                     <th class="p-3">Nama</th>
                                     <th class="p-3">Jabatan</th>
+                                    <th class="p-3">No Telepon</th>
                                     <th class="p-3">Email</th>
+                                    <th class="p-3">Status</th>
                                     <th class="p-3">Dihapus Pada</th>
                                     <th class="p-3">Aksi</th>
                                 </tr>
@@ -53,7 +55,19 @@
                                         <td class="p-3">{{ $employee->nik }}</td>
                                         <td class="p-3 font-semibold">{{ $employee->nama_lengkap }}</td>
                                         <td class="p-3">{{ $employee->position_name }}</td>
+                                        <td class="p-3">{{ $employee->no_telepon }}</td>
                                         <td class="p-3">{{ $employee->email }}</td>
+                                        <td class="p-3">
+                                            @if($employee->is_active)
+                                                <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                                                    Aktif
+                                                </span>
+                                            @else
+                                                <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-700">
+                                                    Nonaktif
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="p-3 text-gray-500">
                                             {{ $employee->deleted_at?->format('d M Y H:i') }}
                                         </td>

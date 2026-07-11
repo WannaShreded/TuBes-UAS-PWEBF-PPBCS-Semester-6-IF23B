@@ -25,7 +25,7 @@
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Gaji
+                            Gaji (Rp)
                         </label>
                         <input type="number" name="salary" value="{{ old('salary') }}"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -37,9 +37,9 @@
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Deskripsi Jabatan
+                            Deskripsi <span class="text-gray-400 font-normal">(Opsional)</span>
                         </label>
-                        <textarea name="description" rows="3" class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Opsional">{{ old('description') }}</textarea>
+                        <textarea name="description" rows="3" placeholder="Isi Deskripsi Jabatan (Opsional) "class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">{{ old('description') }}</textarea>
                         @error('description')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -48,7 +48,7 @@
                     <div class="flex gap-3">
                         <button type="submit"
                                 class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Simpan Jabatan
+                            Simpan
                         </button>
                         <a href="{{ route('admin.jabatan.index') }}"
                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">

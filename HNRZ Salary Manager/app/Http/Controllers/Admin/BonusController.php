@@ -21,7 +21,7 @@ class BonusController extends Controller
             ->when($validated['search'] ?? null, function ($q, $search) {
                 $q->where(function ($sub) use ($search) {
                     $sub->where('nama_bonus', 'like', "%{$search}%")
-                        ->orWhere('keterangan', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%")
                         ->orWhere('jenis_bonus', 'like', "%{$search}%");
                 });
             })
@@ -45,7 +45,7 @@ class BonusController extends Controller
             'nominal_bonus' => 'required|numeric|min:0',
             'jenis_bonus' => 'required|in:Tetap,Variabel',
             'periode_bonus' => 'required|date_format:Y-m',
-            'keterangan' => 'nullable|string|max:500',
+            'deskripsi' => 'nullable|string|max:500',
         ]);
 
         Bonus::create([
@@ -53,7 +53,7 @@ class BonusController extends Controller
             'nominal_bonus' => $request->nominal_bonus,
             'jenis_bonus' => $request->jenis_bonus,
             'periode_bonus' => $request->periode_bonus . '-01',
-            'keterangan' => $request->keterangan,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('admin.bonuses.index')
@@ -72,7 +72,7 @@ class BonusController extends Controller
             'nominal_bonus' => 'required|numeric|min:0',
             'jenis_bonus' => 'required|in:Tetap,Variabel',
             'periode_bonus' => 'required|date_format:Y-m',
-            'keterangan' => 'nullable|string|max:500',
+            'deskripsi' => 'nullable|string|max:500',
         ]);
 
         $bonus->update([
@@ -80,7 +80,7 @@ class BonusController extends Controller
             'nominal_bonus' => $request->nominal_bonus,
             'jenis_bonus' => $request->jenis_bonus,
             'periode_bonus' => $request->periode_bonus . '-01',
-            'keterangan' => $request->keterangan,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('admin.bonuses.index')

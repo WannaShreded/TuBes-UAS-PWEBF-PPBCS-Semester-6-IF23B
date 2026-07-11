@@ -18,7 +18,7 @@
                             Nama Bonus
                         </label>
                         <input type="text" name="nama_bonus" value="{{ old('nama_bonus') }}"
-                               placeholder="contoh: Lembur, THR, Bonus Proyek"
+                               placeholder="Contoh: Lembur, THR, Bonus Proyek"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
                         @error('nama_bonus')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -31,7 +31,7 @@
                             Nominal Bonus (Rp)
                         </label>
                         <input type="number" name="nominal_bonus" value="{{ old('nominal_bonus') }}"
-                               min="0" step="1000" placeholder="contoh: 500000"
+                               min="0" step="1000" placeholder="Contoh: 500000"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
                         @error('nominal_bonus')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -72,15 +72,15 @@
                         @enderror
                     </div>
 
-                    {{-- Keterangan --}}
+                    {{-- Deskripsi --}}
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Keterangan <span class="text-gray-400 font-normal">(opsional)</span>
+                            Deskripsi <span class="text-gray-400 font-normal">(Opsional)</span>
                         </label>
-                        <textarea name="keterangan" rows="3"
-                                  placeholder="Catatan tambahan..."
-                                  class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">{{ old('keterangan') }}</textarea>
-                        @error('keterangan')
+                        <textarea name="deskripsi" rows="3"
+                                  placeholder="Isi Deskripsi Bonus (Opsional)"
+                                  class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">{{ old('deskripsi') }}</textarea>
+                        @error('deskripsi')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>

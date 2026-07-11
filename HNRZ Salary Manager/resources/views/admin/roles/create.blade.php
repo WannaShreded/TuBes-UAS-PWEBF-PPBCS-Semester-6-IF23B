@@ -54,7 +54,7 @@
                     <div class="flex gap-3">
                         <button type="submit"
                                 class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Save Role
+                            Simpan
                         </button>
                         <a href="{{ route('admin.roles.index') }}"
                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">

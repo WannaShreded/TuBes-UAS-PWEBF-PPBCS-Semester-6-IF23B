@@ -17,7 +17,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Metode</label>
                         <input type="text" name="type" value="{{ old('type') }}"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                               placeholder="contoh: Bank, E-Wallet, Cash">
+                               placeholder="Contoh: Bank, E-Wallet, Cash">
                         @error('type')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
@@ -26,17 +26,8 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama Metode</label>
                         <input type="text" name="name" value="{{ old('name') }}"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                               placeholder="contoh: BCA - Gaji Staff / GoPay Karyawan">
+                               placeholder="Contoh: BCA - Gaji Staff / GoPay Karyawan">
                         @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                    </div>
-
-                    {{-- Deskripsi --}}
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi (opsional)</label>
-                        <textarea name="description" rows="3"
-                                  class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                  placeholder="Catatan tambahan mengenai metode ini">{{ old('description') }}</textarea>
-                        @error('description')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="mb-6">
@@ -44,6 +35,15 @@
                             <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                             Aktifkan metode ini
                         </label>
+                    </div>
+
+                    {{-- Deskripsi --}}
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                        <textarea name="description" rows="3"
+                                  class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                  placeholder="Isi Deskripsi Metode Penggajian (Opsional)">{{ old('description') }}</textarea>
+                        @error('description')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="flex gap-3">

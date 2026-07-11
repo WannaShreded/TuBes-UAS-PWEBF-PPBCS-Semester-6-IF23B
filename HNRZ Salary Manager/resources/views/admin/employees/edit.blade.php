@@ -61,7 +61,7 @@
                             <input type="text" id="gaji" readonly
                                    class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
                                    placeholder="Otomatis terisi setelah memilih jabatan">
-                            <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data Jabatan.</p>
+                            <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data jabatan</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Bonus Tetap</label>
@@ -82,23 +82,48 @@
                             @error('bonus_tetap_ids')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Bonus Variabel</label>
-                            <select name="bonus_variabel_id" class="block w-full border rounded px-3 py-2">
-                                <option value="">-- Tidak Ada --</option>
-                                @foreach($variableBonuses as $variableBonus)
-                                    <option value="{{ $variableBonus->id }}"
-                                        {{ old('bonus_variabel_id', $currentBonusVariabelId) == $variableBonus->id ? 'selected' : '' }}>
-                                        {{ $variableBonus->nama_bonus }} ({{ $variableBonus->nominal_format }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('bonus_variabel_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                            <p class="text-xs text-gray-400 mt-1">Pilih bonus variabel khusus untuk karyawan ini (opsional).</p>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Bonus Variabel
+                            </label>
+
+                            <div class="block w-full border rounded px-3 py-2 space-y-2 max-h-40 overflow-y-auto">
+                                @forelse($variableBonuses as $variableBonus)
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="bonus_variabel_ids[]"
+                                            value="{{ $variableBonus->id }}"
+                                            {{ in_array($variableBonus->id, old('bonus_variabel_ids', $currentVariableBonusIds ?? [])) ? 'checked' : '' }}
+                                            class="rounded border-gray-300">
+
+                                        <span>
+                                            {{ $variableBonus->nama_bonus }}
+                                            — {{ $variableBonus->nominal_format }}
+                                        </span>
+                                    </label>
+                                @empty
+                                    <span class="text-gray-400 text-sm">
+                                        Belum ada bonus variabel yang tersedia
+                                    </span>
+                                @endforelse
+                            </div>
+
+                            @error('bonus_variabel_ids')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
                             <textarea name="alamat" rows="3" class="block w-full border rounded px-3 py-2">{{ old('alamat', $employee->alamat) }}</textarea>
                             @error('alamat')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="is_active" class="block w-full border rounded px-3 py-2">
+                                <option value="1" {{ old('is_active', $employee->is_active ? '1' : '0') == '1' ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ old('is_active', $employee->is_active ? '1' : '0') == '0' ? 'selected' : '' }}>Nonaktif</option>
+                            </select>
+                            <p class="text-xs text-gray-400 mt-1">Karyawan nonaktif tidak diproses dalam payroll</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
@@ -108,14 +133,6 @@
                                 <option value="karyawan" {{ old('role', $employee->role) == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
                             </select>
                             @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <select name="is_active" class="block w-full border rounded px-3 py-2">
-                                <option value="1" {{ old('is_active', $employee->is_active ? '1' : '0') == '1' ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ old('is_active', $employee->is_active ? '1' : '0') == '0' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                            <p class="text-xs text-gray-400 mt-1">Karyawan nonaktif tidak diproses dalam payroll.</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru (opsional)</label>
@@ -128,10 +145,9 @@
                         </div>
                         <div class="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
                             <h3 class="font-semibold text-gray-800 mb-2">Informasi Pembayaran Karyawan</h3>
-                            <p class="text-sm text-gray-600 mb-4">Metode penggajian yang dipilih karyawan ditampilkan sebagai informasi read-only. Admin hanya dapat melihatnya.</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Metode Penggajian</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Metode Gaji</label>
                                     <input type="text" value="{{ optional($employee->payrollMethod)->name ? optional($employee->payrollMethod)->name . ' (' . optional($employee->payrollMethod)->type . ')' : 'Belum ditentukan' }}" class="block w-full border rounded px-3 py-2 bg-gray-100" readonly disabled>
                                 </div>
                                 @php($methodType = strtolower(optional($employee->payrollMethod)->type ?? ''))
@@ -147,7 +163,7 @@
                                     </div>
                                 @else
                                     <div class="md:col-span-2 rounded border border-gray-200 bg-white p-3 text-sm text-gray-600">
-                                        Karyawan menggunakan metode Cash, sehingga tidak ada data rekening atau e-wallet yang perlu ditampilkan.
+                                        Karyawan menggunakan metode Cash, sehingga tidak ada data rekening atau e-wallet yang perlu ditampilkan
                                     </div>
                                 @endif
                             </div>

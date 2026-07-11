@@ -32,29 +32,37 @@
                             <input type="email" name="email" value="{{ old('email') }}" class="block w-full border rounded px-3 py-2">
                             @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
-                       <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
-    <select name="jabatan" id="jabatan" class="block w-full border rounded px-3 py-2">
-        <option value="">-- Pilih Jabatan --</option>
-        @foreach($jabatans as $jabatan)
-            <option value="{{ $jabatan->name }}" data-salary="{{ $jabatan->salary }}" {{ old('jabatan') == $jabatan->name ? 'selected' : '' }}>
-                {{ $jabatan->name }}
-            </option>
-        @endforeach
-    </select>
-    @error('jabatan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-</div>
-<div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Gaji</label>
-    <input type="text" id="gaji" readonly
-           class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
-           placeholder="Otomatis terisi setelah memilih jabatan">
-    <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data Jabatan.</p>
-</div>
+                        <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+                        <select name="jabatan" id="jabatan" class="block w-full border rounded px-3 py-2">
+                            <option value="">-- Pilih Jabatan --</option>
+                            @foreach($jabatans as $jabatan)
+                                <option value="{{ $jabatan->name }}" data-salary="{{ $jabatan->salary }}" {{ old('jabatan') == $jabatan->name ? 'selected' : '' }}>
+                                    {{ $jabatan->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('jabatan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gaji</label>
+                        <input type="text" id="gaji" readonly
+                            class="block w-full border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
+                            placeholder="Otomatis terisi setelah memilih jabatan">
+                        <p class="text-xs text-gray-400 mt-1">Gaji mengikuti nominal yang diatur pada data jabatan</p>
+                    </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
                             <textarea name="alamat" rows="3" class="block w-full border rounded px-3 py-2">{{ old('alamat') }}</textarea>
                             @error('alamat')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="is_active" class="block w-full border rounded px-3 py-2">
+                                <option value="1" {{ old('is_active', true) ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ old('is_active') === '0' ? 'selected' : '' }}>Nonaktif</option>
+                            </select>
+                            <p class="text-xs text-gray-400 mt-1">Karyawan nonaktif tidak diproses dalam payroll</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
@@ -64,14 +72,6 @@
                                 <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
                             </select>
                             @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <select name="is_active" class="block w-full border rounded px-3 py-2">
-                                <option value="1" {{ old('is_active', true) ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ old('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                            <p class="text-xs text-gray-400 mt-1">Karyawan nonaktif tidak diproses dalam payroll.</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
@@ -85,7 +85,7 @@
                     </div>
 
                     <div class="flex gap-3 mt-8">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan Karyawan</button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan</button>
                         <a href="{{ route('admin.employees.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Batal</a>
                     </div>
                 </form>

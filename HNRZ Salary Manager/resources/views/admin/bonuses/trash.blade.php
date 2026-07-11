@@ -38,6 +38,7 @@
                                 <th class="p-3">Nominal</th>
                                 <th class="p-3">Jenis</th>
                                 <th class="p-3">Periode</th>
+                                <th class="p-3">Deskripsi</th>
                                 <th class="p-3">Dihapus Pada</th>
                                 <th class="p-3">Aksi</th>
                             </tr>
@@ -58,6 +59,9 @@
                                         </span>
                                     </td>
                                     <td class="p-3">{{ $bonus->periode_label }}</td>
+                                    <td class="p-3 max-w-sm whitespace-normal break-words">
+                                        {{ $bonus->deskripsi ?? '-' }}
+                                    </td>
                                     <td class="p-3 text-gray-500">
                                         {{ $bonus->deleted_at?->format('d M Y H:i') }}
                                     </td>

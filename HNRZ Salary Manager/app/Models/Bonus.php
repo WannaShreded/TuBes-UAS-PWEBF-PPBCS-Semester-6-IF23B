@@ -14,7 +14,7 @@ class Bonus extends Model
         'nominal_bonus',
         'jenis_bonus',
         'periode_bonus',
-        'keterangan',
+        'deskripsi',
     ];
 
     protected $casts = [

@@ -53,4 +53,31 @@ class PayrollMethodTable extends SearchableTable
 
         return $query->paginate($this->perPage);
     }
+
+    protected $listeners = ['call-livewire-action' => 'handleAction'];
+
+    public function handleAction(string $action, array $params): void
+    {
+        if (method_exists($this, $action)) {
+            $this->$action(...$params);
+        }
+    }
+
+    public function confirmDelete(int $id, string $name): void
+    {
+        $this->dispatch('open-confirm-modal', [
+            'type'           => 'danger',
+            'title'          => 'Konfirmasi Hapus',
+            'message'        => "Anda akan menghapus metode penggajian \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
+            'confirmText'    => 'Ya, Hapus',
+            'livewireAction' => 'deleteItem',
+            'roleId'         => $id,
+        ]);
+    }
+
+    public function deleteItem(int $id): void
+    {
+        PayrollMethod::findOrFail($id)->delete();
+        $this->dispatch('notify', message: 'Metode penggajian berhasil dihapus.', type: 'success');
+    }
 }

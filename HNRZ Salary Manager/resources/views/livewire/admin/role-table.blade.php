@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 @forelse($items as $index => $role)
-                    <tr class="border-b">
+                    <tr class="border-b" wire:key="role-row-{{ $role->id }}">
                         <td class="p-3">{{ $items->firstItem() + $index }}</td>
                         <td class="p-3 font-semibold">{{ $role->name }}</td>
                         <td class="p-3">
@@ -41,11 +41,13 @@
                                         <a href="{{ route('admin.roles.edit', $role) }}" class="text-blue-600 hover:underline">Edit</a>
                                     @endcan
                                     @can('delete-roles')
-                                        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" onsubmit="return confirm('Hapus role {{ $role->name }}?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                                        </form>
+                                        <button
+                                            type="button"
+                                            wire:click="confirmDelete({{ $role->id }}, '{{ addslashes($role->name) }}')"
+                                            class="text-red-600 hover:underline"
+                                        >
+                                            Hapus
+                                        </button>
                                     @endcan
                                 </div>
                             </td>
