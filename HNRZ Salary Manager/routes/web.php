@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PayrollMethodController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\Admin\BonusController;
+use App\Http\Controllers\Admin\DashboardStatisticController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -214,6 +215,9 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('ad
 
     Route::delete('/employees/{id}/force-delete', [AdminEmployeeController::class, 'forceDelete'])
         ->name('employees.force-delete');
+    // ── DASHBOARD STATISTICS (khusus Admin) ──
+    Route::get('/dashboard/statistics', [DashboardStatisticController::class, 'index'])
+        ->name('dashboard.statistics');
 
     Route::resource('employees', AdminEmployeeController::class);
 });
