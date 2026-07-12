@@ -6,6 +6,7 @@ use App\Models\Jabatan;
 
 class JabatanTable extends SearchableTable
 {
+    public string $sortField = 'id';
     public string $salary_min = '';
     public string $salary_max = '';
 
@@ -22,7 +23,7 @@ class JabatanTable extends SearchableTable
 
     public function getItems()
     {
-        $query = Jabatan::query()->orderBy('id');
+        $query = Jabatan::query();
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -43,7 +44,7 @@ class JabatanTable extends SearchableTable
             $query->where('salary', '<=', $salaryMax);
         }
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['id', 'name', 'gaji_pokok', 'created_at'], 'id')->paginate($this->perPage);
     }
 
     private function normalizeNumericFilter(?string $value): ?int

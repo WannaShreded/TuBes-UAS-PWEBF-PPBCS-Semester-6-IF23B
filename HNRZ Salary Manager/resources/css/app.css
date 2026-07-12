@@ -1,6 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :focus-visible {
+        @apply outline-none ring-2 ring-indigo-600 ring-offset-2;
+    }
+}
+
+@layer components {
+    .app-surface { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
+    .app-page { @apply mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8; }
+    .app-button { @apply inline-flex items-center justify-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors duration-200 ease-in-out; }
+    .app-button-primary { @apply app-button bg-indigo-600 text-white hover:bg-indigo-700; }
+    .app-button-secondary { @apply app-button border border-slate-300 bg-white text-slate-700 hover:bg-slate-50; }
+    .app-table { @apply min-w-full divide-y divide-slate-200 text-sm; }
+    .app-table th { @apply whitespace-nowrap bg-slate-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600; }
+    .app-table td { @apply px-4 py-3 align-middle text-slate-700; }
+    .app-table tbody tr { @apply border-b border-slate-100 transition-colors duration-150 hover:bg-slate-50; }
+    .app-skeleton { @apply animate-pulse rounded bg-slate-200; }
+}
+
 [x-cloak] {
     display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }

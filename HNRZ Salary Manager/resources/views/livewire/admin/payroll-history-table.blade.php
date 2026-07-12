@@ -16,20 +16,21 @@
                class="border rounded px-3 py-2">
     </div>
 
-    <div wire:loading.class="opacity-60" class="transition-opacity duration-200">
+    <div wire:loading.class="opacity-60" class="relative transition-opacity duration-200">
+        <div wire:loading.flex class="absolute inset-x-0 top-0 z-10 items-center gap-2 rounded-lg bg-white/90 px-3 py-2 text-sm font-medium text-slate-600 shadow-sm" role="status"><span class="h-3 w-3 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600"></span>Memperbarui data…</div>
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-100">
+            <table class="app-table">
+                <thead>
                 <tr>
                     <th class="p-3">Karyawan</th>
                     <th class="p-3">Jabatan</th>
-                    <th class="p-3">Periode</th>
+                    <th><button wire:click="sortBy('payroll_period')">Periode</button></th>
                     <th class="p-3">Gaji Pokok</th>
                     <th class="p-3">Bonus</th>
-                    <th class="p-3">Total</th>
+                    <th><button wire:click="sortBy('total_dibayarkan')">Total</button></th>
                     <th class="p-3">Metode</th>
-                    <th class="p-3">Status</th>
-                    <th class="p-3">Tanggal</th>
+                    <th><button wire:click="sortBy('payment_status')">Status</button></th>
+                    <th><button wire:click="sortBy('payment_date')">Tanggal</button></th>
                     <th class="p-3">Aksi</th>
                 </tr>
                 </thead>

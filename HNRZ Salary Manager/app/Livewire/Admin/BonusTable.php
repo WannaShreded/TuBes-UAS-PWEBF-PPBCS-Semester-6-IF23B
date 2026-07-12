@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class BonusTable extends SearchableTable
 {
+    public string $sortField = 'created_at';
     public string $jenis_bonus = '';
     public string $periode_bonus = '';
 
@@ -50,7 +51,7 @@ class BonusTable extends SearchableTable
             $query->whereBetween('periode_bonus', [$monthStart, $monthEnd]);
         }
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['nama_bonus', 'jenis_bonus', 'nominal_bonus', 'periode_bonus', 'created_at'])->paginate($this->perPage);
     }
 
     public function confirmGiveToAll(int $id, string $name): void

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 class PayrollMethodTable extends SearchableTable
 {
+    public string $sortField = 'created_at';
     public string $type = '';
     public string $is_active = '';
     public array $types = [];
@@ -29,7 +30,7 @@ class PayrollMethodTable extends SearchableTable
 
     public function getItems()
     {
-        $query = PayrollMethod::query()->latest();
+        $query = PayrollMethod::query();
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -51,7 +52,7 @@ class PayrollMethodTable extends SearchableTable
             $query->where('is_active', $statusFilter === '1');
         }
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['name', 'type', 'is_active', 'created_at'])->paginate($this->perPage);
     }
 
     protected $listeners = ['call-livewire-action' => 'handleAction'];

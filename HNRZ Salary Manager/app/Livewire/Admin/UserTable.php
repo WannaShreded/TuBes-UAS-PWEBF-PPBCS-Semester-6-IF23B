@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 
 class UserTable extends SearchableTable
 {
+    public string $sortField = 'name';
     public string $role = '';
     public array $roles = [];
 
@@ -27,7 +28,7 @@ class UserTable extends SearchableTable
 
     public function getItems()
     {
-        $query = User::query()->with('roles')->orderBy('name');
+        $query = User::query()->with('roles');
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -43,7 +44,7 @@ class UserTable extends SearchableTable
 
         $query->when($this->role !== '', fn ($q, $role) => $q->whereHas('roles', fn ($roleQuery) => $roleQuery->where('name', $role)));
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['name', 'email', 'created_at'], 'name')->paginate($this->perPage);
     }
 
     protected $listeners = ['call-livewire-action' => 'handleAction'];

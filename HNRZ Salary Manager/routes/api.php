@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\PayrollMethodController;
 use App\Http\Controllers\Api\EmployeeProfileController;
 use App\Http\Controllers\Api\EmployeePayrollMethodController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\PayrollHistoryController;
+use App\Http\Controllers\Api\StatisticController;
 
 
 Route::get('/user', function (Request $request) {
@@ -28,6 +30,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee/payroll-methods', [EmployeePayrollMethodController::class, 'index']);
     Route::put('/employee/payroll-method', [EmployeePayrollMethodController::class, 'update']);
 
+});
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/statistics', [StatisticController::class, 'index']);
+    Route::get('/payroll-histories', [PayrollHistoryController::class, 'index']);
+    Route::post('/payroll-histories', [PayrollHistoryController::class, 'store']);
+    Route::delete('/payroll-histories/{payrollHistory}', [PayrollHistoryController::class, 'destroy']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
