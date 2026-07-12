@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const DashboardPage(),
+                  builder: (_) => DashboardPage(roles: result.roles),
         ),
       );
     } else {
