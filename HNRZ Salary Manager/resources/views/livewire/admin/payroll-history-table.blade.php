@@ -1,13 +1,19 @@
 <div>
-    <div class="mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <input type="text"
                wire:model.live.debounce.300ms="search"
                placeholder="Cari nama atau NIK..."
-               class="border rounded px-3 py-2 w-full md:w-80">
-    </div>
+               class="w-full md:col-span-2 border rounded px-3 py-2">
 
-    <div class="mb-4 text-sm text-gray-600">
-        Menampilkan riwayat pembayaran yang sudah dibayar dan memiliki tanggal pembayaran dalam 1 bulan terakhir.
+        <select wire:model.live="payment_status" class="border rounded px-3 py-2">
+            <option value="">Semua status</option>
+            <option value="Sudah Dibayar">Sudah Dibayar</option>
+            <option value="Belum Dibayar">Belum Dibayar</option>
+        </select>
+
+        <input type="month"
+               wire:model.live="payroll_period"
+               class="border rounded px-3 py-2">
     </div>
 
     <div wire:loading.class="opacity-60" class="transition-opacity duration-200">
@@ -21,7 +27,7 @@
                     <th class="p-3">Gaji Pokok</th>
                     <th class="p-3">Bonus</th>
                     <th class="p-3">Total</th>
-                    <th class="p-3">Metode Gaji</th>
+                    <th class="p-3">Metode</th>
                     <th class="p-3">Status</th>
                     <th class="p-3">Tanggal</th>
                     <th class="p-3">Aksi</th>
@@ -37,7 +43,13 @@
                         <td class="p-3">Rp {{ number_format($history->bonus, 0, ',', '.') }}</td>
                         <td class="p-3 font-semibold">Rp {{ number_format($history->total_dibayarkan, 0, ',', '.') }}</td>
                         <td class="p-3">{{ $history->payment_method }}</td>
-                        <td class="p-3">{{ $history->payment_status }}</td>
+                        <td class="p-3">
+                            <span @class([
+                                'px-2 py-1 rounded text-xs font-medium',
+                                'bg-green-100 text-green-800' => $history->payment_status === 'Sudah Dibayar',
+                                'bg-yellow-100 text-yellow-800' => $history->payment_status === 'Belum Dibayar',
+                            ])>{{ $history->payment_status }}</span>
+                        </td>
                         <td class="p-3">{{ $history->payment_date ? $history->payment_date->format('d-m-Y') : '-' }}</td>
                         <td class="p-3 flex gap-3">
                             <a href="{{ route('admin.payroll-histories.edit', $history) }}"
@@ -52,8 +64,8 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran dalam 1 bulan terakhir.</td>
+                    <tr wire:key="payroll-history-empty">
+                        <td colspan="10" class="p-3 text-center text-gray-400">Belum ada riwayat pembayaran.</td>
                     </tr>
                 @endforelse
                 </tbody>

@@ -49,13 +49,14 @@ class PayrollHistoryController extends Controller
         $validated = $request->validate([
             'employee_ids' => ['required', 'array', 'min:1'],
             'employee_ids.*' => ['exists:employees,id'],
+            'payroll_period' => ['required', 'date_format:Y-m'],
             'payment_status' => ['required', 'in:Sudah Dibayar,Belum Dibayar'],
         ]);
 
         $employees = Employee::with('payrollMethod')->whereIn('id', $validated['employee_ids'])->get();
         $paymentStatus = $validated['payment_status'];
         $paymentDate = $paymentStatus === 'Sudah Dibayar' ? now()->toDateString() : null;
-        $payrollPeriod = now()->format('Y-m');
+        $payrollPeriod = $validated['payroll_period'];
         $warnings = [];
 
         DB::transaction(function () use ($employees, $paymentStatus, $paymentDate, $payrollPeriod, &$warnings) {
@@ -148,5 +149,50 @@ class PayrollHistoryController extends Controller
 
         return redirect()->route('admin.payroll-histories.index')
             ->with('success', 'Riwayat pembayaran gaji berhasil dihapus.');
+    }
+
+    /**
+     * Tampilkan daftar riwayat gaji yang berada di Recycle Bin.
+     */
+    public function trash(Request $request)
+    {
+        $query = PayrollHistory::onlyTrashed()->with('employee');
+
+        if ($request->filled('search')) {
+            $search = '%' . trim($request->search) . '%';
+
+            $query->whereHas('employee', function ($employeeQuery) use ($search) {
+                $employeeQuery->where('nama_lengkap', 'like', $search)
+                    ->orWhere('nik', 'like', $search);
+            });
+        }
+
+        $histories = $query->orderByDesc('deleted_at')->paginate(10)->appends($request->query());
+
+        return view('admin.payroll-histories.trash', compact('histories'));
+    }
+
+    /**
+     * Kembalikan riwayat gaji dari Recycle Bin ke data utama.
+     */
+    public function restore($id)
+    {
+        $history = PayrollHistory::onlyTrashed()->findOrFail($id);
+        $history->restore();
+
+        return redirect()->route('admin.payroll-histories.trash')
+            ->with('success', 'Riwayat gaji berhasil dipulihkan.');
+    }
+
+    /**
+     * Hapus riwayat gaji secara permanen dari Recycle Bin.
+     */
+    public function forceDelete($id)
+    {
+        $history = PayrollHistory::onlyTrashed()->findOrFail($id);
+        $history->forceDelete();
+
+        return redirect()->route('admin.payroll-histories.trash')
+            ->with('success', 'Riwayat gaji berhasil dihapus permanen.');
     }
 }

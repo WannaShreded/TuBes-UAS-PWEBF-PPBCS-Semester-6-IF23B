@@ -11,6 +11,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\Admin\BonusController;
 use App\Http\Controllers\Admin\DashboardStatisticController;
 use App\Http\Controllers\Admin\PayrollHistoryController;
+use App\Http\Controllers\Admin\StatisticController;
 // =============================================
 // Route publik (tanpa login)
 // =============================================
@@ -205,6 +206,19 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('ad
         ->middleware('permission:delete-payroll-methods')
         ->name('payroll-methods.force-delete');
 
+    // Recycle Bin - Payroll History
+    Route::get('/payroll-histories/trash', [PayrollHistoryController::class, 'trash'])
+        ->middleware('permission:delete-payroll-histories')
+        ->name('payroll-histories.trash');
+
+    Route::patch('/payroll-histories/{id}/restore', [PayrollHistoryController::class, 'restore'])
+        ->middleware('permission:delete-payroll-histories')
+        ->name('payroll-histories.restore');
+
+    Route::delete('/payroll-histories/{id}/force-delete', [PayrollHistoryController::class, 'forceDelete'])
+        ->middleware('permission:delete-payroll-histories')
+        ->name('payroll-histories.force-delete');
+
     // ── PAYROLL HISTORY ──
     Route::get('/payroll-histories', [PayrollHistoryController::class, 'index'])
         ->middleware('permission:view-payroll-histories')
@@ -247,6 +261,11 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('ad
     // ── DASHBOARD STATISTICS (khusus Admin) ──
     Route::get('/dashboard/statistics', [DashboardStatisticController::class, 'index'])
         ->name('dashboard.statistics');
+
+    // ── STATISTIK GAJI & BONUS (khusus Admin) ──
+    Route::get('/statistics', [StatisticController::class, 'index'])
+        ->middleware('permission:view-statistics')
+        ->name('statistics.index');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->group(function () {

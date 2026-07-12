@@ -62,6 +62,7 @@
                                             @if($bonus->employees_count > 0)
                                                 <button
                                                     type="button"
+                                                    wire:key="cancel-all-{{ $bonus->id }}-{{ $bonus->employees_count }}"
                                                     wire:click="confirmCancelAll({{ $bonus->id }}, '{{ addslashes($bonus->nama_bonus) }}')"
                                                     class="text-red-600 hover:underline"
                                                 >
@@ -70,6 +71,7 @@
                                             @else
                                                 <button
                                                     type="button"
+                                                    wire:key="give-all-{{ $bonus->id }}-{{ $bonus->employees_count }}"
                                                     wire:click="confirmGiveToAll({{ $bonus->id }}, '{{ addslashes($bonus->nama_bonus) }}')"
                                                     class="text-purple-600 hover:underline"
                                                 >
@@ -82,6 +84,7 @@
                                     @can('delete-bonuses')
                                         <button
                                             type="button"
+                                            wire:key="delete-{{ $bonus->id }}"
                                             wire:click="confirmDelete({{ $bonus->id }}, '{{ addslashes($bonus->nama_bonus) }}')"
                                             class="text-red-600 hover:underline"
                                         >

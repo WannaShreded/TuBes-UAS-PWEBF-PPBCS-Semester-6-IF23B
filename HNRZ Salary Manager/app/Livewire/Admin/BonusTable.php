@@ -13,8 +13,8 @@ class BonusTable extends SearchableTable
     public string $periode_bonus = '';
 
     protected $queryString = [
-        'search' => ['except' => ''],
-        'jenis_bonus' => ['except' => ''],
+        'search'       => ['except' => ''],
+        'jenis_bonus'  => ['except' => ''],
         'periode_bonus' => ['except' => ''],
     ];
 
@@ -26,12 +26,11 @@ class BonusTable extends SearchableTable
     public function getItems()
     {
         $query = Bonus::query()
-            ->withCount('employees') // agar tau apakah bonus sudah diberikan ke siapa pun
+            ->withCount('employees')
             ->latest();
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
-
             $query->where(function ($q) use ($search) {
                 $q->where('nama_bonus', 'like', $search)
                     ->orWhere('jenis_bonus', 'like', $search)
@@ -47,33 +46,11 @@ class BonusTable extends SearchableTable
         $periodeBonus = trim((string) $this->periode_bonus);
         if ($periodeBonus !== '') {
             $monthStart = Carbon::createFromFormat('Y-m', $periodeBonus)->startOfMonth()->toDateString();
-            $monthEnd = Carbon::createFromFormat('Y-m', $periodeBonus)->endOfMonth()->toDateString();
-
+            $monthEnd   = Carbon::createFromFormat('Y-m', $periodeBonus)->endOfMonth()->toDateString();
             $query->whereBetween('periode_bonus', [$monthStart, $monthEnd]);
         }
 
         return $query->paginate($this->perPage);
-    }
-
-    protected $listeners = ['call-livewire-action' => 'handleAction'];
-
-    public function handleAction(string $action, array $params): void
-    {
-        if (method_exists($this, $action)) {
-            $this->$action(...$params);
-        }
-    }
-
-    public function confirmDelete(int $id, string $name): void
-    {
-        $this->dispatch('open-confirm-modal', [
-            'type'           => 'danger',
-            'title'          => 'Konfirmasi Hapus',
-            'message'        => "Anda akan menghapus bonus \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
-            'confirmText'    => 'Ya, Hapus',
-            'livewireAction' => 'deleteItem',
-            'roleId'         => $id,
-        ]);
     }
 
     public function confirmGiveToAll(int $id, string $name): void
@@ -85,19 +62,33 @@ class BonusTable extends SearchableTable
             'confirmText'    => 'Ya, Berikan',
             'livewireAction' => 'giveToAll',
             'roleId'         => $id,
+            'componentId'    => $this->getId(),
         ]);
     }
 
-    // Konfirmasi khusus untuk "Batalkan ke Semua"
     public function confirmCancelAll(int $id, string $name): void
     {
         $this->dispatch('open-confirm-modal', [
             'type'           => 'danger',
             'title'          => 'Konfirmasi Pembatalan Bonus',
-            'message'        => "Anda akan MEMBATALKAN bonus \"{$name}\" dari SEMUA karyawan yang sudah menerimanya. Tindakan ini tidak dapat dibatalkan.",
+            'message'        => "Anda akan MEMBATALKAN bonus \"{$name}\" dari SEMUA karyawan yang sudah menerimanya.",
             'confirmText'    => 'Ya, Batalkan',
             'livewireAction' => 'cancelAll',
             'roleId'         => $id,
+            'componentId'    => $this->getId(),
+        ]);
+    }
+
+    public function confirmDelete(int $id, string $name): void
+    {
+        $this->dispatch('open-confirm-modal', [
+            'type'           => 'danger',
+            'title'          => 'Konfirmasi Hapus',
+            'message'        => "Anda akan menghapus bonus \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
+            'confirmText'    => 'Ya, Hapus',
+            'livewireAction' => 'deleteItem',
+            'roleId'         => $id,
+            'componentId'    => $this->getId(),
         ]);
     }
 
@@ -109,9 +100,9 @@ class BonusTable extends SearchableTable
 
     public function giveToAll(int $id): void
     {
-        $bonus = Bonus::findOrFail($id);
-
+        $bonus       = Bonus::findOrFail($id);
         $employeeIds = Employee::pluck('id');
+
         $bonus->employees()->syncWithoutDetaching($employeeIds);
 
         $this->dispatch(
@@ -124,8 +115,8 @@ class BonusTable extends SearchableTable
     public function cancelAll(int $id): void
     {
         $bonus = Bonus::findOrFail($id);
-
         $count = $bonus->employees()->count();
+
         $bonus->employees()->detach();
 
         $this->dispatch(

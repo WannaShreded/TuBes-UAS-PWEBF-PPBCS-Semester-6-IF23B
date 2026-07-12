@@ -14,6 +14,10 @@
                     </x-nav-link>
 
                     @role('admin')
+                        <x-nav-link :href="route('admin.statistics.index')" :active="request()->routeIs('admin.statistics.*')">
+                            {{ __('Statistik') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
                             {{ __('Role') }}
                         </x-nav-link>
@@ -103,34 +107,38 @@
             </x-responsive-nav-link>
 
             @role('admin')
-    <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
-        {{ __('Jabatan') }}
-    </x-nav-link>
+                <x-nav-link :href="route('admin.statistics.index')" :active="request()->routeIs('admin.statistics.*')">
+                    {{ __('Statistik') }}
+                </x-nav-link>
 
-    <x-nav-link :href="route('admin.bonuses.index')" :active="request()->routeIs('admin.bonuses.*')">
-        {{ __('Bonus') }}
-    </x-nav-link>
+                <x-nav-link :href="route('admin.jabatan.index')" :active="request()->routeIs('admin.jabatan.*')">
+                    {{ __('Jabatan') }}
+                </x-nav-link>
 
-    <x-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
-        {{ __('Penggajian') }}
-    </x-nav-link>
+                <x-nav-link :href="route('admin.bonuses.index')" :active="request()->routeIs('admin.bonuses.*')">
+                    {{ __('Bonus') }}
+                </x-nav-link>
 
-    <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
-        {{ __('Karyawan') }}
-    </x-nav-link>
+                <x-nav-link :href="route('admin.payroll-methods.index')" :active="request()->routeIs('admin.payroll-methods.*')">
+                    {{ __('Metode Gaji') }}
+                </x-nav-link>
 
-    <x-nav-link :href="route('admin.payroll-histories.index')" :active="request()->routeIs('admin.payroll-histories.*')">
-        {{ __('Riwayat Gaji') }}
-    </x-nav-link>
-@else
-    <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
-        {{ __('Jabatan') }}
-    </x-nav-link>
+                <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
+                    {{ __('Karyawan') }}
+                </x-nav-link>
 
-    <x-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
-        {{ __('Metode Gaji') }}
-    </x-nav-link>
-@endrole
+                <x-nav-link :href="route('admin.payroll-histories.index')" :active="request()->routeIs('admin.payroll-histories.*')">
+                    {{ __('Riwayat Gaji') }}
+                </x-nav-link>
+            @else
+                <x-nav-link :href="route('employee.position')" :active="request()->routeIs('employee.position')">
+                    {{ __('Jabatan') }}
+                </x-nav-link>
+
+                <x-nav-link :href="route('employee.payroll-methods.index')" :active="request()->routeIs('employee.payroll-methods.*')">
+                    {{ __('Metode Gaji') }}
+                </x-nav-link>
+            @endrole
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

@@ -50,6 +50,15 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Periode Gaji</label>
+                        <input type="month"
+                            name="payroll_period"
+                            value="{{ old('payroll_period', now()->format('Y-m')) }}"
+                            class="block w-full border rounded px-3 py-2">
+                        @error('payroll_period')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status Pembayaran</label>
                         <select name="payment_status" class="block w-full border rounded px-3 py-2">
                             <option value="Belum Dibayar" {{ old('payment_status') === 'Belum Dibayar' ? 'selected' : '' }}>Belum Dibayar</option>

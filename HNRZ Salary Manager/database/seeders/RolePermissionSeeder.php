@@ -42,6 +42,7 @@ class RolePermissionSeeder extends Seeder
             'create-payroll-histories',
             'edit-payroll-histories',
             'delete-payroll-histories',
+            'view-statistics',
         ];
 
         foreach ($permissions as $permission) {

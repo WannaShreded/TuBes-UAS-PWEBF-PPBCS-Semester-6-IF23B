@@ -203,14 +203,23 @@ function confirmModal() {
         },
 
         openFromLivewire(options) {
-            this.resetState();
-            this.type           = options.type        ?? 'danger';
-            this.title          = options.title       ?? 'Konfirmasi';
-            this.message        = options.message     ?? 'Apakah Anda yakin?';
-            this.confirmText    = options.confirmText ?? 'Ya';
-            this.livewireAction = options.livewireAction ?? 'deleteItem';
-            this.livewireParams = [options.roleId];
-            this.open = true;
+            const open = () => {
+                this.resetState();
+                this.type           = options.type        ?? 'danger';
+                this.title          = options.title       ?? 'Konfirmasi';
+                this.message        = options.message     ?? 'Apakah Anda yakin?';
+                this.confirmText    = options.confirmText ?? 'Ya';
+                this.livewireAction = options.livewireAction ?? 'deleteItem';
+                this.livewireParams = options.roleId !== undefined ? [options.roleId] : [];
+                this.open = true;
+            };
+
+            if (this.open) {
+                this.open = false;
+                setTimeout(open, 250);
+            } else {
+                open();
+            }
         },
 
         confirm() {
@@ -232,17 +241,14 @@ function confirmModal() {
                 form.submit();
             }
 
-            // Reset setelah aksi dijalankan
             this.$nextTick(() => this.resetState());
         },
 
         close() {
             this.open = false;
-            // Reset saat dibatalkan
             this.$nextTick(() => this.resetState());
         },
 
-        // Fungsi reset semua state ke nilai awal
         resetState() {
             this.type           = 'danger';
             this.title          = '';
