@@ -6,6 +6,7 @@ import '../bonus/bonus_page.dart';
 import '../../services/auth_service.dart';
 import '../payroll_method/payroll_page.dart';
 import '../employee/employee_page.dart';
+import '../employee/profile_page.dart';
 import '../payroll_method/employee_payroll_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -37,7 +38,7 @@ class DashboardPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const EmployeePage(),
+                          builder: (_) => const ProfilePage(),
                         ),
                       );
                     },
@@ -70,7 +71,9 @@ class DashboardPage extends StatelessWidget {
             DashboardCard(
               title: "Employee",
               icon: Icons.people,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const EmployeePage()));
+              },
             ),
 
             DashboardCard(
@@ -118,7 +121,7 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const EmployeePage()),
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
                 );
               },
             ),

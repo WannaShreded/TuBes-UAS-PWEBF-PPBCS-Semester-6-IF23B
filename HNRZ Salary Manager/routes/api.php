@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BonusController;
 use App\Http\Controllers\Api\PayrollMethodController;
 use App\Http\Controllers\Api\EmployeeProfileController;
 use App\Http\Controllers\Api\EmployeePayrollMethodController;
+use App\Http\Controllers\Api\EmployeeController;
 
 
 Route::get('/user', function (Request $request) {
@@ -36,5 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('bonus', BonusController::class);
 
     Route::apiResource('payroll-methods', PayrollMethodController::class);
+
+    Route::apiResource('employee', EmployeeController::class);
 
 });
