@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/employee.dart';
 import '../../services/employee_service.dart';
+import 'change_password_page.dart';
 
 class EmployeePage extends StatefulWidget {
   const EmployeePage({super.key});
@@ -46,6 +47,12 @@ class _EmployeePageState extends State<EmployeePage> {
             children: [
               _ProfileItem(label: 'Name', value: employee.name),
               _ProfileItem(label: 'Email', value: employee.email),
+              OutlinedButton.icon(
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
+                icon: const Icon(Icons.lock_outline),
+                label: const Text('Change Password'),
+              ),
+              const SizedBox(height: 8),
               if (employee.isEmployee) ...[
                 _ProfileItem(label: 'Employee ID', value: employee.employeeId),
                 _ProfileItem(label: 'Phone', value: employee.phone),

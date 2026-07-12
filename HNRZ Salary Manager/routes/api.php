@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
 
     Route::get('/profile', [EmployeeProfileController::class, 'show']);
+    Route::put('/profile/password', [EmployeeProfileController::class, 'updatePassword']);
     Route::get('/employee/payroll-methods', [EmployeePayrollMethodController::class, 'index']);
     Route::put('/employee/payroll-method', [EmployeePayrollMethodController::class, 'update']);
 
