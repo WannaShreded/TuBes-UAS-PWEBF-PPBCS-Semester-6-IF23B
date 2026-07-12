@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\JabatanController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BonusController;
 use App\Http\Controllers\Api\PayrollMethodController;
+use App\Http\Controllers\Api\EmployeeProfileController;
+use App\Http\Controllers\Api\EmployeePayrollMethodController;
 use App\Http\Controllers\Api\EmployeeController;
 
 
@@ -20,6 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/user', [AuthController::class, 'me']);
+
+    Route::get('/profile', [EmployeeProfileController::class, 'show']);
+    Route::put('/profile/password', [EmployeeProfileController::class, 'updatePassword']);
+    Route::get('/employee/payroll-methods', [EmployeePayrollMethodController::class, 'index']);
+    Route::put('/employee/payroll-method', [EmployeePayrollMethodController::class, 'update']);
 
 });
 

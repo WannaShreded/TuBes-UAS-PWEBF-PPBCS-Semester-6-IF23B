@@ -33,6 +33,7 @@ class AuthController extends Controller
             'message' => 'Login berhasil',
             'token' => $token,
             'user' => $user,
+            'roles' => $user->getRoleNames()->values(),
         ]);
     }
 
@@ -48,6 +49,9 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json([
+            'user' => $request->user(),
+            'roles' => $request->user()->getRoleNames()->values(),
+        ]);
     }
 }
