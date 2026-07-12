@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../models/jabatan.dart';
-import '../../services/api_service.dart';
 import '../jabatan/create_jabatan_page.dart';
 import '../jabatan/edit_jabatan_page.dart';
 import '../../services/jabatan_service.dart';
@@ -119,7 +118,7 @@ class _JabatanPageState extends State<JabatanPage> {
 
                     if (result == true) {
                       setState(() {
-                        futureJabatan = ApiService().getJabatan();
+                        futureJabatan = _service.getAll();
                       });
                     }
                   },
@@ -139,7 +138,7 @@ class _JabatanPageState extends State<JabatanPage> {
 
           if (result == true) {
             setState(() {
-              futureJabatan = ApiService().getJabatan();
+              futureJabatan = _service.getAll();
             });
           }
         },
