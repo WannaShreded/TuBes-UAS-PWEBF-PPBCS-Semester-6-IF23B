@@ -139,6 +139,22 @@
                             </x-dashboard-card>
                         @endforeach
                     </div>
+
+                    @php
+                        $latestPeriod = \App\Models\PayrollHistory::max('payroll_period');
+                        $periodPayroll = $latestPeriod ? \App\Models\PayrollHistory::where('payroll_period', $latestPeriod) : \App\Models\PayrollHistory::query()->whereRaw('1 = 0');
+                        $trend = \App\Models\PayrollHistory::query()->selectRaw('payroll_period, SUM(total_dibayarkan) as total')->groupBy('payroll_period')->orderByDesc('payroll_period')->limit(6)->get()->reverse()->values();
+                    @endphp
+                    <section class="mt-8" aria-labelledby="payroll-overview-heading">
+                        <div class="mb-4"><h3 id="payroll-overview-heading" class="text-lg font-semibold text-slate-900">Ringkasan payroll</h3><p class="mt-1 text-sm text-slate-600">Status periode {{ $latestPeriod ?? 'belum tersedia' }}.</p></div>
+                        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Karyawan aktif</p><p id="stat-total-karyawan" class="mt-2 text-2xl font-semibold text-slate-900">{{ $totalKaryawanAktif }}</p></div>
+                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Total gaji periode</p><p class="mt-2 text-2xl font-semibold text-slate-900">Rp {{ number_format((int) $periodPayroll->sum('total_dibayarkan'), 0, ',', '.') }}</p></div>
+                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Pembayaran tercatat</p><p class="mt-2 text-2xl font-semibold text-slate-900">{{ $periodPayroll->count() }}</p></div>
+                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Menunggu proses</p><p class="mt-2 text-2xl font-semibold text-slate-900">{{ (clone $periodPayroll)->whereRaw('LOWER(payment_status) in (?, ?)', ['pending', 'menunggu'])->count() }}</p></div>
+                        </div>
+                        <div class="app-surface mt-4 p-5 sm:p-6"><div class="mb-4"><h4 class="font-semibold text-slate-900">Tren biaya payroll</h4><p class="text-sm text-slate-600">Enam periode payroll terakhir.</p></div><div class="h-72"><canvas id="payrollCostTrend" data-labels='@json($trend->pluck("payroll_period"))' data-values='@json($trend->pluck("total"))'></canvas></div></div>
+                    </section>
                 @endrole
 
                 @php
@@ -217,81 +233,46 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const canvas = document.getElementById('employeeByJabatanChart');
+                const canvas = document.getElementById('payrollCostTrend');
                 if (!canvas) return;
 
-                const statsUrl = @json(route('admin.dashboard.statistics'));
-
-                let labels = JSON.parse(canvas.dataset.labels || '[]');
-                let values = JSON.parse(canvas.dataset.values || '[]');
+                const labels = JSON.parse(canvas.dataset.labels || '[]');
+                const values = JSON.parse(canvas.dataset.values || '[]');
 
                 const chart = new Chart(canvas.getContext('2d'), {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Jumlah Karyawan',
+                            label: 'Total biaya payroll',
                             data: values,
-                            backgroundColor: 'rgba(99, 102, 241, 0.7)',
-                            borderColor: 'rgba(79, 70, 229, 1)',
-                            borderWidth: 1,
-                            borderRadius: 6,
-                            maxBarThickness: 56,
+                            borderColor: 'rgba(79, 70, 229, 1)', backgroundColor: 'rgba(79, 70, 229, .12)', borderWidth: 2, fill: true, tension: .25, pointRadius: 3,
                         }],
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'x',
+                        animation: { duration: 300 },
                         scales: {
                             x: {
                                 ticks: { autoSkip: false, maxRotation: 40, minRotation: 0 },
                                 grid: { display: false },
                             },
                             y: {
-                                beginAtZero: true,
-                                ticks: { precision: 0 },
+                                beginAtZero: true, ticks: { callback: value => 'Rp ' + new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(value) },
                             },
                         },
                         plugins: {
                             legend: { display: false },
                             tooltip: {
                                 callbacks: {
-                                    label: (ctx) => `${ctx.parsed.y} karyawan`,
+                                    label: (ctx) => 'Rp ' + new Intl.NumberFormat('id-ID').format(ctx.parsed.y),
                                 },
                             },
                         },
                     },
                 });
 
-                async function refreshDashboardStatistics() {
-                    try {
-                        const res = await fetch(statsUrl, {
-                            headers: { 'Accept': 'application/json' },
-                        });
-                        if (!res.ok) return;
-                        const stats = await res.json();
-
-                        const totalKaryawanEl = document.getElementById('stat-total-karyawan');
-                        const totalJabatanEl = document.getElementById('stat-total-jabatan');
-                        if (totalKaryawanEl) totalKaryawanEl.textContent = stats.total_karyawan_aktif;
-                        if (totalJabatanEl) totalJabatanEl.textContent = stats.total_jabatan_aktif;
-
-                        chart.data.labels = stats.chart.labels;
-                        chart.data.datasets[0].data = stats.chart.data;
-                        chart.update();
-                    } catch (e) {
-                        console.error('Gagal memperbarui statistik dashboard:', e);
-                    }
-                }
-
-                setInterval(refreshDashboardStatistics, 5000);
-
-                document.addEventListener('visibilitychange', function () {
-                    if (document.visibilityState === 'visible') {
-                        refreshDashboardStatistics();
-                    }
-                });
             });
         </script>
     @endrole

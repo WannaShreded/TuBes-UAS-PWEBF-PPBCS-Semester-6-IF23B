@@ -6,6 +6,7 @@ use App\Models\PayrollHistory;
 
 class PayrollHistoryTable extends SearchableTable
 {
+    public string $sortField = 'created_at';
     public string $payment_status = '';
     public string $payroll_period = '';
 
@@ -22,7 +23,7 @@ class PayrollHistoryTable extends SearchableTable
 
     public function getItems()
     {
-        $query = PayrollHistory::query()->with('employee.position')->latest();
+        $query = PayrollHistory::query()->with('employee.position');
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -43,7 +44,7 @@ class PayrollHistoryTable extends SearchableTable
             $query->where('payroll_period', $period);
         }
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['payroll_period', 'total_dibayarkan', 'payment_status', 'payment_date', 'created_at'])->paginate($this->perPage);
     }
 
     protected $listeners = ['call-livewire-action' => 'handleAction'];

@@ -13,6 +13,10 @@ abstract class SearchableTable extends Component
 
     public int $perPage = 5;
 
+    public string $sortField = 'created_at';
+
+    public string $sortDirection = 'desc';
+
     protected $queryString = ['search' => ['except' => '']];
 
     public function updating(string $name): void
@@ -20,6 +24,26 @@ abstract class SearchableTable extends Component
         if ($name !== 'page') {
             $this->resetPage();
         }
+    }
+
+    public function sortBy(string $field): void
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+
+        $this->resetPage();
+    }
+
+    protected function applySorting($query, array $allowed, string $fallback = 'created_at')
+    {
+        $field = in_array($this->sortField, $allowed, true) ? $this->sortField : $fallback;
+        $direction = $this->sortDirection === 'asc' ? 'asc' : 'desc';
+
+        return $query->orderBy($field, $direction);
     }
 
     protected function getView(): string

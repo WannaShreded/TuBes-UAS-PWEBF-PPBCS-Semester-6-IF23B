@@ -15,25 +15,19 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <body class="font-sans antialiased text-slate-900">
+        <div class="min-h-screen bg-slate-50">
             @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
+            <main class="lg:pl-72">
+                @isset($header)
+                    <header class="border-b border-slate-200 bg-white">
+                        <div class="app-page py-4 sm:py-5">{{ $header }}</div>
+                    </header>
+                @endisset
                 {{ $slot }}
-                {{-- Modal Konfirmasi Global --}}
-                <x-confirm-modal />
             </main>
+            <x-toast-notifications />
+            <x-confirm-modal />
         </div>
         @livewireScripts
     </body>

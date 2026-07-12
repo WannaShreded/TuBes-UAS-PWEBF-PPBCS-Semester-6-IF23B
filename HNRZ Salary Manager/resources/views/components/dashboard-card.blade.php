@@ -7,14 +7,14 @@
 ])
 
 <a href="{{ $href }}"
-   class="group block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+   class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 ease-in-out hover:shadow-md focus-visible:ring-2 focus-visible:ring-indigo-600 sm:p-6">
     <div class="flex items-start justify-between gap-4">
         <div class="min-w-0">
             <h3 class="text-lg font-semibold text-gray-900">{{ $title }}</h3>
             <p class="mt-2 text-sm leading-6 text-gray-600">{{ $description }}</p>
         </div>
 
-        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br {{ $accent }} text-white shadow-sm">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br {{ $accent }} text-white shadow-sm">
             {{ $icon }}
         </div>
     </div>
@@ -27,7 +27,7 @@
                 Akses modul
             @endif
         </span>
-        <span class="text-sm font-semibold text-indigo-600 transition group-hover:translate-x-1">
+        <span class="text-sm font-semibold text-indigo-600">
             Buka →
         </span>
     </div>

@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class EmployeeTable extends SearchableTable
 {
+    public string $sortField = 'created_at';
     public string $role = '';
     public string $jabatan = '';
     public string $status = '';
@@ -36,8 +37,7 @@ class EmployeeTable extends SearchableTable
     public function getItems()
     {
         $query = Employee::query()
-            ->with(['position', 'payrollMethod'])
-            ->orderByDesc('created_at');
+            ->with(['position', 'payrollMethod']);
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -71,7 +71,7 @@ class EmployeeTable extends SearchableTable
             $query->whereRaw('LOWER(role) = ?', [Str::lower($roleFilter)]);
         }
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['id_pekerja', 'nik', 'nama_lengkap', 'email', 'is_active', 'created_at'])->paginate($this->perPage);
     }
 
     private function normalizeStatusFilter(?string $status): ?bool

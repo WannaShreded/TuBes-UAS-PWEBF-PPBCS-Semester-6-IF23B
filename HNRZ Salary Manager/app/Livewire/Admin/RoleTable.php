@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleTable extends SearchableTable
 {
+    public string $sortField = 'name';
     public string $permission = '';
     public array $permissions = [];
 
@@ -27,7 +28,7 @@ class RoleTable extends SearchableTable
 
     public function getItems()
     {
-        $query = Role::query()->withCount('permissions')->orderBy('name');
+        $query = Role::query()->withCount('permissions');
 
         if ($this->search !== '') {
             $search = '%' . trim($this->search) . '%';
@@ -39,7 +40,7 @@ class RoleTable extends SearchableTable
 
         $query->when($this->permission !== '', fn ($q, $permission) => $q->whereHas('permissions', fn ($permissionQuery) => $permissionQuery->where('name', 'like', "%{$permission}%")));
 
-        return $query->paginate($this->perPage);
+        return $this->applySorting($query, ['name', 'created_at'], 'name')->paginate($this->perPage);
     }
 
     protected $listeners = [
