@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../models/jabatan.dart';
-import '../../services/api_service.dart';
 import '../../services/employee_service.dart';
 import '../../services/jabatan_service.dart';
 import '../../models/employee.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 
 class EditEmployeePage extends StatefulWidget {
   final Employee employee;
@@ -62,13 +63,9 @@ class _EditEmployeePageState extends State<EditEmployeePage> {
   }
 
   Future<void> updateEmployee() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
 
     final success = await _employeeService.update(
       id: widget.employee.id,
@@ -84,15 +81,12 @@ class _EditEmployeePageState extends State<EditEmployeePage> {
 
     if (!mounted) return;
 
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Karyawan berhasil diperbarui")),
       );
-
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -113,7 +107,12 @@ class _EditEmployeePageState extends State<EditEmployeePage> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
+            return Center(
+              child: Text(
+                "Terjadi kesalahan: ${snapshot.error}",
+                style: const TextStyle(color: AppColors.danger),
+              ),
+            );
           }
 
           final daftarJabatan = snapshot.data!;
@@ -127,185 +126,172 @@ class _EditEmployeePageState extends State<EditEmployeePage> {
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Nama Lengkap
-                  TextFormField(
-                    controller: namaController,
-                    decoration: const InputDecoration(
-                      labelText: "Nama Lengkap",
-                      border: OutlineInputBorder(),
+                  FormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const FormSectionLabel("Data Diri"),
+                        TextFormField(
+                          controller: namaController,
+                          decoration: const InputDecoration(
+                            labelText: "Nama Lengkap",
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Nama wajib diisi";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        TextFormField(
+                          controller: nikController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: "NIK",
+                            prefixIcon: Icon(Icons.badge_outlined),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "NIK wajib diisi";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        TextFormField(
+                          controller: teleponController,
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            labelText: "Nomor Telepon",
+                            prefixIcon: Icon(Icons.phone_outlined),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Nomor telepon wajib diisi";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: "Email",
+                            prefixIcon: Icon(Icons.mail_outline),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Email wajib diisi";
+                            }
+                            if (!value.contains("@")) {
+                              return "Format email tidak valid";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        TextFormField(
+                          controller: alamatController,
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            labelText: "Alamat",
+                            alignLabelWithHint: true,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Alamat wajib diisi";
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Nama wajib diisi";
-                      }
-                      return null;
-                    },
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // NIK
-                  TextFormField(
-                    controller: nikController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "NIK",
-                      border: OutlineInputBorder(),
+                  const SizedBox(height: AppSpacing.md),
+                  FormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const FormSectionLabel("Kepegawaian"),
+                        DropdownButtonFormField<Jabatan>(
+                          initialValue: selectedJabatan,
+                          decoration: const InputDecoration(
+                            labelText: "Jabatan",
+                            prefixIcon: Icon(Icons.work_outline),
+                          ),
+                          items: daftarJabatan.map((jabatan) {
+                            return DropdownMenuItem(
+                              value: jabatan,
+                              child: Text(jabatan.name),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() => selectedJabatan = value);
+                          },
+                          validator: (value) {
+                            if (value == null) return "Pilih jabatan";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        DropdownButtonFormField<String>(
+                          initialValue: selectedRole,
+                          decoration: const InputDecoration(
+                            labelText: "Role",
+                            prefixIcon: Icon(Icons.admin_panel_settings_outlined),
+                          ),
+                          items: const [
+                            DropdownMenuItem(
+                              value: "admin",
+                              child: Text("Admin"),
+                            ),
+                            DropdownMenuItem(
+                              value: "karyawan",
+                              child: Text("Karyawan"),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            setState(() => selectedRole = value);
+                          },
+                          validator: (value) {
+                            if (value == null) return "Pilih role";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Status Aktif"),
+                          value: isActive,
+                          onChanged: (value) {
+                            setState(() => isActive = value);
+                          },
+                        ),
+                      ],
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "NIK wajib diisi";
-                      }
-                      return null;
-                    },
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // No Telepon
-                  TextFormField(
-                    controller: teleponController,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      labelText: "Nomor Telepon",
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Nomor telepon wajib diisi";
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Email
-                  TextFormField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: "Email",
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Email wajib diisi";
-                      }
-
-                      if (!value.contains("@")) {
-                        return "Format email tidak valid";
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Alamat
-                  TextFormField(
-                    controller: alamatController,
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                      labelText: "Alamat",
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Alamat wajib diisi";
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Dropdown Jabatan
-                  DropdownButtonFormField<Jabatan>(
-                    value: selectedJabatan,
-                    decoration: const InputDecoration(
-                      labelText: "Jabatan",
-                      border: OutlineInputBorder(),
-                    ),
-                    items: daftarJabatan.map((jabatan) {
-                      return DropdownMenuItem(
-                        value: jabatan,
-                        child: Text(jabatan.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedJabatan = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return "Pilih jabatan";
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Dropdown Role
-                  DropdownButtonFormField<String>(
-                    value: selectedRole,
-                    decoration: const InputDecoration(
-                      labelText: "Role",
-                      border: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: "admin", child: Text("Admin")),
-
-                      DropdownMenuItem(
-                        value: "karyawan",
-                        child: Text("Karyawan"),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRole = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return "Pilih role";
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Status
-                  SwitchListTile(
-                    title: const Text("Status Aktif"),
-                    value: isActive,
-                    onChanged: (value) {
-                      setState(() {
-                        isActive = value;
-                      });
-                    },
-                  ),
-
-                  const SizedBox(height: 30),
-
+                  const SizedBox(height: AppSpacing.lg),
                   SizedBox(
-                    width: double.infinity,
+                    height: 48,
                     child: ElevatedButton(
                       onPressed: isLoading ? null : updateEmployee,
                       child: isLoading
                           ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             )
                           : const Text("Update"),
                     ),

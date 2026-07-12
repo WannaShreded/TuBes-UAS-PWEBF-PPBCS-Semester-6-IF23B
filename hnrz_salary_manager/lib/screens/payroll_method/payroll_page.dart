@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/payroll_method.dart';
 import '../../services/payroll_method_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 import 'create_payroll_page.dart';
 import 'edit_payroll_page.dart';
 
@@ -29,6 +31,55 @@ class _PayrollPageState extends State<PayrollPage> {
     await futurePayroll;
   }
 
+  Future<void> _confirmDelete(PayrollMethod payroll) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        title: const Text("Konfirmasi Hapus"),
+        content: Text("Hapus metode penggajian \"${payroll.name}\"?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Hapus"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final success = await _service.delete(payroll.id);
+
+      if (!mounted) return;
+
+      if (success) {
+        await _refresh();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Metode penggajian berhasil dihapus")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Gagal menghapus metode penggajian")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,114 +97,44 @@ class _PayrollPageState extends State<PayrollPage> {
               return ListView(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(snapshot.error.toString()),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Text(
+                      "Terjadi kesalahan: ${snapshot.error}",
+                      style: const TextStyle(color: AppColors.danger),
+                    ),
                   ),
                 ],
               );
             }
 
-            final data = snapshot.data!;
+            final data = snapshot.data ?? [];
 
             if (data.isEmpty) {
               return ListView(
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text("Belum ada data metode penggajian"),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const EmptyState(
+                      icon: Icons.account_balance_wallet_outlined,
+                      title: "Belum ada metode penggajian",
+                      message:
+                          "Tambahkan metode baru menggunakan tombol di bawah.",
+                    ),
                   ),
                 ],
               );
             }
 
-            return ListView.builder(
+            return ListView.separated(
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: data.length,
+              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final payroll = data[index];
 
                 return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(payroll.name),
-                    subtitle: Text(
-                      "${payroll.type}${payroll.description != null && payroll.description!.isNotEmpty ? " - ${payroll.description}" : ""}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          payroll.isActive ? Icons.check_circle : Icons.cancel,
-                          color: payroll.isActive ? Colors.green : Colors.red,
-                        ),
-
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Konfirmasi"),
-                                  content: Text(
-                                    "Hapus metode penggajian ${payroll.name}?",
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                      child: const Text("Batal"),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
-                                      child: const Text("Hapus"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-
-                            if (confirm != true) return;
-
-                            try {
-                              final success = await _service.delete(payroll.id);
-
-                              if (!mounted) return;
-
-                              if (success) {
-                                await _refresh();
-
-                                if (!mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      "Metode penggajian berhasil dihapus",
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      "Gagal menghapus metode penggajian",
-                                    ),
-                                  ),
-                                );
-                              }
-                            } catch (e) {
-                              if (!mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Error: $e")),
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     onTap: () async {
                       final result = await Navigator.push(
                         context,
@@ -162,10 +143,60 @@ class _PayrollPageState extends State<PayrollPage> {
                         ),
                       );
 
-                      if (result == true) {
-                        await _refresh();
-                      }
+                      if (result == true) await _refresh();
                     },
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: AppColors.infoBg,
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
+                            ),
+                            child: const Icon(
+                              Icons.account_balance_wallet_outlined,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  payroll.name,
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  "${payroll.type}${payroll.description != null && payroll.description!.isNotEmpty ? " · ${payroll.description}" : ""}",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 6),
+                                StatusBadge(
+                                  label: payroll.isActive ? "Aktif" : "Nonaktif",
+                                  type: payroll.isActive
+                                      ? StatusType.success
+                                      : StatusType.danger,
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: AppColors.danger,
+                            ),
+                            onPressed: () => _confirmDelete(payroll),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -174,17 +205,15 @@ class _PayrollPageState extends State<PayrollPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: () async {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const CreatePayrollPage()),
           );
 
-          if (result == true) {
-            await _refresh();
-          }
+          if (result == true) await _refresh();
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

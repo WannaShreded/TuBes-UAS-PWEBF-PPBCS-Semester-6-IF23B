@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/payroll_method_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 
 class CreatePayrollPage extends StatefulWidget {
   const CreatePayrollPage({super.key});
@@ -72,68 +74,80 @@ class _CreatePayrollPageState extends State<CreatePayrollPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Tambah Metode Penggajian")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: typeController,
-                decoration: const InputDecoration(labelText: "Tipe"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Tipe wajib diisi";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: "Nama Metode"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama wajib diisi";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                controller: descriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(labelText: "Deskripsi"),
-              ),
-
-              const SizedBox(height: 10),
-
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text("Aktif"),
-                value: isActive,
-                onChanged: (value) {
-                  setState(() => isActive = value);
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text("Simpan"),
-              ),
-            ],
+          child: FormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const FormSectionLabel("Informasi Metode"),
+                TextFormField(
+                  controller: typeController,
+                  decoration: const InputDecoration(
+                    labelText: "Tipe",
+                    hintText: "mis. Bank, E-Wallet, Tunai",
+                    prefixIcon: Icon(Icons.category_outlined),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Tipe wajib diisi";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: "Nama Metode",
+                    prefixIcon: Icon(Icons.account_balance_wallet_outlined),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Nama wajib diisi";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+                TextFormField(
+                  controller: descriptionController,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    labelText: "Deskripsi (opsional)",
+                    alignLabelWithHint: true,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text("Aktif"),
+                  value: isActive,
+                  onChanged: (value) {
+                    setState(() => isActive = value);
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _submit,
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text("Simpan"),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/jabatan/jabatan_page.dart';
-import 'screens/auth/login_page.dart';
+import 'theme/app_theme.dart';
+import 'screens/splash/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +14,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HNRZ Salary Manager',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const LoginPage(),
+      theme: AppTheme.theme,
+      home: const SplashScreen(),
     );
   }
 }
