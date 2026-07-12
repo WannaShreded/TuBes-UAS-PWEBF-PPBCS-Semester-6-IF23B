@@ -7,6 +7,7 @@ class Employee {
   final String position;
   final String payrollMethod;
   final bool isEmployee;
+  final int baseSalary;
 
   const Employee({
     required this.employeeId,
@@ -17,6 +18,7 @@ class Employee {
     required this.position,
     required this.payrollMethod,
     required this.isEmployee,
+    required this.baseSalary,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class Employee {
       position: position?['name']?.toString() ?? json['jabatan']?.toString() ?? '-',
       payrollMethod: payrollMethod?['name']?.toString() ?? '-',
       isEmployee: json['is_employee'] == true,
+      baseSalary: (position?['salary'] as num?)?.toInt() ?? 0,
     );
   }
 }

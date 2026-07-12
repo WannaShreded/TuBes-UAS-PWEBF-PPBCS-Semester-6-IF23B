@@ -6,6 +6,7 @@ import '../bonus/bonus_page.dart';
 import '../../services/auth_service.dart';
 import '../payroll_method/payroll_page.dart';
 import '../employee/employee_page.dart';
+import '../payroll_method/employee_payroll_page.dart';
 
 class DashboardPage extends StatelessWidget {
   final List<String> roles;
@@ -39,6 +40,13 @@ class DashboardPage extends StatelessWidget {
                           builder: (_) => const EmployeePage(),
                         ),
                       );
+                    },
+                  ),
+                  DashboardCard(
+                    title: "Payroll Method",
+                    icon: Icons.account_balance_wallet,
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const EmployeePayrollPage()));
                     },
                   ),
                   DashboardCard(

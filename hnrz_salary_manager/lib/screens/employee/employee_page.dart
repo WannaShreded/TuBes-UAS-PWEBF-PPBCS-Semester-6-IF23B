@@ -51,6 +51,10 @@ class _EmployeePageState extends State<EmployeePage> {
                 _ProfileItem(label: 'Phone', value: employee.phone),
                 _ProfileItem(label: 'Address', value: employee.address),
                 _ProfileItem(label: 'Position', value: employee.position),
+                _ProfileItem(
+                  label: 'Base Salary',
+                  value: _formatRupiah(employee.baseSalary),
+                ),
                 _ProfileItem(label: 'Payroll Method', value: employee.payrollMethod),
               ],
             ],
@@ -58,6 +62,15 @@ class _EmployeePageState extends State<EmployeePage> {
         },
       ),
     );
+  }
+
+  String _formatRupiah(int amount) {
+    final digits = amount.toString();
+    final formatted = digits.replaceAllMapped(
+      RegExp(r'(?<!^)(?=(\d{3})+$)'),
+      (match) => '.',
+    );
+    return 'Rp $formatted';
   }
 }
 
