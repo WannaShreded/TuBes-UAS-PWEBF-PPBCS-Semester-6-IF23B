@@ -5,6 +5,7 @@ import '../jabatan/jabatan_page.dart';
 import '../bonus/bonus_page.dart';
 import '../../services/auth_service.dart';
 import '../payroll_method/payroll_page.dart';
+import '../employee/employee_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -23,11 +24,15 @@ class DashboardPage extends StatelessWidget {
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
           children: [
-
             DashboardCard(
               title: "Employee",
               icon: Icons.people,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const EmployeePage()),
+                );
+              },
             ),
 
             DashboardCard(
@@ -36,9 +41,7 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const JabatanPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const JabatanPage()),
                 );
               },
             ),
@@ -49,9 +52,7 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const BonusPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const BonusPage()),
                 );
               },
             ),
@@ -62,18 +63,12 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const PayrollPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const PayrollPage()),
                 );
               },
             ),
 
-            DashboardCard(
-              title: "Profile",
-              icon: Icons.person,
-              onTap: () {},
-            ),
+            DashboardCard(title: "Profile", icon: Icons.person, onTap: () {}),
 
             DashboardCard(
               title: "Logout",
@@ -85,14 +80,11 @@ class DashboardPage extends StatelessWidget {
 
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const LoginPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const LoginPage()),
                   (route) => false,
                 );
               },
             ),
-
           ],
         ),
       ),
@@ -126,10 +118,7 @@ class DashboardCard extends StatelessWidget {
             const SizedBox(height: 15),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),
