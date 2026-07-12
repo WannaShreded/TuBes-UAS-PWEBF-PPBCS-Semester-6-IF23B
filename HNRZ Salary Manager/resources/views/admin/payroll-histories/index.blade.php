@@ -4,10 +4,18 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Riwayat Pembayaran Gaji
             </h2>
-            <a href="{{ route('admin.payroll-histories.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                + Tambah Riwayat
-            </a>
+            <div class="flex gap-3">
+                @can('delete-payroll-histories')
+                    <a href="{{ route('admin.payroll-histories.trash') }}"
+                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
+                        Recycle Bin
+                    </a>
+                @endcan
+                <a href="{{ route('admin.payroll-histories.create') }}"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    + Tambah Riwayat
+                </a>
+            </div>
         </div>
     </x-slot>
 

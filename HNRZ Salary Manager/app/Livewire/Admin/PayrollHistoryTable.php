@@ -6,6 +6,15 @@ use App\Models\PayrollHistory;
 
 class PayrollHistoryTable extends SearchableTable
 {
+    public string $payment_status = '';
+    public string $payroll_period = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'payment_status' => ['except' => ''],
+        'payroll_period' => ['except' => ''],
+    ];
+
     protected function getView(): string
     {
         return 'livewire.admin.payroll-history-table';
@@ -24,10 +33,15 @@ class PayrollHistoryTable extends SearchableTable
             });
         }
 
-        $query->where('payment_status', 'Sudah Dibayar')
-            ->whereNotNull('payment_date')
-            ->whereDate('payment_date', '>=', now()->subMonth()->toDateString())
-            ->whereDate('payment_date', '<=', now()->toDateString());
+        $status = trim($this->payment_status);
+        if ($status !== '') {
+            $query->where('payment_status', $status);
+        }
+
+        $period = trim($this->payroll_period);
+        if ($period !== '') {
+            $query->where('payroll_period', $period);
+        }
 
         return $query->paginate($this->perPage);
     }
