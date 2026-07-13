@@ -208,8 +208,10 @@ Proyek ini dikembangkan oleh kelompok mahasiswa program studi Teknik Informatika
 - **Neo Sheyka Isnaeni** - NIM: `230102105` 
 - **Reynaldi Continenta Putra** - NIM: `230102116` 
 - **Rizki Abd. Rahman** - NIM: `230102118`
-- 
 ---
+
+## YouTube
+`https://youtu.be/gIeRPMLH5UM`
 
 ## 📄 Lisensi
 
