@@ -74,10 +74,18 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("HNRZ Salary Manager"),
+        title: Row(
+          children: [
+            Image.asset('assets/images/icon.png', width: 32, height: 32),
+            const SizedBox(width: 10),
+            const Text("Salary Manager"),
+          ],
+        ),
       ),
       body: SafeArea(
-        child: _isEmployeeOnly ? _buildEmployeeHome(context) : _buildAdminHome(context),
+        child: _isEmployeeOnly
+            ? _buildEmployeeHome(context)
+            : _buildAdminHome(context),
       ),
     );
   }
@@ -96,10 +104,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
-          Text(
-            "Ringkasan",
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          Text("Ringkasan", style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: AppSpacing.md),
           FutureBuilder<_HomeStats>(
             future: _futureStats,
@@ -126,7 +131,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 crossAxisCount: 2,
                 crossAxisSpacing: AppSpacing.md,
                 mainAxisSpacing: AppSpacing.md,
-                childAspectRatio: 1.5,
+                childAspectRatio: 1.45,
                 children: [
                   StatCard(
                     title: "Karyawan Aktif",
@@ -161,10 +166,7 @@ class _DashboardPageState extends State<DashboardPage> {
             },
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            "Modul",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text("Modul", style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: AppSpacing.sm),
           Card(
             child: Column(
