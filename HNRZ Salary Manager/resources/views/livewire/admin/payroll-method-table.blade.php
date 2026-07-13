@@ -74,7 +74,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="p-3 text-center text-gray-400">Belum ada metode penggajian.</td>
+                        <td colspan="5" class="p-3 text-center text-gray-400">Belum ada metode gaji.</td>
                     </tr>
                 @endforelse
                 </tbody>
