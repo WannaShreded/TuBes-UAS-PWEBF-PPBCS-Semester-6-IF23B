@@ -6,7 +6,7 @@
                class="w-full md:col-span-2 border rounded px-3 py-2">
 
         <select wire:model.live="permission" class="border rounded px-3 py-2">
-            <option value="">Semua permission</option>
+            <option value="">Semua perizinan</option>
             @foreach($permissions as $permissionOption)
                 <option value="{{ $permissionOption }}">{{ $permissionOption }}</option>
             @endforeach
@@ -21,9 +21,9 @@
                 <tr>
                     <th class="p-3">No</th>
                     <th><button wire:click="sortBy('name')">Role Name</button></th>
-                    <th class="p-3">Permissions</th>
+                    <th class="p-3">Perizinan</th>
                     @canany(['edit-roles', 'delete-roles'])
-                        <th class="p-3">Action</th>
+                        <th class="p-3">Aksi</th>
                     @endcanany
                 </tr>
                 </thead>

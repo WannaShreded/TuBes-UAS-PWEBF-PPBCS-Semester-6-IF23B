@@ -1,7 +1,7 @@
 @php
     $adminGroups = [
         [
-            'label' => 'Reports',
+            'label' => 'Laporan',
             'items' => [
                 [
                     'label' => 'Statistik',
@@ -12,13 +12,19 @@
             ],
         ],
         [
-            'label' => 'Payroll',
+            'label' => 'Gaji & Bonus',
             'items' => [
                 [
-                    'label' => 'Riwayat Gaji',
-                    'route' => 'admin.payroll-histories.index',
-                    'active' => 'admin.payroll-histories.*',
-                    'icon' => 'M12 8c-2.2 0-4 1.4-4 3s1.8 3 4 3 4-1.4 4-3-1.8-3-4-3Zm0 0V5m0 9v5M5 11h3m8 0h3',
+                    'label' => 'Jabatan',
+                    'route' => 'admin.jabatan.index',
+                    'active' => 'admin.jabatan.*',
+                    'icon' => 'M4 5h16v14H4zM8 9h8M8 13h6',
+                ],
+                [
+                    'label' => 'Bonus',
+                    'route' => 'admin.bonuses.index',
+                    'active' => 'admin.bonuses.*',
+                    'icon' => 'M12 8v8m4-4H8m8 8H8M5 5h14',
                 ],
                 [
                     'label' => 'Metode Gaji',
@@ -27,16 +33,10 @@
                     'icon' =>
                         'M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9ZM7 10h10M7 14h4',
                 ],
-                [
-                    'label' => 'Bonus',
-                    'route' => 'admin.bonuses.index',
-                    'active' => 'admin.bonuses.*',
-                    'icon' => 'M12 8v8m4-4H8m8 8H8M5 5h14',
-                ],
             ],
         ],
         [
-            'label' => 'Employees',
+            'label' => 'Karyawan',
             'items' => [
                 [
                     'label' => 'Karyawan',
@@ -46,15 +46,15 @@
                         'M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2m14-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM21 21v-2a4 4 0 0 0-3-3.87',
                 ],
                 [
-                    'label' => 'Jabatan',
-                    'route' => 'admin.jabatan.index',
-                    'active' => 'admin.jabatan.*',
-                    'icon' => 'M4 5h16v14H4zM8 9h8M8 13h6',
+                    'label' => 'Riwayat Gaji',
+                    'route' => 'admin.payroll-histories.index',
+                    'active' => 'admin.payroll-histories.*',
+                    'icon' => 'M12 8c-2.2 0-4 1.4-4 3s1.8 3 4 3 4-1.4 4-3-1.8-3-4-3Zm0 0V5m0 9v5M5 11h3m8 0h3',
                 ],
             ],
         ],
         [
-            'label' => 'Settings',
+            'label' => 'Pengaturan',
             'items' => [
                 [
                     'label' => 'Pengguna',
@@ -63,7 +63,7 @@
                     'icon' => 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m12-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
                 ],
                 [
-                    'label' => 'Role & Akses',
+                    'label' => 'Role',
                     'route' => 'admin.roles.index',
                     'active' => 'admin.roles.*',
                     'icon' =>

@@ -23,7 +23,7 @@ abstract class SearchableTable extends Component
         'call-livewire-action' => 'handleAction',
     ];
 
-    public function handleAction(string $action, array $params = []): void
+    public function handleAction(string $action, array $params): void
     {
         if (method_exists($this, $action)) {
             $this->$action(...$params);

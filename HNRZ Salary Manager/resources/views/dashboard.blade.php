@@ -36,7 +36,7 @@
                     @endphp
                     @role('admin')
                         <div class="rounded-[14px] border border-[#7c1fd6]/20 bg-[#7c1fd6]/5 px-4 py-3 text-sm text-[#7c1fd6] font-medium">
-                            Kelola data role, user, jabatan, bonus, metode gaji, karyawan, dan riwayat gaji dari satu dashboard
+                            Kelola data jabatan, bonus, metode gaji, karyawan, riwayat gaji, pengguna, role, dan akses dari satu dashboard
                         </div>
                     @endrole
                     @role('karyawan')
@@ -66,22 +66,6 @@
                                 'count' => \App\Models\PayrollHistory::selectRaw('COUNT(DISTINCT SUBSTR(payroll_period, 1, 4)) as c')->value('c') ?? 0,
                                 'accent' => 'from-indigo-500 to-purple-600',
                                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M8 17V9m4 8V5m4 12v-6" /></svg>',
-                            ],
-                            [
-                                'title' => 'Role',
-                                'description' => 'Kelola role dan permission untuk tiap akses.',
-                                'route' => route('admin.roles.index'),
-                                'count' => \Spatie\Permission\Models\Role::count(),
-                                'accent' => 'from-cyan-500 to-sky-600',
-                                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
-                            ],
-                            [
-                                'title' => 'User',
-                                'description' => 'Kelola akun pengguna dan akses login.',
-                                'route' => route('admin.users.index'),
-                                'count' => \App\Models\User::count(),
-                                'accent' => 'from-rose-500 to-pink-600',
-                                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-8 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4" /></svg>',
                             ],
                             [
                                 'title' => 'Jabatan',
@@ -121,6 +105,22 @@
                                 'route' => route('admin.payroll-histories.index'),
                                 'count' => \App\Models\PayrollHistory::count(),
                                 'accent' => 'from-fuchsia-500 to-pink-600',
+                                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
+                            ],
+                            [
+                                'title' => 'Pengguna',
+                                'description' => 'Kelola akun pengguna dan akses login.',
+                                'route' => route('admin.users.index'),
+                                'count' => \App\Models\User::count(),
+                                'accent' => 'from-rose-500 to-pink-600',
+                                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-8 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4" /></svg>',
+                            ],
+                            [
+                                'title' => 'Role',
+                                'description' => 'Kelola role dan permission untuk tiap akses.',
+                                'route' => route('admin.roles.index'),
+                                'count' => \Spatie\Permission\Models\Role::count(),
+                                'accent' => 'from-cyan-500 to-sky-600',
                                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
                             ],
                         ];
@@ -270,11 +270,11 @@
                         datasets: [{
                             label: 'Total biaya payroll',
                             data: values,
-                            borderColor: '#7c1fd6', 
-                            backgroundColor: 'rgba(124, 31, 214, 0.08)', 
-                            borderWidth: 3, 
-                            fill: true, 
-                            tension: 0.3, 
+                            borderColor: '#7c1fd6',
+                            backgroundColor: 'rgba(124, 31, 214, 0.08)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
                             pointRadius: 4,
                             pointBackgroundColor: '#e91e8c',
                             pointBorderColor: '#ffffff',
