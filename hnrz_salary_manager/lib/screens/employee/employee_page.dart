@@ -19,6 +19,14 @@ class _EmployeePageState extends State<EmployeePage> {
 
   late Future<List<Employee>> futureEmployee;
 
+  static const _cardColors = [
+    AppColors.statBlue,
+    AppColors.statPurple,
+    AppColors.statTeal,
+    AppColors.statGreen,
+    AppColors.statYellow,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -141,18 +149,9 @@ class _EmployeePageState extends State<EmployeePage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppColors.infoBg,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.sm),
-                            ),
-                            child: const Icon(
-                              Icons.person_outline,
-                              color: AppColors.primary,
-                            ),
+                          IconAvatar(
+                            icon: Icons.person_outline,
+                            color: _cardColors[index % _cardColors.length],
                           ),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(

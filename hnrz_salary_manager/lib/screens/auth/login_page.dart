@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
-import '../dashboard/dashboard_page.dart';
+import '../shell/main_shell.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => DashboardPage(roles: result.roles),
+          builder: (_) => MainShell(roles: result.roles),
         ),
       );
     } else {
@@ -59,6 +59,41 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(content: Text("Email atau password salah")),
       );
     }
+  }
+
+  /// Input field bergaya "filled" mengikuti desain referensi:
+  /// latar abu-abu, tanpa border, ikon di sisi kanan.
+  InputDecoration _filledDecoration({
+    required String hint,
+    required IconData icon,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: AppColors.surfaceAlt,
+      suffixIcon: suffixIcon ?? Icon(icon, color: AppColors.textSecondary),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: 16,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: AppColors.danger),
+      ),
+    );
   }
 
   @override
@@ -70,38 +105,74 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // ---------- Branding ----------
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
                   ),
-                  child: const Icon(
-                    Icons.badge_outlined,
-                    color: Colors.white,
-                    size: 32,
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ---------- Panel sambutan (aksen warna) ----------
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.xl,
+                      horizontal: AppSpacing.lg,
+                    ),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.primary, AppColors.primaryDark],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.badge_outlined,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        const Text(
+                          "Selamat Datang",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "HNRZ Salary Manager",
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  "HNRZ Salary Manager",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Masuk untuk mengelola data karyawan",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.xl),
 
-                // ---------- Form Card ----------
-                Card(
-                  child: Padding(
+                  // ---------- Form login ----------
+                  Padding(
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     child: Form(
                       key: _formKey,
@@ -112,9 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              labelText: "Email",
-                              prefixIcon: Icon(Icons.mail_outline),
+                            decoration: _filledDecoration(
+                              hint: "Email",
+                              icon: Icons.person_outline,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -127,14 +198,15 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: passwordController,
                             obscureText: obscurePassword,
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              prefixIcon: const Icon(Icons.lock_outline),
+                            decoration: _filledDecoration(
+                              hint: "Password",
+                              icon: Icons.lock_outline,
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   obscurePassword
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
+                                  color: AppColors.textSecondary,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -150,11 +222,39 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: AppSpacing.lg),
+                          const SizedBox(height: AppSpacing.sm),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(0, 32),
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Hubungi admin untuk reset password",
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text("Lupa password?"),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
                           SizedBox(
-                            height: 48,
+                            height: 50,
                             child: ElevatedButton(
                               onPressed: isLoading ? null : login,
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadius.md),
+                                ),
+                              ),
                               child: isLoading
                                   ? const SizedBox(
                                       width: 20,
@@ -164,23 +264,18 @@ class _LoginPageState extends State<LoginPage> {
                                         color: Colors.white,
                                       ),
                                     )
-                                  : const Text("MASUK"),
+                                  : const Text(
+                                      "MASUK",
+                                      style: TextStyle(letterSpacing: 0.5),
+                                    ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Text(
-                  "© ${DateTime.now().year} HNRZ Salary Manager",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textDisabled,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
