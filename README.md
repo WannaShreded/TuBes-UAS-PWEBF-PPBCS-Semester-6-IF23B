@@ -204,15 +204,16 @@ Pastikan Anda telah menginstal **Flutter SDK** (versi Dart SDK kompatibel `^3.12
 
 Proyek ini dikembangkan oleh kelompok mahasiswa program studi Teknik Informatika / Sistem Informasi untuk memenuhi tugas mata kuliah Pemrograman Web dan Bahasa Framework (PWBF) serta Pemrograman Platform Bergerak (PPB) - Semester 6:
 
-- **[Nama Kontributor 1]** - NIM: `[NIM 1]` - *Job Desk: Backend (Laravel) / Frontend (Flutter)*
-- **[Nama Kontributor 2]** - NIM: `[NIM 2]` - *Job Desk: Backend (Laravel) / Frontend (Flutter)*
-- **[Nama Kontributor 3]** - NIM: `[NIM 3]` - *Job Desk: UI/UX & Quality Assurance*
-
+- **Muhammad Hijri Thoriq Ma'ruf** - NIM: `230102088` 
+- **Neo Sheyka Isnaeni** - NIM: `230102105` 
+- **Reynaldi Continenta Putra** - NIM: `230102116` 
+- **Rizki Abd. Rahman** - NIM: `230102118`
+- 
 ---
 
 ## 📄 Lisensi
 
-Proyek ini dirancang untuk tujuan edukasi akademik di **Universitas/Fakultas** Anda. Hak cipta dilindungi oleh para kontributor di atas.
+Proyek ini dirancang untuk tujuan edukasi akademik di **Universitas Muhammdiyah Bandung**. Hak cipta dilindungi oleh para kontributor di atas.
 
 ---
 
