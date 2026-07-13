@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import '../../models/payroll_method.dart';
 import '../../services/api_client.dart';
 import '../../services/auth_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 
 class EmployeePayrollPage extends StatefulWidget {
   const EmployeePayrollPage({super.key});
@@ -18,6 +20,7 @@ class _EmployeePayrollPageState extends State<EmployeePayrollPage> {
   List<PayrollMethod> _methods = [];
   int? _selectedId;
   bool _loading = true;
+  bool _saving = false;
   final _bankController = TextEditingController();
   final _walletController = TextEditingController();
 
@@ -27,17 +30,32 @@ class _EmployeePayrollPageState extends State<EmployeePayrollPage> {
     _load();
   }
 
+  @override
+  void dispose() {
+    _bankController.dispose();
+    _walletController.dispose();
+    super.dispose();
+  }
+
   Future<void> _load() async {
     final token = await AuthService().getToken();
     final response = await http.get(
       Uri.parse('${ApiClient.baseUrl}/employee/payroll-methods'),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode != 200) throw Exception(body['message'] ?? 'Gagal memuat metode.');
+    if (response.statusCode != 200) {
+      throw Exception(body['message'] ?? 'Gagal memuat metode.');
+    }
+
     if (!mounted) return;
     setState(() {
-      _methods = (body['data'] as List).map((item) => PayrollMethod.fromJson(item)).toList();
+      _methods = (body['data'] as List)
+          .map((item) => PayrollMethod.fromJson(item))
+          .toList();
       _selectedId = body['selected_id'] as int?;
       _bankController.text = body['nomor_rekening']?.toString() ?? '';
       _walletController.text = body['nomor_e_wallet']?.toString() ?? '';
@@ -54,38 +72,118 @@ class _EmployeePayrollPageState extends State<EmployeePayrollPage> {
 
   Future<void> _save() async {
     if (_selectedId == null) return;
+
+    setState(() => _saving = true);
+
     final token = await AuthService().getToken();
     final response = await http.put(
       Uri.parse('${ApiClient.baseUrl}/employee/payroll-method'),
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer $token'},
-      body: jsonEncode({'payroll_method_id': _selectedId, 'nomor_rekening': _bankController.text.trim(), 'nomor_e_wallet': _walletController.text.trim()}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'payroll_method_id': _selectedId,
+        'nomor_rekening': _bankController.text.trim(),
+        'nomor_e_wallet': _walletController.text.trim(),
+      }),
     );
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.statusCode == 200 ? body['message'] : body['message'] ?? 'Gagal menyimpan.')));
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    final type = _selected?.type.toLowerCase() ?? '';
-    final isBank = type.contains('bank');
-    final isWallet = type.contains('wallet');
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Payroll Method')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          DropdownButtonFormField<int>(value: _selectedId, decoration: const InputDecoration(labelText: 'Payroll Method', border: OutlineInputBorder()), items: _methods.map((method) => DropdownMenuItem(value: method.id, child: Text(method.name))).toList(), onChanged: (value) => setState(() => _selectedId = value)),
-          if (isBank) Padding(padding: const EdgeInsets.only(top: 16), child: TextField(controller: _bankController, decoration: const InputDecoration(labelText: 'Account Number', border: OutlineInputBorder()))),
-          if (isWallet) Padding(padding: const EdgeInsets.only(top: 16), child: TextField(controller: _walletController, decoration: const InputDecoration(labelText: 'E-Wallet Number', border: OutlineInputBorder()))),
-          const SizedBox(height: 24),
-          SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _save, child: const Text('Save'))),
-        ]),
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (!mounted) return;
+    setState(() => _saving = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          body['message'] ?? (response.statusCode == 200
+              ? 'Berhasil disimpan'
+              : 'Gagal menyimpan'),
+        ),
       ),
     );
   }
 
   @override
-  void dispose() { _bankController.dispose(); _walletController.dispose(); super.dispose(); }
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final type = _selected?.type.toLowerCase() ?? '';
+    final isBank = type.contains('bank');
+    final isWallet = type.contains('wallet');
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Metode Gaji Saya')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: FormCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const FormSectionLabel("Metode Pembayaran"),
+              DropdownButtonFormField<int>(
+                initialValue: _selectedId,
+                decoration: const InputDecoration(
+                  labelText: 'Metode Gaji',
+                  prefixIcon: Icon(Icons.account_balance_wallet_outlined),
+                ),
+                items: _methods
+                    .map(
+                      (method) => DropdownMenuItem(
+                        value: method.id,
+                        child: Text(method.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) => setState(() => _selectedId = value),
+              ),
+              if (isBank) ...[
+                const SizedBox(height: AppSpacing.md),
+                TextField(
+                  controller: _bankController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nomor Rekening',
+                    prefixIcon: Icon(Icons.credit_card_outlined),
+                  ),
+                ),
+              ],
+              if (isWallet) ...[
+                const SizedBox(height: AppSpacing.md),
+                TextField(
+                  controller: _walletController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nomor E-Wallet',
+                    prefixIcon: Icon(Icons.phone_android_outlined),
+                  ),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.lg),
+              SizedBox(
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _save,
+                  child: _saving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Simpan'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
