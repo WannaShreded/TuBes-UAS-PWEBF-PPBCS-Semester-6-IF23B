@@ -4,7 +4,7 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                <h2 class="text-xl font-bold leading-tight text-[#241a52] font-display">
                     Dashboard
                 </h2>
             </div>
@@ -14,18 +14,18 @@
     <div class="py-8 sm:py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="space-y-6">
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 sm:p-8">
+                <div class="rounded-[22px] border border-[#ece7fb] bg-white p-6 shadow-sm shadow-[#5b1fb8]/5 sm:p-8 transition-all duration-300 hover:shadow-md">
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                         <div>
-                            <p class="text-sm font-medium uppercase tracking-wide text-indigo-600">
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#e91e8c] font-display">
                                 Selamat datang
                             </p>
-                            <h3 class="mt-2 text-2xl font-semibold text-gray-900">
+                            <h3 class="mt-2 text-2xl font-bold text-[#241a52] font-display">
                                 {{ Auth::user()->name }}
                             </h3>
-                            <p class="mt-2 text-sm text-gray-600">
+                            <p class="mt-2 text-sm text-[#5b5578]">
                                 Role Anda:
-                                <span class="font-semibold text-indigo-600">
+                                <span class="font-semibold text-[#7c1fd6]">
                                     {{ Auth::user()->getRoleNames()->implode(', ') }}
                                 </span>
                             </p>
@@ -35,17 +35,18 @@
                         $employeeProfile = Auth::user()->employee()->with(['position', 'payrollMethod'])->first();
                     @endphp
                     @role('admin')
-                        <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
+                        <div class="rounded-[14px] border border-[#7c1fd6]/20 bg-[#7c1fd6]/5 px-4 py-3 text-sm text-[#7c1fd6] font-medium">
                             Kelola data role, user, jabatan, bonus, metode gaji, karyawan, dan riwayat gaji dari satu dashboard
                         </div>
                     @endrole
                     @role('karyawan')
-                        <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
+                        <div class="rounded-[14px] border border-[#7c1fd6]/20 bg-[#7c1fd6]/5 px-4 py-3 text-sm text-[#7c1fd6] font-medium">
                             Kelola data metode gaji dari satu dashboard
                         </div>
                     @endrole
                     </div>
                 </div>
+
 
                 @role('admin')
                     @php
@@ -146,14 +147,37 @@
                         $trend = \App\Models\PayrollHistory::query()->selectRaw('payroll_period, SUM(total_dibayarkan) as total')->groupBy('payroll_period')->orderByDesc('payroll_period')->limit(6)->get()->reverse()->values();
                     @endphp
                     <section class="mt-8" aria-labelledby="payroll-overview-heading">
-                        <div class="mb-4"><h3 id="payroll-overview-heading" class="text-lg font-semibold text-slate-900">Ringkasan payroll</h3><p class="mt-1 text-sm text-slate-600">Status periode {{ $latestPeriod ?? 'belum tersedia' }}.</p></div>
-                        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Karyawan aktif</p><p id="stat-total-karyawan" class="mt-2 text-2xl font-semibold text-slate-900">{{ $totalKaryawanAktif }}</p></div>
-                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Total gaji periode</p><p class="mt-2 text-2xl font-semibold text-slate-900">Rp {{ number_format((int) $periodPayroll->sum('total_dibayarkan'), 0, ',', '.') }}</p></div>
-                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Pembayaran tercatat</p><p class="mt-2 text-2xl font-semibold text-slate-900">{{ $periodPayroll->count() }}</p></div>
-                            <div class="app-surface p-5"><p class="text-sm font-medium text-slate-600">Menunggu proses</p><p class="mt-2 text-2xl font-semibold text-slate-900">{{ (clone $periodPayroll)->whereRaw('LOWER(payment_status) in (?, ?)', ['pending', 'menunggu'])->count() }}</p></div>
+                        <div class="mb-4">
+                            <h3 id="payroll-overview-heading" class="text-lg font-bold text-[#241a52] font-display">Ringkasan payroll</h3>
+                            <p class="mt-1 text-sm text-[#5b5578]">Status periode {{ $latestPeriod ?? 'belum tersedia' }}.</p>
                         </div>
-                        <div class="app-surface mt-4 p-5 sm:p-6"><div class="mb-4"><h4 class="font-semibold text-slate-900">Tren biaya payroll</h4><p class="text-sm text-slate-600">Enam periode payroll terakhir.</p></div><div class="h-72"><canvas id="payrollCostTrend" data-labels='@json($trend->pluck("payroll_period"))' data-values='@json($trend->pluck("total"))'></canvas></div></div>
+                        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <div class="app-surface p-5 hover:shadow-md transition-all duration-300">
+                                <p class="text-sm font-semibold text-[#5b5578]">Karyawan aktif</p>
+                                <p id="stat-total-karyawan" class="mt-2 text-2xl font-bold text-[#241a52] font-display">{{ $totalKaryawanAktif }}</p>
+                            </div>
+                            <div class="app-surface p-5 hover:shadow-md transition-all duration-300">
+                                <p class="text-sm font-semibold text-[#5b5578]">Total gaji periode</p>
+                                <p class="mt-2 text-2xl font-bold text-[#241a52] font-display">Rp {{ number_format((int) $periodPayroll->sum('total_dibayarkan'), 0, ',', '.') }}</p>
+                            </div>
+                            <div class="app-surface p-5 hover:shadow-md transition-all duration-300">
+                                <p class="text-sm font-semibold text-[#5b5578]">Pembayaran tercatat</p>
+                                <p class="mt-2 text-2xl font-bold text-[#241a52] font-display">{{ $periodPayroll->count() }}</p>
+                            </div>
+                            <div class="app-surface p-5 hover:shadow-md transition-all duration-300">
+                                <p class="text-sm font-semibold text-[#5b5578]">Menunggu proses</p>
+                                <p class="mt-2 text-2xl font-bold text-[#241a52] font-display">{{ (clone $periodPayroll)->whereRaw('LOWER(payment_status) in (?, ?)', ['pending', 'menunggu'])->count() }}</p>
+                            </div>
+                        </div>
+                        <div class="rounded-[22px] border border-[#ece7fb] bg-white mt-4 p-5 sm:p-6 shadow-sm shadow-[#5b1fb8]/5 hover:shadow-xl hover:shadow-[#5b1fb8]/10 transition-all duration-300">
+                            <div class="mb-4">
+                                <h4 class="font-bold text-[#241a52] font-display text-base">Tren biaya payroll</h4>
+                                <p class="text-sm text-[#5b5578]">Enam periode payroll terakhir.</p>
+                            </div>
+                            <div class="h-72">
+                                <canvas id="payrollCostTrend" data-labels='@json($trend->pluck("payroll_period"))' data-values='@json($trend->pluck("total"))'></canvas>
+                            </div>
+                        </div>
                     </section>
                 @endrole
 
@@ -162,65 +186,65 @@
                 @endphp
 
                 @if($employeeProfile)
-                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 shadow-sm sm:p-8">
-                        <h3 class="text-lg font-semibold text-indigo-800">Informasi Profil</h3>
+                    <div class="rounded-[22px] border border-[#ece7fb] bg-white p-6 shadow-sm shadow-[#5b1fb8]/5 sm:p-8 hover:shadow-xl hover:shadow-[#5b1fb8]/10 transition-all duration-300">
+                        <h3 class="text-lg font-bold text-[#241a52] font-display border-b border-[#ece7fb] pb-3 mb-6">Informasi Profil</h3>
 
-                        <div class="mt-6 grid grid-cols-1 gap-6 text-sm text-gray-700">
+                        <div class="grid grid-cols-1 gap-6 text-sm text-[#5b5578]">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <div><span class="text-gray-500">ID Pekerja</span><div class="font-semibold">{{ $employeeProfile->id_pekerja }}</div></div>
-                                <div><span class="text-gray-500">NIK</span><div class="font-semibold">{{ $employeeProfile->nik }}</div></div>
-                                <div><span class="text-gray-500">Nama Lengkap</span><div class="font-semibold">{{ $employeeProfile->nama_lengkap }}</div></div>
-                                <div><span class="text-gray-500">Email</span><div class="font-semibold">{{ $employeeProfile->email }}</div></div>
-                                <div><span class="text-gray-500">No Telepon</span><div class="font-semibold">{{ $employeeProfile->no_telepon }}</div></div>
-                                <div><span class="text-gray-500">Role</span><div class="font-semibold">{{ $employeeProfile->role }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">ID Pekerja</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->id_pekerja }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">NIK</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->nik }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Nama Lengkap</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->nama_lengkap }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Email</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->email }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">No Telepon</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->no_telepon }}</div></div>
+                                <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Role</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->role }}</div></div>
                             </div>
 
-                            <div class="pt-4 border-t border-indigo-200">
-                                <h4 class="mb-3 font-semibold text-indigo-800">Informasi Pekerjaan</h4>
+                            <div class="pt-6 border-t border-[#ece7fb]">
+                                <h4 class="mb-4 font-bold text-[#7c1fd6] font-display text-base">Informasi Pekerjaan</h4>
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    <div><span class="text-gray-500">Nama Lengkap</span><div class="font-semibold">{{ $employeeProfile->nama_lengkap }}</div></div>
-                                    <div><span class="text-gray-500">Jabatan</span><div class="font-semibold">{{ $employeeProfile->position?->name ?? $employeeProfile->jabatan ?? 'No Position Assigned' }}</div></div>
-                                    <div><span class="text-gray-500">Gaji</span><div class="font-semibold">{{ $employeeProfile->position?->salary ? 'Rp ' . number_format($employeeProfile->position->salary, 0, ',', '.') : 'No Position Assigned' }}</div></div>
+                                    <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Nama Lengkap</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->nama_lengkap }}</div></div>
+                                    <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Jabatan</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->position?->name ?? $employeeProfile->jabatan ?? 'No Position Assigned' }}</div></div>
+                                    <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Gaji</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->position?->salary ? 'Rp ' . number_format($employeeProfile->position->salary, 0, ',', '.') : 'No Position Assigned' }}</div></div>
                                 </div>
                             </div>
 
-                            <div class="pt-4 border-t border-indigo-200">
-                                <h4 class="mb-3 font-semibold text-indigo-800">Informasi Gaji</h4>
+                            <div class="pt-6 border-t border-[#ece7fb]">
+                                <h4 class="mb-4 font-bold text-[#7c1fd6] font-display text-base">Informasi Gaji</h4>
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     @php
                                         $methodType = strtolower($employeeProfile->payrollMethod?->type ?? '');
                                         $paymentMethodLabel = str_contains($methodType, 'bank') ? 'Bank' : ($employeeProfile->payrollMethod?->name ?? 'Not Selected');
                                         $bankDisplayName = $employeeProfile->nama_bank ?: preg_replace('/^(bank|e-wallet|ewallet)\s+/i', '', $employeeProfile->payrollMethod?->name ?? '');
                                     @endphp
-                                    <div><span class="text-gray-500">Metode Gaji</span><div class="font-semibold">{{ $paymentMethodLabel }}</div></div>
+                                    <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Metode Gaji</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $paymentMethodLabel }}</div></div>
                                     @if(str_contains($methodType, 'bank'))
-                                        <div><span class="text-gray-500">Nama Bank</span><div class="font-semibold">{{ $bankDisplayName ?: 'No Bank Information' }}</div></div>
-                                        <div><span class="text-gray-500">Nomor Rekening</span><div class="font-semibold">{{ $employeeProfile->nomor_rekening ?: 'No Bank Information' }}</div></div>
+                                        <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Nama Bank</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $bankDisplayName ?: 'No Bank Information' }}</div></div>
+                                        <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Nomor Rekening</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->nomor_rekening ?: 'No Bank Information' }}</div></div>
                                     @elseif(str_contains($methodType, 'wallet') || str_contains($methodType, 'e-wallet') || str_contains($methodType, 'ewallet'))
-                                        <div><span class="text-gray-500">Nomor E-Wallet</span><div class="font-semibold">{{ $employeeProfile->nomor_e_wallet ?: 'No E-Wallet Information' }}</div></div>
+                                        <div><span class="text-[#5b5578] text-xs font-semibold uppercase tracking-wider">Nomor E-Wallet</span><div class="font-bold text-[#241a52] text-sm mt-1">{{ $employeeProfile->nomor_e_wallet ?: 'No E-Wallet Information' }}</div></div>
                                     @endif
                                 </div>
                             </div>
 
-                            <div class="pt-4 border-t border-indigo-200">
-                                <h4 class="mb-3 font-semibold text-indigo-800">Bonus</h4>
+                            <div class="pt-6 border-t border-[#ece7fb]">
+                                <h4 class="mb-4 font-bold text-[#7c1fd6] font-display text-base">Bonus</h4>
                                 @if($employeeProfile->bonuses->isNotEmpty())
-                                    <ul class="list-disc pl-5 text-gray-700">
+                                    <ul class="list-disc pl-5 text-[#5b5578] space-y-2">
                                         @foreach($employeeProfile->bonuses as $bonus)
                                             <li>
-                                                <span class="font-semibold text-gray-900">{{ $bonus->nama_bonus }}</span>
-                                                <span class="text-gray-600">({{ $bonus->jenis_bonus }} - Rp {{ number_format($bonus->nominal_bonus, 0, ',', '.') }})</span>
+                                                <span class="font-bold text-[#241a52]">{{ $bonus->nama_bonus }}</span>
+                                                <span class="text-[#5b5578]">({{ $bonus->jenis_bonus }} - Rp {{ number_format($bonus->nominal_bonus, 0, ',', '.') }})</span>
                                             </li>
                                         @endforeach
                                     </ul>
                                 @else
-                                    <div class="font-semibold text-gray-900">No Bonuses Assigned</div>
+                                    <div class="font-bold text-[#241a52] text-sm">Belum Ada Bonus yang Ditugaskan</div>
                                 @endif
                             </div>
 
-                            <div class="pt-4 border-t border-indigo-200">
-                                <h4 class="mb-3 font-semibold text-indigo-800">Alamat</h4>
-                                <div class="font-semibold">{{ $employeeProfile->alamat ?: 'Not Provided' }}</div>
+                            <div class="pt-6 border-t border-[#ece7fb]">
+                                <h4 class="mb-4 font-bold text-[#7c1fd6] font-display text-base">Alamat</h4>
+                                <div class="font-bold text-[#241a52] text-sm">{{ $employeeProfile->alamat ?: 'Belum Disediakan' }}</div>
                             </div>
                         </div>
                     </div>
@@ -246,7 +270,16 @@
                         datasets: [{
                             label: 'Total biaya payroll',
                             data: values,
-                            borderColor: 'rgba(79, 70, 229, 1)', backgroundColor: 'rgba(79, 70, 229, .12)', borderWidth: 2, fill: true, tension: .25, pointRadius: 3,
+                            borderColor: '#7c1fd6', 
+                            backgroundColor: 'rgba(124, 31, 214, 0.08)', 
+                            borderWidth: 3, 
+                            fill: true, 
+                            tension: 0.3, 
+                            pointRadius: 4,
+                            pointBackgroundColor: '#e91e8c',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
                         }],
                     },
                     options: {
@@ -277,3 +310,4 @@
         </script>
     @endrole
 </x-app-layout>
+

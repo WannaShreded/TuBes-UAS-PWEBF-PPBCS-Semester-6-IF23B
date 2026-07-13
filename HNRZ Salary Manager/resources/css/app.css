@@ -4,25 +4,243 @@
 
 @layer base {
     :focus-visible {
-        @apply outline-none ring-2 ring-indigo-600 ring-offset-2;
+        @apply outline-none ring-2 ring-[#7c1fd6] ring-offset-2;
+    }
+
+    body {
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        background-color: #f8f7fd;
+        color: #241a52;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-display {
+        font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+        color: #241a52;
+    }
+
+    /* Style default HTML forms globally for the cosmic theme */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="month"],
+    select,
+    textarea {
+        background-color: #f4f1fb;
+        border-color: #e6e0f7;
+        border-radius: 14px;
+        color: #241a52;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    input[type="month"]:focus,
+    select:focus,
+    textarea:focus {
+        background-color: #ffffff;
+        border-color: #7c1fd6;
+        box-shadow: 0 0 0 3px rgba(124, 31, 214, 0.15);
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+
+    /* Form checkbox styling */
+    input[type="checkbox"] {
+        @apply rounded border-[#e6e0f7] text-[#7c1fd6] focus:ring-[#7c1fd6] focus:ring-offset-0 bg-[#f4f1fb] transition-all duration-200;
     }
 }
 
 @layer components {
-    .app-surface { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
-    .app-page { @apply mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8; }
-    .app-button { @apply inline-flex items-center justify-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors duration-200 ease-in-out; }
-    .app-button-primary { @apply app-button bg-indigo-600 text-white hover:bg-indigo-700; }
-    .app-button-secondary { @apply app-button border border-slate-300 bg-white text-slate-700 hover:bg-slate-50; }
-    .app-table { @apply min-w-full divide-y divide-slate-200 text-sm; }
-    .app-table th { @apply whitespace-nowrap bg-slate-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600; }
-    .app-table td { @apply px-4 py-3 align-middle text-slate-700; }
-    .app-table tbody tr { @apply border-b border-slate-100 transition-colors duration-150 hover:bg-slate-50; }
-    .app-skeleton { @apply animate-pulse rounded bg-slate-200; }
+    .app-surface { 
+        @apply rounded-[22px] border border-[#ece7fb] bg-white shadow-sm shadow-[#5b1fb8]/5; 
+    }
+    
+    .app-page { 
+        @apply mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8 animate-fade-in; 
+    }
+    
+    .app-button { 
+        @apply inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 ease-in-out active:scale-95; 
+    }
+    
+    .app-button-primary { 
+        @apply app-button bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-md shadow-[#e91e8c]/25 hover:opacity-90 hover:shadow-lg hover:shadow-[#e91e8c]/35; 
+    }
+    
+    .app-button-secondary { 
+        @apply app-button border border-[#ece7fb] bg-[#f4f1fb] text-[#241a52] hover:bg-[#ece7fb] hover:text-[#140b3d]; 
+    }
+    
+    .app-table { 
+        @apply min-w-full text-sm border-collapse; 
+    }
+    
+    .app-table th { 
+        @apply whitespace-nowrap bg-[#f4f1fb] px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-[#241a52] font-display border-b border-[#ece7fb]; 
+    }
+    
+    .app-table td { 
+        @apply px-4 py-3.5 align-middle text-[#5b5578] border-b border-[#ece7fb]/50; 
+    }
+    
+    .app-table tbody tr { 
+        @apply transition-colors duration-150 hover:bg-[#f4f1fb]/40; 
+    }
+    
+    .app-skeleton { 
+        @apply animate-pulse rounded-[14px] bg-[#f4f1fb] border border-[#ece7fb]; 
+    }
+
+    /* Style container card wrappers on list / form pages dynamically */
+    .py-12 .bg-white.overflow-hidden.shadow-sm.sm\:rounded-lg {
+        background-color: #ffffff !important;
+        border: 1px solid #ece7fb !important;
+        border-radius: 22px !important;
+        box-shadow: 0 1px 3px 0 rgba(91, 31, 184, 0.05), 0 1px 2px -1px rgba(91, 31, 184, 0.05) !important;
+    }
+
+    
+    /* Auto style blue/indigo actions into the cosmic gradient buttons */
+    a[class*="bg-blue-600"],
+    button[class*="bg-blue-600"],
+    a[class*="bg-indigo-600"],
+    button[class*="bg-indigo-600"] {
+        background: linear-gradient(to right, #7c1fd6, #e91e8c) !important;
+        color: #ffffff !important;
+        border-radius: 9999px !important;
+        border-style: none !important;
+        font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        box-shadow: 0 10px 15px -3px rgba(233, 30, 140, 0.3) !important;
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+        transition: all 0.2s !important;
+    }
+    a[class*="bg-blue-600"]:hover,
+    button[class*="bg-blue-600"]:hover,
+    a[class*="bg-indigo-600"]:hover,
+    button[class*="bg-indigo-600"]:hover {
+        opacity: 0.9 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 10px 20px -3px rgba(233, 30, 140, 0.4) !important;
+    }
+
+    /* Auto style grey secondary/cancel buttons */
+    a[class*="bg-gray-600"],
+    button[class*="bg-gray-600"],
+    a[class*="bg-gray-200"],
+    button[class*="bg-gray-200"],
+    a[class*="bg-slate-200"],
+    button[class*="bg-slate-200"] {
+        background-color: #f4f1fb !important;
+        background-image: none !important;
+        color: #241a52 !important;
+        border: 1px solid #ece7fb !important;
+        border-radius: 9999px !important;
+        font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif !important;
+        font-weight: 600 !important;
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+        box-shadow: none !important;
+        transition: all 0.2s !important;
+    }
+    a[class*="bg-gray-600"]:hover,
+    button[class*="bg-gray-600"]:hover,
+    a[class*="bg-gray-200"]:hover,
+    button[class*="bg-gray-200"]:hover,
+    a[class*="bg-slate-200"]:hover,
+    button[class*="bg-slate-200"]:hover {
+        background-color: #ece7fb !important;
+        color: #140b3d !important;
+    }
+
+    /* Auto style inline badges in tables for cosmic look */
+    .bg-green-100, .text-green-800, .text-green-700 {
+        background: linear-gradient(to right, rgba(16, 185, 129, 0.08), rgba(20, 184, 166, 0.08)) !important;
+        color: #047857 !important;
+        border: 1px solid rgba(16, 185, 129, 0.18) !important;
+        @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider !important;
+    }
+    .bg-yellow-100, .bg-amber-100, .text-yellow-800, .text-amber-800 {
+        background: linear-gradient(to right, rgba(245, 158, 11, 0.08), rgba(249, 115, 22, 0.08)) !important;
+        color: #b45309 !important;
+        border: 1px solid rgba(245, 158, 11, 0.18) !important;
+        @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider !important;
+    }
+    .bg-red-100, .text-red-700, .text-red-800 {
+        background: linear-gradient(to right, rgba(239, 68, 68, 0.08), rgba(244, 63, 94, 0.08)) !important;
+        color: #b91c1c !important;
+        border: 1px solid rgba(239, 68, 68, 0.18) !important;
+        @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider !important;
+    }
+    .bg-purple-100, .text-purple-800 {
+        background: linear-gradient(to right, rgba(124, 31, 214, 0.08), rgba(233, 30, 140, 0.08)) !important;
+        color: #7c1fd6 !important;
+        border: 1px solid rgba(124, 31, 214, 0.18) !important;
+        @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider !important;
+    }
+    .bg-gray-200, .text-gray-600 {
+        background: rgba(100, 116, 139, 0.08) !important;
+        color: #475569 !important;
+        border: 1px solid rgba(100, 116, 139, 0.18) !important;
+        @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider !important;
+    }
+
+    /* Autostyle alert boxes */
+    .bg-green-100.text-green-800:not(span),
+    .bg-red-100.text-red-800:not(span),
+    .bg-yellow-100.text-yellow-800:not(span) {
+        border-radius: 14px !important;
+        border-width: 1px !important;
+        font-weight: 500 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+    }
+
+    /* Cosmic Band & Float Orbs helper */
+    .cosmic-band {
+        background: linear-gradient(135deg, #140b3d 0%, #5b1fb8 55%, #7c1fd6 100%);
+    }
+    
+    .orb { animation: floatY 5.5s ease-in-out infinite; }
+    .orb-b { animation-delay: .6s; }
+    .orb-c { animation-delay: 1.1s; }
 }
 
 [x-cloak] {
     display: none;
+}
+
+@keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.35s ease-out forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
