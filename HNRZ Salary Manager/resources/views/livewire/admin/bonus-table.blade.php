@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 @forelse($items as $index => $bonus)
-                    <tr class="border-b" wire:key="bonus-row-{{ $bonus->id }}">
+                    <tr class="border-b" wire:key="bonus-row-{{ $bonus->id }}-{{ $bonus->employees_count }}">
                         <td class="p-3">{{ $items->firstItem() + $index }}</td>
                         <td class="p-3 font-medium">{{ $bonus->nama_bonus }}</td>
                         <td class="p-3">{{ $bonus->nominal_format }}</td>

@@ -18,7 +18,7 @@
                             Nama Bonus
                         </label>
                         <input type="text" name="nama_bonus" value="{{ old('nama_bonus') }}"
-                               placeholder="Contoh: Lembur, THR, Bonus Proyek"
+                               placeholder="Contoh: THR, Lembur, Proyek"
                                class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
                         @error('nama_bonus')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

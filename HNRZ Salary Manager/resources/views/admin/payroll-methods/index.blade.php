@@ -2,7 +2,7 @@
     <x-slot name="header">
     <div class="flex justify-between items-center">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Metode Penggajian
+            Metode Gaji
         </h2>
         <div class="flex items-center gap-2">
             @can('delete-payroll-methods')
