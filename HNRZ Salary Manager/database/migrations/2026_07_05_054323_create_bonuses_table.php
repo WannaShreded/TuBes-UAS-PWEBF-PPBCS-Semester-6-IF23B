@@ -14,7 +14,7 @@ return new class extends Migration
             $table->decimal('nominal_bonus', 15, 2);
             $table->enum('jenis_bonus', ['Tetap', 'Variabel']);
             $table->date('periode_bonus'); // disimpan sebagai date, ditampilkan bulan/tahun
-            $table->text('keterangan')->nullable();
+            $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
     }
