@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/payroll_method.dart';
 import '../../services/payroll_method_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 
 class EditPayrollPage extends StatefulWidget {
   final PayrollMethod payrollMethod;
@@ -87,79 +89,79 @@ class _EditPayrollPageState extends State<EditPayrollPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Edit Metode Penggajian")),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _typeController,
-                decoration: const InputDecoration(
-                  labelText: "Tipe",
-                  border: OutlineInputBorder(),
+          child: FormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const FormSectionLabel("Informasi Metode"),
+                TextFormField(
+                  controller: _typeController,
+                  decoration: const InputDecoration(
+                    labelText: "Tipe",
+                    hintText: "mis. Bank, E-Wallet, Tunai",
+                    prefixIcon: Icon(Icons.category_outlined),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Tipe wajib diisi";
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Tipe wajib diisi";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: "Nama Metode",
-                  border: OutlineInputBorder(),
+                const SizedBox(height: AppSpacing.md),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: "Nama Metode",
+                    prefixIcon: Icon(Icons.account_balance_wallet_outlined),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Nama wajib diisi";
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama wajib diisi";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: "Deskripsi",
-                  border: OutlineInputBorder(),
+                const SizedBox(height: AppSpacing.md),
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    labelText: "Deskripsi (opsional)",
+                    alignLabelWithHint: true,
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 10),
-
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text("Aktif"),
-                value: isActive,
-                onChanged: (value) {
-                  setState(() => isActive = value);
-                },
-              ),
-
-              const SizedBox(height: 30),
-
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _updatePayroll,
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text("Update"),
+                const SizedBox(height: AppSpacing.sm),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text("Aktif"),
+                  value: isActive,
+                  onChanged: (value) {
+                    setState(() => isActive = value);
+                  },
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _updatePayroll,
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text("Update"),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
