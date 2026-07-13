@@ -55,15 +55,6 @@ class PayrollMethodTable extends SearchableTable
         return $this->applySorting($query, ['name', 'type', 'is_active', 'created_at'])->paginate($this->perPage);
     }
 
-    protected $listeners = ['call-livewire-action' => 'handleAction'];
-
-    public function handleAction(string $action, array $params): void
-    {
-        if (method_exists($this, $action)) {
-            $this->$action(...$params);
-        }
-    }
-
     public function confirmDelete(int $id, string $name): void
     {
         $this->dispatch('open-confirm-modal', [

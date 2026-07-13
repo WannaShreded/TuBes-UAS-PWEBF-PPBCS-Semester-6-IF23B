@@ -1,6 +1,17 @@
 @php
     $adminGroups = [
         [
+            'label' => 'Reports',
+            'items' => [
+                [
+                    'label' => 'Statistik',
+                    'route' => 'admin.statistics.index',
+                    'active' => 'admin.statistics.*',
+                    'icon' => 'M4 19V5m4 14v-7m4 7V8m4 11V4',
+                ],
+            ],
+        ],
+        [
             'label' => 'Payroll',
             'items' => [
                 [
@@ -39,17 +50,6 @@
                     'route' => 'admin.jabatan.index',
                     'active' => 'admin.jabatan.*',
                     'icon' => 'M4 5h16v14H4zM8 9h8M8 13h6',
-                ],
-            ],
-        ],
-        [
-            'label' => 'Reports',
-            'items' => [
-                [
-                    'label' => 'Statistik',
-                    'route' => 'admin.statistics.index',
-                    'active' => 'admin.statistics.*',
-                    'icon' => 'M4 19V5m4 14v-7m4 7V8m4 11V4',
                 ],
             ],
         ],

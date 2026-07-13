@@ -5,7 +5,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Manajemen User
+                Kelola Pengguna
             </h2>
             @can('delete-users')
                 <a href="{{ route('admin.users.trash') }}"

@@ -19,6 +19,17 @@ abstract class SearchableTable extends Component
 
     protected $queryString = ['search' => ['except' => '']];
 
+    protected $listeners = [
+        'call-livewire-action' => 'handleAction',
+    ];
+
+    public function handleAction(string $action, array $params = []): void
+    {
+        if (method_exists($this, $action)) {
+            $this->$action(...$params);
+        }
+    }
+
     public function updating(string $name): void
     {
         if ($name !== 'page') {

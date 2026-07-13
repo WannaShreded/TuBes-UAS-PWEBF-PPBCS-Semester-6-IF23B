@@ -85,15 +85,6 @@ class EmployeeTable extends SearchableTable
         return in_array($normalized, ['aktif', '1', 'true', 'yes', 'on'], true);
     }
 
-    protected $listeners = ['call-livewire-action' => 'handleAction'];
-
-    public function handleAction(string $action, array $params): void
-    {
-        if (method_exists($this, $action)) {
-            $this->$action(...$params);
-        }
-    }
-
     public function confirmDelete(int $id, string $name): void
     {
         $this->dispatch('open-confirm-modal', [
