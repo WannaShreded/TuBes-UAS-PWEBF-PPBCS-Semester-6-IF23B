@@ -73,6 +73,13 @@ class JabatanController extends Controller
      */
     public function destroy(Jabatan $jabatan)
     {
+        if ($jabatan->employees()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jabatan tidak dapat dihapus karena masih digunakan oleh karyawan.',
+            ], 422);
+        }
+
         $jabatan->delete();
 
         return response()->json([

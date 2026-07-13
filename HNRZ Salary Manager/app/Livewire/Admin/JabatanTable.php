@@ -79,7 +79,14 @@ class JabatanTable extends SearchableTable
 
     public function deleteItem(int $id): void
     {
-        Jabatan::findOrFail($id)->delete();
+        $jabatan = Jabatan::findOrFail($id);
+
+        if ($jabatan->employees()->exists()) {
+            $this->dispatch('notify', message: 'Jabatan tidak dapat dihapus karena masih digunakan oleh karyawan.', type: 'error');
+            return;
+        }
+
+        $jabatan->delete();
         $this->dispatch('notify', message: 'Jabatan berhasil dihapus.', type: 'success');
     }
 }
