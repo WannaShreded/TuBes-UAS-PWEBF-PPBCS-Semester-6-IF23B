@@ -123,7 +123,7 @@
         {{-- ============ NAV ============ --}}
         <nav class="relative z-10 flex flex-wrap items-center justify-between gap-5 px-6 pt-9 sm:px-10 lg:px-14">
             <a href="{{ url('/') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logoHNRZ.png') }}" alt="Logo" class="h-10 w-10 object-contain">
+                <img src="{{ asset('images/logoHNRZikiPutih.png') }}" alt="Logo" class="h-20 w-20 object-contain">
 
                 <span class="font-display text-lg font-bold tracking-wide text-white">
                     PAYROLL<span class="font-normal text-white/75">KU</span>
@@ -298,7 +298,7 @@
     <footer class="bg-[#140b3d] px-6 py-12 text-center text-sm text-white/55 sm:px-10 lg:px-14">
         <div class="mb-3 flex items-center justify-center gap-2 font-display font-bold tracking-wide text-white">
 
-            <img src="{{ asset('images/logoHNRZ.png') }}" alt="HNRZ Salary Manager" class="h-5 w-5 object-contain">
+            <img src="{{ asset('images/logoHNRZikiPutih.png') }}" alt="HNRZ Salary Manager" class="h-10 w-10 object-contain">
 
             PAYROLLKU
         </div>
