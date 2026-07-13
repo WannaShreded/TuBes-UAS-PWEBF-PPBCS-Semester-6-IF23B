@@ -18,42 +18,104 @@
 @endphp
 
 <div x-data="{ open: false, collapsed: false }" @keydown.escape.window="open = false">
-    <div x-show="open" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-950/40 lg:hidden" @click="open = false"></div>
-    <aside :class="{ '-translate-x-full': !open, 'w-20': collapsed, 'w-72': !collapsed }" class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white transition-[width,transform] duration-200 ease-in-out lg:translate-x-0">
-        <div class="flex h-16 items-center border-b border-slate-200 px-4" :class="collapsed ? 'justify-center' : 'justify-between'">
-            <a href="{{ route('dashboard') }}" class="flex min-w-0 items-center gap-3 font-bold text-slate-900" aria-label="Dashboard">
-                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">H</span>
-                <span x-show="!collapsed" x-transition.opacity class="truncate">HNRZ Salary</span>
+    {{-- Mobile Sidebar Backdrop --}}
+    <div x-show="open" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-950/60 lg:hidden" @click="open = false"></div>
+    
+    {{-- Sidebar Container --}}
+    <aside :class="{ '-translate-x-full': !open, 'w-20': collapsed, 'w-72': !collapsed }" class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-[#5b1fb8]/20 bg-gradient-to-b from-[#140b3d] to-[#1c0f4d] text-white transition-[width,transform] duration-200 ease-in-out lg:translate-x-0">
+        
+        {{-- Logo Header --}}
+        <div class="flex h-16 items-center border-b border-[#5b1fb8]/20 px-4" :class="collapsed ? 'justify-center' : 'justify-between'">
+            <a href="{{ route('dashboard') }}" class="flex min-w-0 items-center gap-3 font-bold text-white group" aria-label="Dashboard">
+                <span class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7c1fd6] to-[#e91e8c] text-sm font-bold text-white shadow-md shadow-[#e91e8c]/30">
+                    <span class="relative inline-block h-3.5 w-3.5 rounded-full border-2 border-white">
+                        <span class="absolute inset-[1.5px] rounded-full bg-white"></span>
+                    </span>
+                </span>
+                <span x-show="!collapsed" x-transition.opacity class="truncate font-display tracking-wide text-white leading-tight">
+                    HNRZ<span class="text-white/60 font-normal text-xs block">Salary Manager</span>
+                </span>
             </a>
-            <button type="button" @click="collapsed = !collapsed" class="hidden rounded-md p-2 text-slate-500 hover:bg-slate-100 lg:block" :aria-label="collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" :class="collapsed ? '' : 'rotate-180'"></path></svg>
+            <button type="button" @click="collapsed = !collapsed" class="hidden rounded-lg p-2 text-white/55 hover:bg-[#5b1fb8]/20 hover:text-white transition-colors lg:block" :aria-label="collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" :class="collapsed ? '' : 'rotate-180'"></path>
+                </svg>
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto p-3" aria-label="Navigasi utama">
-            <a href="{{ route('dashboard') }}" class="mb-3 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}" :title="collapsed ? 'Dashboard' : ''">
-                <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12 12 3l9 9v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" /></svg><span x-show="!collapsed">Dashboard</span>
+
+        {{-- Nav Links --}}
+        <nav class="flex-1 overflow-y-auto p-3 space-y-1" aria-label="Navigasi utama">
+            <a href="{{ route('dashboard') }}" 
+               class="mb-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}" 
+               :title="collapsed ? 'Dashboard' : ''">
+                <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12 12 3l9 9v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" />
+                </svg>
+                <span x-show="!collapsed" x-transition.opacity>Dashboard</span>
             </a>
+            
             @role('admin')
                 @foreach($adminGroups as $group)
                     <section class="mb-4">
-                        <p x-show="!collapsed" class="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">{{ $group['label'] }}</p>
+                        <p x-show="!collapsed" x-transition.opacity class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#e91e8c]/80">{{ $group['label'] }}</p>
                         @foreach($group['items'] as $item)
-                            <a href="{{ route($item['route']) }}" class="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 {{ request()->routeIs($item['active']) ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}" :title="collapsed ? '{{ $item['label'] }}' : ''">
-                                <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}" /></svg><span x-show="!collapsed">{{ $item['label'] }}</span>
+                            <a href="{{ route($item['route']) }}" 
+                               class="mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs($item['active']) ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25 font-semibold' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}" 
+                               :title="collapsed ? '{{ $item['label'] }}' : ''">
+                                <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}" />
+                                </svg>
+                                <span x-show="!collapsed" x-transition.opacity>{{ $item['label'] }}</span>
                             </a>
                         @endforeach
                     </section>
                 @endforeach
             @else
-                <p x-show="!collapsed" class="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Employee</p>
-                <a href="{{ route('employee.position') }}" class="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('employee.position') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}"><span class="h-5 w-5 shrink-0 text-center">⌘</span><span x-show="!collapsed">Jabatan</span></a>
-                <a href="{{ route('employee.payroll-methods.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('employee.payroll-methods.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}"><span class="h-5 w-5 shrink-0 text-center">$</span><span x-show="!collapsed">Metode Gaji</span></a>
+                <p x-show="!collapsed" x-transition.opacity class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#e91e8c]/80">Employee</p>
+                <a href="{{ route('employee.position') }}" 
+                   class="mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('employee.position') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}"
+                   :title="collapsed ? 'Jabatan' : ''">
+                    <span class="h-5 w-5 shrink-0 flex items-center justify-center font-bold text-xs">⌘</span>
+                    <span x-show="!collapsed" x-transition.opacity>Jabatan</span>
+                </a>
+                <a href="{{ route('employee.payroll-methods.index') }}" 
+                   class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('employee.payroll-methods.*') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}"
+                   :title="collapsed ? 'Metode Gaji' : ''">
+                    <span class="h-5 w-5 shrink-0 flex items-center justify-center font-bold text-xs">$</span>
+                    <span x-show="!collapsed" x-transition.opacity>Metode Gaji</span>
+                </a>
             @endrole
         </nav>
-        <div class="border-t border-slate-200 p-3" :class="collapsed ? 'px-2' : ''">
-            <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100" :title="collapsed ? 'Profil' : ''"><span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span><span x-show="!collapsed" class="min-w-0 truncate">{{ Auth::user()->name }}</span></a>
-            <form method="POST" action="{{ route('logout') }}" class="mt-1">@csrf <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100" :title="collapsed ? 'Keluar' : ''"><svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 17l5-5-5-5m5 5H3m12-7h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2" /></svg><span x-show="!collapsed">Keluar</span></button></form>
+
+        {{-- Footer Profile & Logout --}}
+        <div class="border-t border-[#5b1fb8]/20 p-3 space-y-1" :class="collapsed ? 'px-2' : ''">
+            <a href="{{ route('profile.edit') }}" 
+               class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-white/80 hover:bg-[#5b1fb8]/20 hover:text-white transition-colors" 
+               :title="collapsed ? 'Profil' : ''">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#7c1fd6]/40 to-[#e91e8c]/40 border border-[#7c1fd6]/30 text-xs font-bold text-white shadow-sm">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </span>
+                <span x-show="!collapsed" x-transition.opacity class="min-w-0 truncate font-medium">{{ Auth::user()->name }}</span>
+            </a>
+            
+            <form method="POST" action="{{ route('logout') }}" class="mt-1">
+                @csrf 
+                <button type="submit" 
+                        class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-rose-500/20 hover:text-rose-200 transition-colors" 
+                        :title="collapsed ? 'Keluar' : ''">
+                    <svg class="h-5 w-5 shrink-0 text-white/60 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 17l5-5-5-5m5 5H3m12-7h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition.opacity>Keluar</span>
+                </button>
+            </form>
         </div>
     </aside>
-    <button type="button" @click="open = true" class="fixed left-4 top-4 z-30 rounded-lg border border-slate-200 bg-white p-2 text-slate-700 shadow-sm lg:hidden" aria-label="Buka navigasi"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
+
+    {{-- Mobile Open Button --}}
+    <button type="button" @click="open = true" class="fixed left-4 top-4 z-30 rounded-xl border border-[#5b1fb8]/20 bg-[#140b3d] p-2 text-white hover:bg-[#5b1fb8]/25 shadow-lg lg:hidden transition-colors" aria-label="Buka navigasi">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
 </div>
