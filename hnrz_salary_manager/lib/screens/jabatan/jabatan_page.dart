@@ -18,6 +18,14 @@ class _JabatanPageState extends State<JabatanPage> {
   final JabatanService _service = JabatanService();
   late Future<List<Jabatan>> futureJabatan;
 
+  static const _cardColors = [
+    AppColors.statBlue,
+    AppColors.statGreen,
+    AppColors.statPurple,
+    AppColors.statTeal,
+    AppColors.statYellow,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -150,22 +158,13 @@ class _JabatanPageState extends State<JabatanPage> {
 
                       if (result == true) _refresh();
                     },
-                    child: Padding(
+    child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       child: Row(
                         children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppColors.infoBg,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.sm),
-                            ),
-                            child: const Icon(
-                              Icons.badge_outlined,
-                              color: AppColors.primary,
-                            ),
+                          IconAvatar(
+                            icon: Icons.badge_outlined,
+                            color: _cardColors[index % _cardColors.length],
                           ),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(

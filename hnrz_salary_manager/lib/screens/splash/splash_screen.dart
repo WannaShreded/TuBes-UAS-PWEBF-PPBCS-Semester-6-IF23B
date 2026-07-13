@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth_service.dart';
 import '../auth/login_page.dart';
-import '../dashboard/dashboard_page.dart';
+import '../shell/main_shell.dart';
 import '../../theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const DashboardPage()),
+        MaterialPageRoute(builder: (_) => const MainShell()),
       );
     } else {
       Navigator.pushReplacement(

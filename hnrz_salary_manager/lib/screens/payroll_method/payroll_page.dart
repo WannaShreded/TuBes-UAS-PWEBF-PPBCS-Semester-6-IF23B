@@ -18,6 +18,14 @@ class _PayrollPageState extends State<PayrollPage> {
   final PayrollMethodService _service = PayrollMethodService();
   late Future<List<PayrollMethod>> futurePayroll;
 
+  static const _cardColors = [
+    AppColors.statGreen,
+    AppColors.statBlue,
+    AppColors.statYellow,
+    AppColors.statPurple,
+    AppColors.statTeal,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -149,17 +157,9 @@ class _PayrollPageState extends State<PayrollPage> {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       child: Row(
                         children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppColors.infoBg,
-                              borderRadius: BorderRadius.circular(AppRadius.sm),
-                            ),
-                            child: const Icon(
-                              Icons.account_balance_wallet_outlined,
-                              color: AppColors.primary,
-                            ),
+                          IconAvatar(
+                            icon: Icons.account_balance_wallet_outlined,
+                            color: _cardColors[index % _cardColors.length],
                           ),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(

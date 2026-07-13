@@ -1,281 +1,334 @@
 import 'package:flutter/material.dart';
 
-import '../auth/login_page.dart';
+import '../../models/employee.dart';
+import '../../services/employee_service.dart';
+import '../../services/jabatan_service.dart';
+import '../../services/bonus_service.dart';
+import '../../services/payroll_method_service.dart';
+import '../../theme/app_theme.dart';
 import '../jabatan/jabatan_page.dart';
 import '../bonus/bonus_page.dart';
-import '../../services/auth_service.dart';
-import '../payroll_method/payroll_page.dart';
 import '../employee/employee_page.dart';
 import '../employee/profile_page.dart';
+import '../payroll_method/payroll_page.dart';
 import '../payroll_method/employee_payroll_page.dart';
-import '../../theme/app_theme.dart';
 
-class DashboardPage extends StatelessWidget {
+class _HomeStats {
+  final int aktif;
+  final int nonaktif;
+  final int jabatan;
+  final int bonus;
+
+  const _HomeStats({
+    required this.aktif,
+    required this.nonaktif,
+    required this.jabatan,
+    required this.bonus,
+  });
+}
+
+/// Konten tab "Home" — dipakai di dalam MainShell (sudah ada bottom nav).
+class DashboardPage extends StatefulWidget {
   final List<String> roles;
 
   const DashboardPage({super.key, this.roles = const []});
 
-  Future<void> _logout(BuildContext context) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        title: const Text("Keluar"),
-        content: const Text("Apakah Anda yakin ingin keluar?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Batal"),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Keluar"),
-          ),
-        ],
-      ),
-    );
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
 
-    if (confirm != true) return;
+class _DashboardPageState extends State<DashboardPage> {
+  late Future<_HomeStats> _futureStats;
 
-    await AuthService().logout();
+  bool get _isEmployeeOnly =>
+      widget.roles.contains('karyawan') && !widget.roles.contains('admin');
 
-    if (!context.mounted) return;
+  @override
+  void initState() {
+    super.initState();
+    if (!_isEmployeeOnly) {
+      _futureStats = _loadStats();
+    }
+  }
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-      (route) => false,
+  Future<_HomeStats> _loadStats() async {
+    final results = await Future.wait([
+      EmployeeService().getAll(),
+      JabatanService().getAll(),
+      BonusService().getAll(),
+    ]);
+
+    final employees = results[0] as List<Employee>;
+    final jabatanCount = results[1].length;
+    final bonusCount = results[2].length;
+
+    return _HomeStats(
+      aktif: employees.where((e) => e.isActive).length,
+      nonaktif: employees.where((e) => !e.isActive).length,
+      jabatan: jabatanCount,
+      bonus: bonusCount,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEmployeeOnly =
-        roles.contains('karyawan') && !roles.contains('admin');
-
-    final menuItems = isEmployeeOnly
-        ? [
-            _MenuItem(
-              title: "Profil Saya",
-              subtitle: "Lihat data diri Anda",
-              icon: Icons.person_outline,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
-              ),
-            ),
-            _MenuItem(
-              title: "Metode Gaji",
-              subtitle: "Atur metode pembayaran",
-              icon: Icons.account_balance_wallet_outlined,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const EmployeePayrollPage(),
-                ),
-              ),
-            ),
-          ]
-        : [
-            _MenuItem(
-              title: "Karyawan",
-              subtitle: "Kelola data karyawan",
-              icon: Icons.people_outline,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const EmployeePage()),
-              ),
-            ),
-            _MenuItem(
-              title: "Jabatan",
-              subtitle: "Kelola jabatan & gaji pokok",
-              icon: Icons.work_outline,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const JabatanPage()),
-              ),
-            ),
-            _MenuItem(
-              title: "Bonus",
-              subtitle: "Kelola bonus karyawan",
-              icon: Icons.card_giftcard_outlined,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const BonusPage()),
-              ),
-            ),
-            _MenuItem(
-              title: "Payroll",
-              subtitle: "Proses pembayaran gaji",
-              icon: Icons.payments_outlined,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const PayrollPage()),
-              ),
-            ),
-            _MenuItem(
-              title: "Profil",
-              subtitle: "Lihat profil akun",
-              icon: Icons.person_outline,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
-              ),
-            ),
-          ];
-
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text("HNRZ Salary Manager"),
-        actions: [
-          IconButton(
-            tooltip: "Keluar",
-            icon: const Icon(Icons.logout),
-            onPressed: () => _logout(context),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-        ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ---------- Header sambutan ----------
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(AppRadius.md),
-                        ),
-                        child: const Icon(
-                          Icons.dashboard_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Selamat datang",
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              isEmployeeOnly
-                                  ? "Kelola profil dan metode gaji Anda"
-                                  : "Kelola data karyawan, jabatan, bonus, dan gaji",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
+        child: _isEmployeeOnly ? _buildEmployeeHome(context) : _buildAdminHome(context),
+      ),
+    );
+  }
 
-              Text(
-                "MENU",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.6,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
+  // ---------------------------------------------------------------------
+  // Home untuk role admin: statistik + daftar modul
+  // ---------------------------------------------------------------------
+  Widget _buildAdminHome(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          _futureStats = _loadStats();
+        });
+        await _futureStats;
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        children: [
+          Text(
+            "Ringkasan",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          FutureBuilder<_HomeStats>(
+            future: _futureStats,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 180,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
 
-              // ---------- Grid menu ----------
-              GridView.count(
+              if (snapshot.hasError) {
+                return Text(
+                  "Gagal memuat ringkasan: ${snapshot.error}",
+                  style: const TextStyle(color: AppColors.danger),
+                );
+              }
+
+              final stats = snapshot.data!;
+
+              return GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: AppSpacing.md,
                 mainAxisSpacing: AppSpacing.md,
-                childAspectRatio: 1.05,
+                childAspectRatio: 1.5,
                 children: [
-                  for (final item in menuItems) DashboardCard(item: item),
+                  StatCard(
+                    title: "Karyawan Aktif",
+                    value: "${stats.aktif}",
+                    color: AppColors.statGreen,
+                    footer: "Sedang bekerja",
+                    footerIcon: Icons.trending_up,
+                  ),
+                  StatCard(
+                    title: "Karyawan Nonaktif",
+                    value: "${stats.nonaktif}",
+                    color: AppColors.statRed,
+                    footer: "Tidak aktif",
+                    footerIcon: Icons.trending_down,
+                  ),
+                  StatCard(
+                    title: "Total Jabatan",
+                    value: "${stats.jabatan}",
+                    color: AppColors.statYellow,
+                    footer: "Jabatan terdaftar",
+                    footerIcon: Icons.work_outline,
+                  ),
+                  StatCard(
+                    title: "Total Bonus",
+                    value: "${stats.bonus}",
+                    color: AppColors.statBlue,
+                    footer: "Bonus tercatat",
+                    footerIcon: Icons.card_giftcard_outlined,
+                  ),
                 ],
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            "Modul",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Card(
+            child: Column(
+              children: [
+                _ModuleTile(
+                  icon: Icons.people_outline,
+                  color: AppColors.statBlue,
+                  title: "Karyawan",
+                  subtitle: "Kelola data karyawan",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const EmployeePage()),
+                  ),
+                ),
+                const Divider(height: 1, indent: 68),
+                _ModuleTile(
+                  icon: Icons.work_outline,
+                  color: AppColors.statYellow,
+                  title: "Jabatan",
+                  subtitle: "Kelola jabatan & gaji pokok",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const JabatanPage()),
+                  ),
+                ),
+                const Divider(height: 1, indent: 68),
+                _ModuleTile(
+                  icon: Icons.card_giftcard_outlined,
+                  color: AppColors.statPurple,
+                  title: "Bonus",
+                  subtitle: "Kelola bonus karyawan",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BonusPage()),
+                  ),
+                ),
+                const Divider(height: 1, indent: 68),
+                _ModuleTile(
+                  icon: Icons.payments_outlined,
+                  color: AppColors.statGreen,
+                  title: "Payroll",
+                  subtitle: "Proses pembayaran gaji",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PayrollPage()),
+                  ),
+                ),
+                const Divider(height: 1, indent: 68),
+                _ModuleTile(
+                  icon: Icons.person_outline,
+                  color: AppColors.statTeal,
+                  title: "Profil",
+                  subtitle: "Lihat profil akun",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------
+  // Home untuk role karyawan: sambutan + akses cepat
+  // ---------------------------------------------------------------------
+  Widget _buildEmployeeHome(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.statBlue, AppColors.primaryDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Selamat datang!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                "Kelola profil dan metode gaji Anda di sini.",
+                style: TextStyle(color: Colors.white70, fontSize: 13),
               ),
             ],
           ),
         ),
-      ),
+        const SizedBox(height: AppSpacing.lg),
+        Text("Akses Cepat", style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: AppSpacing.sm),
+        Card(
+          child: Column(
+            children: [
+              _ModuleTile(
+                icon: Icons.person_outline,
+                color: AppColors.statTeal,
+                title: "Profil Saya",
+                subtitle: "Lihat data diri Anda",
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                ),
+              ),
+              const Divider(height: 1, indent: 68),
+              _ModuleTile(
+                icon: Icons.account_balance_wallet_outlined,
+                color: AppColors.statGreen,
+                title: "Metode Gaji",
+                subtitle: "Atur metode pembayaran",
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const EmployeePayrollPage(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
 
-class _MenuItem {
+class _ModuleTile extends StatelessWidget {
+  final IconData icon;
+  final Color color;
   final String title;
   final String subtitle;
-  final IconData icon;
   final VoidCallback onTap;
 
-  const _MenuItem({
+  const _ModuleTile({
+    required this.icon,
+    required this.color,
     required this.title,
     required this.subtitle,
-    required this.icon,
     required this.onTap,
   });
-}
-
-class DashboardCard extends StatelessWidget {
-  final _MenuItem item;
-
-  const DashboardCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        onTap: item.onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.infoBg,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
-                child: Icon(item.icon, color: AppColors.primary, size: 24),
-              ),
-              const Spacer(),
-              Text(
-                item.title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                item.subtitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-        ),
-      ),
+    return ListTile(
+      onTap: onTap,
+      leading: IconAvatar(icon: icon, color: color),
+      title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+      subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+      trailing: const Icon(Icons.chevron_right, color: AppColors.textDisabled),
     );
   }
 }

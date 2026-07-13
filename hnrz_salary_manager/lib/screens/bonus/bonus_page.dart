@@ -19,6 +19,14 @@ class _BonusPageState extends State<BonusPage> {
   final BonusService _service = BonusService();
   late Future<List<Bonus>> futureBonus;
 
+  static const _cardColors = [
+    AppColors.statPurple,
+    AppColors.statBlue,
+    AppColors.statGreen,
+    AppColors.statTeal,
+    AppColors.statYellow,
+  ];
+
   static const _bulan = [
     '',
     'Januari',
@@ -175,19 +183,10 @@ class _BonusPageState extends State<BonusPage> {
                         children: [
                           Row(
                             children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppColors.infoBg,
-                                  borderRadius:
-                                      BorderRadius.circular(AppRadius.sm),
-                                ),
-                                child: const Icon(
-                                  Icons.card_giftcard_outlined,
-                                  color: AppColors.primary,
-                                  size: 20,
-                                ),
+                              IconAvatar(
+                                icon: Icons.card_giftcard_outlined,
+                                color: _cardColors[index % _cardColors.length],
+                                size: 40,
                               ),
                               const SizedBox(width: AppSpacing.sm),
                               Expanded(
