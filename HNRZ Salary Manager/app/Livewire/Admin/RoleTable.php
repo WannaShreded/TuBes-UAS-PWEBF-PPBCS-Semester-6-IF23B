@@ -56,13 +56,13 @@ class RoleTable extends SearchableTable
 
     public function confirmDelete(int $id, string $name): void
     {
-        // Dispatch event ke Alpine.js di luar Livewire
         $this->dispatch('open-confirm-modal', [
-            'type'        => 'danger',
-            'title'       => 'Konfirmasi Hapus',
-            'message'     => "Anda akan menghapus role \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
-            'confirmText' => 'Ya, Hapus',
-            'roleId'      => $id,
+            'type'           => 'danger',
+            'title'          => 'Konfirmasi Hapus',
+            'message'        => "Anda akan menghapus role \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
+            'confirmText'    => 'Ya, Hapus',
+            'livewireAction' => 'deleteRole',
+            'roleId'         => $id,
         ]);
     }
 

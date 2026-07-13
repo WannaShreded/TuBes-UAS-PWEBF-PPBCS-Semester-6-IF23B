@@ -71,7 +71,7 @@ class PayrollMethodController extends Controller
         if ($payrollMethod->employees()->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => "Metode penggajian '{$payrollMethod->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.",
+                'message' => "Metode gaji '{$payrollMethod->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.",
             ], 422);
         }
 
@@ -79,7 +79,7 @@ class PayrollMethodController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Metode penggajian berhasil dihapus',
+            'message' => 'Metode gaji berhasil dihapus',
         ]);
     }
 }

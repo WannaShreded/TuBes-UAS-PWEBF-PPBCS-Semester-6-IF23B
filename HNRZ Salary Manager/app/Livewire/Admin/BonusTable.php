@@ -95,7 +95,14 @@ class BonusTable extends SearchableTable
 
     public function deleteItem(int $id): void
     {
-        Bonus::findOrFail($id)->delete();
+        $bonus = Bonus::findOrFail($id);
+
+        if ($bonus->employees()->exists()) {
+            $this->dispatch('notify', message: 'Bonus tidak dapat dihapus karena masih digunakan oleh karyawan.', type: 'error');
+            return;
+        }
+
+        $bonus->delete();
         $this->dispatch('notify', message: 'Bonus berhasil dihapus.', type: 'success');
     }
 

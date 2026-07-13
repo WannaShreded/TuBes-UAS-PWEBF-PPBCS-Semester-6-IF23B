@@ -69,7 +69,7 @@ class PayrollMethodTable extends SearchableTable
         $this->dispatch('open-confirm-modal', [
             'type'           => 'danger',
             'title'          => 'Konfirmasi Hapus',
-            'message'        => "Anda akan menghapus metode penggajian \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
+            'message'        => "Anda akan menghapus metode gaji \"{$name}\". Tindakan ini tidak dapat dibatalkan.",
             'confirmText'    => 'Ya, Hapus',
             'livewireAction' => 'deleteItem',
             'roleId'         => $id,
@@ -78,7 +78,14 @@ class PayrollMethodTable extends SearchableTable
 
     public function deleteItem(int $id): void
     {
-        PayrollMethod::findOrFail($id)->delete();
-        $this->dispatch('notify', message: 'Metode penggajian berhasil dihapus.', type: 'success');
+        $payrollMethod = PayrollMethod::findOrFail($id);
+
+        if ($payrollMethod->employees()->exists()) {
+            $this->dispatch('notify', message: 'Metode gaji tidak dapat dihapus karena masih digunakan oleh karyawan.', type: 'error');
+            return;
+        }
+
+        $payrollMethod->delete();
+        $this->dispatch('notify', message: 'Metode gaji berhasil dihapus.', type: 'success');
     }
 }

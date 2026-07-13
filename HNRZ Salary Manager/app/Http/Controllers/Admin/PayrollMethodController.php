@@ -52,7 +52,7 @@ class PayrollMethodController extends Controller
         PayrollMethod::create($validated);
 
         return redirect()->route('admin.payroll-methods.index')
-            ->with('success', 'Metode penggajian berhasil ditambahkan.');
+            ->with('success', 'Metode gaji berhasil ditambahkan.');
     }
 
     public function edit(PayrollMethod $payrollMethod)
@@ -74,20 +74,20 @@ class PayrollMethodController extends Controller
         $payrollMethod->update($validated);
 
         return redirect()->route('admin.payroll-methods.index')
-            ->with('success', 'Metode penggajian berhasil diperbarui.');
+            ->with('success', 'Metode gaji berhasil diperbarui.');
     }
 
     public function destroy(PayrollMethod $payrollMethod)
     {
         if ($payrollMethod->employees()->exists()) {
             return redirect()->route('admin.payroll-methods.index')
-                ->with('error', "Metode penggajian '{$payrollMethod->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.");
+                ->with('error', "Metode gaji '{$payrollMethod->name}' tidak dapat dihapus karena masih digunakan oleh karyawan.");
         }
 
         $payrollMethod->delete();
 
         return redirect()->route('admin.payroll-methods.index')
-            ->with('success', 'Metode penggajian berhasil dipindahkan ke Recycle Bin.');
+            ->with('success', 'Metode gaji berhasil dipindahkan ke Recycle Bin.');
     }
 
     /**
@@ -109,7 +109,7 @@ class PayrollMethodController extends Controller
         $payrollMethod->restore();
 
         return redirect()->route('admin.payroll-methods.trash')
-            ->with('success', "Metode penggajian '{$payrollMethod->name}' berhasil dipulihkan.");
+            ->with('success', "Metode gaji '{$payrollMethod->name}' berhasil dipulihkan.");
     }
 
     /**
@@ -122,6 +122,6 @@ class PayrollMethodController extends Controller
         $payrollMethod->forceDelete();
 
         return redirect()->route('admin.payroll-methods.trash')
-            ->with('success', "Metode penggajian '{$nama}' berhasil dihapus permanen.");
+            ->with('success', "Metode gaji '{$nama}' berhasil dihapus permanen.");
     }
 }

@@ -39,7 +39,7 @@ class EmployeePayrollMethodController extends Controller
 
         $method = PayrollMethod::query()->where('is_active', true)->find($validated['payroll_method_id']);
         if (! $method) {
-            return response()->json(['message' => 'Metode penggajian tidak tersedia.'], 422);
+            return response()->json(['message' => 'Metode gaji tidak tersedia.'], 422);
         }
 
         $type = Str::lower($method->type);
@@ -58,6 +58,6 @@ class EmployeePayrollMethodController extends Controller
             'nomor_e_wallet' => $isEwallet ? $validated['nomor_e_wallet'] : null,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Metode penggajian berhasil diperbarui.']);
+        return response()->json(['success' => true, 'message' => 'Metode gaji berhasil diperbarui.']);
     }
 }

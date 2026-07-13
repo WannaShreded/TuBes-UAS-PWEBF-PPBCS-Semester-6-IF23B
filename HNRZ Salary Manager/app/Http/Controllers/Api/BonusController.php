@@ -45,8 +45,6 @@ class BonusController extends Controller
         ]);
     }
 
-    //
-
     public function update(Request $request, $id)
     {
         $bonus = Bonus::find($id);
@@ -73,46 +71,29 @@ class BonusController extends Controller
         ]);
     }
 
-    // public function destroy(Bonus $bonus)
-    // {
-    //     Log::info('Bonus yang akan dihapus', [
-    //         'id' => $bonus->id,
-    //         'exists' => $bonus->exists,
-    //     ]);
-
-    //     if ($bonus->employees()->exists()) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Bonus masih digunakan oleh karyawan.'
-    //         ], 422);
-    //     }
-
-    //     $deleted = $bonus->delete();
-
-    //     Log::info('Hasil delete', [
-    //         'deleted' => $deleted,
-    //     ]);
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Bonus berhasil dihapus',
-    //     ]);
-    // }
-
-    public function destroy($id)
+    public function destroy(Bonus $bonus)
     {
-        $bonus = Bonus::find($id);
+        Log::info('Bonus yang akan dihapus', [
+            'id' => $bonus->id,
+            'exists' => $bonus->exists,
+        ]);
 
-        if (!$bonus) {
+        if ($bonus->employees()->exists()) {
             return response()->json([
-                'message' => 'Tidak ditemukan'
-            ], 404);
+                'success' => false,
+                'message' => 'Bonus masih digunakan oleh karyawan.'
+            ], 422);
         }
 
-        $bonus->delete();
+        $deleted = $bonus->delete();
+
+        Log::info('Hasil delete', [
+            'deleted' => $deleted,
+        ]);
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Bonus berhasil dihapus',
         ]);
     }
 }
