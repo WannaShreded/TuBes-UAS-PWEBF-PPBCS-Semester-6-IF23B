@@ -213,6 +213,9 @@ Proyek ini dikembangkan oleh kelompok mahasiswa program studi Teknik Informatika
 ## YouTube
 `https://youtu.be/gIeRPMLH5UM`
 
+## Laporan & PPT
+Laporan UAS PPBCS dan Pweb Framework beserta PPT-nya disimpan di folder Laporan (folder berada pada bagian paling luar)
+
 ## 📄 Lisensi
 
 Proyek ini dirancang untuk tujuan edukasi akademik di **Universitas Muhammdiyah Bandung**. Hak cipta dilindungi oleh para kontributor di atas.
