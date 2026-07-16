@@ -4,12 +4,12 @@ import '../../models/employee.dart';
 import '../../services/employee_service.dart';
 import '../../services/jabatan_service.dart';
 import '../../services/bonus_service.dart';
-import '../../services/payroll_method_service.dart';
 import '../../theme/app_theme.dart';
 import '../jabatan/jabatan_page.dart';
 import '../bonus/bonus_page.dart';
 import '../employee/employee_page.dart';
 import '../employee/profile_page.dart';
+import '../employee/employee_payroll_history_page.dart';
 import '../payroll_method/payroll_page.dart';
 import '../payroll_method/employee_payroll_page.dart';
 
@@ -297,6 +297,19 @@ class _DashboardPageState extends State<DashboardPage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => const EmployeePayrollPage(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 68),
+              _ModuleTile(
+                icon: Icons.history_outlined,
+                color: AppColors.statBlue,
+                title: "Riwayat Gaji",
+                subtitle: "Lihat riwayat slip gaji Anda",
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const EmployeePayrollHistoryPage(),
                   ),
                 ),
               ),
