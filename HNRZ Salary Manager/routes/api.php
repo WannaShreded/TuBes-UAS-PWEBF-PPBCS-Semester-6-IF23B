@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BonusController;
 use App\Http\Controllers\Api\PayrollMethodController;
 use App\Http\Controllers\Api\EmployeeProfileController;
 use App\Http\Controllers\Api\EmployeePayrollMethodController;
+use App\Http\Controllers\Api\EmployeePayrollHistoryController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\PayrollHistoryController;
 use App\Http\Controllers\Api\StatisticController;
@@ -29,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile/password', [EmployeeProfileController::class, 'updatePassword']);
     Route::get('/employee/payroll-methods', [EmployeePayrollMethodController::class, 'index']);
     Route::put('/employee/payroll-method', [EmployeePayrollMethodController::class, 'update']);
+    Route::get('/employee/payroll-history', [EmployeePayrollHistoryController::class, 'index']);
 
 });
 

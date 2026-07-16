@@ -4,6 +4,7 @@ import '../../models/employee.dart';
 import '../../services/employee_service.dart';
 import '../../theme/app_theme.dart';
 import 'change_password_page.dart';
+import 'employee_payroll_history_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -113,34 +114,66 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: AppSpacing.md),
               ],
 
-              // ---------- Keamanan ----------
+              // ---------- Keamanan & Menu Lainnya ----------
               Card(
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.infoBg,
-                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.infoBg,
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                        ),
+                        child: const Icon(
+                          Icons.lock_outline,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text("Ubah Password"),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordPage(),
+                        ),
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.lock_outline,
-                      color: AppColors.primary,
-                      size: 20,
+                    const Divider(height: 1, indent: 68),
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.infoBg,
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                        ),
+                        child: const Icon(
+                          Icons.history_outlined,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text("Riwayat Gaji Saya"),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const EmployeePayrollHistoryPage(),
+                        ),
+                      ),
                     ),
-                  ),
-                  title: const Text("Ubah Password"),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ChangePasswordPage(),
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ],

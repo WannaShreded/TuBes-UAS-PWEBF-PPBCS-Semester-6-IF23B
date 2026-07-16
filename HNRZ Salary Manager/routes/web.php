@@ -272,7 +272,9 @@ Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->
     Route::get('/my-position', [EmployeeController::class, 'position'])->name('position');
     Route::get('/payroll-methods', [EmployeeController::class, 'payrollMethods'])->name('payroll-methods.index');
     Route::patch('/payroll-methods', [EmployeeController::class, 'updatePayrollMethod'])->name('payroll-methods.update');
+    Route::get('/payroll-history', [EmployeeController::class, 'payrollHistory'])->name('payroll-history');
 });
+
 
 // =============================================
 // Route Profile (dari Breeze)

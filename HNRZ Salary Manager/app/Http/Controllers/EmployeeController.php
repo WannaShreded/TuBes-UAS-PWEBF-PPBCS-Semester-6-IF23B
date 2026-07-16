@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\PayrollMethod;
 use App\Models\User;
+use App\Models\PayrollHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -98,6 +99,30 @@ class EmployeeController extends Controller
             ->with('success', 'Preferensi metode penggajian berhasil diperbarui.');
     }
 
+    public function payrollHistory()
+    {
+        $employee = $this->currentEmployee();
+
+        if (! $employee) {
+            abort(403);
+        }
+
+        $histories = PayrollHistory::query()
+            ->where('employee_id', $employee->id)
+            ->orderByDesc('payroll_period')
+            ->paginate(12);
+
+        $allHistories = PayrollHistory::query()
+            ->where('employee_id', $employee->id)
+            ->where('payment_status', 'Sudah Dibayar')
+            ->get();
+
+        $totalPayroll = $allHistories->sum('total_dibayarkan');
+        $averagePayroll = $allHistories->avg('total_dibayarkan') ?? 0;
+
+        return view('employee.payroll-history', compact('employee', 'histories', 'totalPayroll', 'averagePayroll'));
+    }
+
     protected function currentEmployee(): ?Employee
     {
         $user = Auth::user();
@@ -109,3 +134,4 @@ class EmployeeController extends Controller
         return $user->employee()->with(['position', 'payrollMethod'])->first();
     }
 }
+

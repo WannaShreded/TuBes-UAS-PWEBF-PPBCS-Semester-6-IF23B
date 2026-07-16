@@ -159,10 +159,18 @@
                     <span x-show="!collapsed" x-transition.opacity>Jabatan</span>
                 </a>
                 <a href="{{ route('employee.payroll-methods.index') }}"
-                    class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('employee.payroll-methods.*') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}"
+                    class="mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('employee.payroll-methods.*') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}"
                     :title="collapsed ? 'Metode Gaji' : ''">
                     <span class="h-5 w-5 shrink-0 flex items-center justify-center font-bold text-xs">$</span>
                     <span x-show="!collapsed" x-transition.opacity>Metode Gaji</span>
+                </a>
+                <a href="{{ route('employee.payroll-history') }}"
+                    class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 {{ request()->routeIs('employee.payroll-history') ? 'bg-gradient-to-r from-[#7c1fd6] to-[#e91e8c] text-white shadow-lg shadow-[#e91e8c]/25' : 'text-white/70 hover:bg-[#5b1fb8]/20 hover:text-white' }}"
+                    :title="collapsed ? 'Riwayat Gaji' : ''">
+                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.2 0-4 1.4-4 3s1.8 3 4 3 4-1.4 4-3-1.8-3-4-3Zm0 0V5m0 9v5M5 11h3m8 0h3" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition.opacity>Riwayat Gaji</span>
                 </a>
             @endrole
         </nav>
