@@ -230,7 +230,7 @@ Proyek ini dirancang untuk tujuan edukasi akademik di **Universitas Muhammdiyah 
 ## Keterangan Revisi
 
 1. Penambahan fitur riwayat gaji untuk role karyawan.
-2. APK aplikasi telah berhasil di-build setelah proses revisi (lokasi apk: (hnrz_salary_manager/build/app/outputs/flutter-apk/app-release.apk))
+2. APK aplikasi telah berhasil di-build setelah proses revisi (lokasi apk:(Releases) dengan 1 tag
 3. Penambahan pada laporan terkait metode yang digunakan, literature review, dan arsitektur sistem.
 4. Penambahan fitur "Lupa Password" pada aplikasi Flutter yang mengarahkan pengguna untuk menghubungi admin. Sementara itu, fitur "Lupa Password" pada aplikasi web (Laravel) tetap dapat digunakan secara mandiri oleh pengguna.n.
 
